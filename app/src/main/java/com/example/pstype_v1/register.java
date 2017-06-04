@@ -3,11 +3,13 @@ package com.example.pstype_v1;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -39,7 +41,25 @@ public class register extends AppCompatActivity {
         final EditText etpassword2=(EditText)findViewById(R.id.editText7);
         final EditText etage=(EditText)findViewById(R.id.editText5);
         final Button buttonReg = (Button) findViewById(R.id.button4);
+        final RadioGroup buttonSex = (RadioGroup)findViewById(R.id.RadioGroup);
+        final Boolean[] sex = {true};
 
+        buttonSex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                switch (checkedId){
+                    case R.id.radioButton:
+                        sex[0]=true;
+                        break;
+                    case R.id.radioButton2:
+                        sex[0]=false;
+                        break;
+                    default:
+                        sex[0] =true;
+                        break;
+                }
+            }
+        });
 
         buttonReg.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -47,6 +67,7 @@ public class register extends AppCompatActivity {
                 String username = etusername.getText().toString();
                 String password = etpassword.getText().toString();
                 String password2=etpassword2.getText().toString();
+
                 if (!password.equals(password2))
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(register.this);
@@ -84,7 +105,7 @@ public class register extends AppCompatActivity {
 
                     }
                 };
-                RegReq regReq = new RegReq(username, password, age, responseListener, errorListener);
+                RegReq regReq = new RegReq(username, password, age, sex[0], responseListener, errorListener);
                 RequestQueue queue = Volley.newRequestQueue(register.this);
                 queue.add(regReq);
             }
