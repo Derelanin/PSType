@@ -1,13 +1,21 @@
 package com.example.pstype_v1;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 public class general extends AppCompatActivity {
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,10 +30,12 @@ public class general extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general);
-        Button exit = (Button)findViewById(R.id.button3);
+        //Button exit = (Button)findViewById(R.id.button3);
+        ImageView exit = (ImageView) findViewById(R.id.exit);
         Button map = (Button)findViewById(R.id.button5);
-        TextView hello =(TextView)findViewById(R.id.textView7);
-        hello.setText("Пользователь: "+ tokenSaver.getName(general.this));
+        Toolbar bar = (Toolbar) findViewById(R.id.toolbar2);
+        bar.setTitle(tokenSaver.getName(general.this));
+        bar.setLogo(R.mipmap.ic_launcher);
 
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,4 +55,5 @@ public class general extends AppCompatActivity {
             }
         });
     }
+
 }
