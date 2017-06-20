@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 public class general extends AppCompatActivity {
 
@@ -31,6 +32,7 @@ public class general extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general);
         //Button exit = (Button)findViewById(R.id.button3);
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar3);
         ImageView exit = (ImageView) findViewById(R.id.exit);
         Button map = (Button)findViewById(R.id.button5);
         Toolbar bar = (Toolbar) findViewById(R.id.toolbar2);
@@ -50,8 +52,10 @@ public class general extends AppCompatActivity {
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(ProgressBar.VISIBLE);
                 Intent intent = new Intent(general.this, Maps.class);
                 general.this.startActivity(intent);
+                progressBar.setVisibility(ProgressBar.INVISIBLE);
             }
         });
     }
