@@ -56,7 +56,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.054"
-        app:srcCompat="@mipmap/auth_round"/>
+        app:srcCompat="@mipmap/auth_round" />
 
     <TextView
         android:id="@+id/textView"

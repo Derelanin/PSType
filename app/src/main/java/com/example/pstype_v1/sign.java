@@ -101,8 +101,8 @@ public class sign extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         NetworkResponse response = error.networkResponse;
+                        AlertDialog.Builder builder = new AlertDialog.Builder(sign.this);
                         if(response != null && response.data != null){
-                            AlertDialog.Builder builder = new AlertDialog.Builder(sign.this);
                             switch(response.statusCode){
                                 case 404:
                                     builder.setMessage("Пользователь с данным именем не найден")
@@ -123,6 +123,12 @@ public class sign extends AppCompatActivity {
                                         .show();
                                 break;
                             }
+                        }
+                        if(response==null){
+                            builder.setMessage("Отсутствует подключение к интернету")
+                                    .setNegativeButton("Повторить", null)
+                                    .create()
+                                    .show();
                         }
                         progressBar.setVisibility(ProgressBar.INVISIBLE);
                     }

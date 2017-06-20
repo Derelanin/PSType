@@ -104,7 +104,6 @@ public class register extends AppCompatActivity {
                         String json;
                         NetworkResponse response = error.networkResponse;
                         if(response != null && response.data != null){
-
                             switch(response.statusCode){
                                 case 400:
                                     json = new String(response.data);
@@ -117,12 +116,10 @@ public class register extends AppCompatActivity {
                                     json = trimMessage(json, "message");
                                     displayMessage("Database error");
                                     break;
-//                                case 500:
-//                                    builder.setMessage("Возникла ошибка при работе с базой данных. Попробуйте позже.")
-//                                            .setNegativeButton("Повторить", null)
-//                                            .create()
-//                                            .show();
                             }
+                        }
+                        if (response==null){
+                            displayMessage("Отсутствует подключение к интернету");
                         }
                         progressBar.setVisibility(ProgressBar.INVISIBLE);
                     }
