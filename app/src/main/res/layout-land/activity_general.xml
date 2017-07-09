@@ -9,7 +9,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar2"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="52dp"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
@@ -17,6 +17,37 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="0dp"
+        android:visibility="invisible"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@color/colorLightBlue" />
+
+    <ImageView
+        android:id="@+id/round"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/avatar"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@+id/avatar"
+        app:layout_constraintRight_toRightOf="@+id/avatar"
+        app:layout_constraintTop_toTopOf="@+id/avatar"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@mipmap/round" />
 
     <ImageView
         android:id="@+id/exit"
@@ -106,7 +137,6 @@
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="@+id/guideline7"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.497"
             app:srcCompat="@mipmap/ic_map" />
@@ -153,6 +183,54 @@
             app:layout_constraintRight_toRightOf="@+id/imageView9"
             app:layout_constraintTop_toTopOf="@+id/imageView9"
             app:layout_constraintVertical_bias="0.0" />
+
+        <Button
+            android:id="@+id/psycho"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="0dp"
+            android:onClick="unbutton"
+            android:background="@android:color/transparent"
+            android:text=" "
+            app:layout_constraintBottom_toBottomOf="@+id/textView3"
+            app:layout_constraintLeft_toRightOf="@+id/button5"
+            app:layout_constraintRight_toLeftOf="@+id/imageView7"
+            app:layout_constraintTop_toTopOf="@+id/imageView6" />
+
+        <Button
+            android:id="@+id/stat"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="0dp"
+            android:onClick="unbutton"
+            android:background="@android:color/transparent"
+            android:text=" "
+            app:layout_constraintBottom_toBottomOf="@+id/textView4"
+            app:layout_constraintLeft_toRightOf="@+id/psycho"
+            app:layout_constraintRight_toLeftOf="@+id/imageView8"
+            app:layout_constraintTop_toTopOf="@+id/imageView7" />
+
+        <Button
+            android:id="@+id/settings"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="0dp"
+            android:onClick="unbutton"
+            android:background="@android:color/transparent"
+            android:text=" "
+            app:layout_constraintBottom_toBottomOf="@+id/textView5"
+            app:layout_constraintLeft_toRightOf="@+id/stat"
+            app:layout_constraintRight_toRightOf="@+id/imageView8"
+            app:layout_constraintTop_toTopOf="@+id/imageView8" />
 
         <TextView
             android:id="@+id/textView3"
@@ -233,8 +311,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/guideline7"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.1"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="59dp" />
+        app:layout_constraintGuide_percent="0.11" />
 
 </android.support.constraint.ConstraintLayout>

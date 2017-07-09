@@ -2,4 +2,6 @@
     <string name="app_name">PSType-v1</string>
     <string name="action_settings">Settings</string>
     <string name="exit">Exit</string>
+    <string name="title_activity_welcome">welcome</string>
+    <string name="section_format">Добро пожаловать в PSType</string>
 </resources>

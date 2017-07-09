@@ -1,4 +1,4 @@
-package com.example.pstype_v1;
+package com.example.pstype_v1.signup;
 
 
 import android.content.Intent;
@@ -17,6 +17,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.example.pstype_v1.R;
+import com.example.pstype_v1.signin.sign;
+import com.example.pstype_v1.useful.Functions;
 
 import org.json.JSONException;
 import org.json.JSONObject;

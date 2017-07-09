@@ -1,7 +1,10 @@
-package com.example.pstype_v1;
+package com.example.pstype_v1.useful;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -26,10 +29,18 @@ public class Functions {
         if (text.equals("Password is required")) return "Отсутсвует пароль";
         if (text.equals("Age must be >= 14")) return "Возраст должен быть больше либо равен 14";
         if (text.equals("Age must be <= 110")) return "Возраст должен быть меньше либо равен 110";
-        if (text.equals("Username must be longer than 6 symbols and consists only of latin symbols")) return "Имя пользователя должно содержать только латинские буквы и цифры и состоять из 6 и более символов";
-        if (text.equals("Password must be longer than 6 symbols and consists only of latin symbols")) return "Пароль должен содержать только латинские буквы и цифры и состоять из 6 и более символов";
+        if (text.equals("Username must be longer than 6 symbols and consist only of latin symbols")) return "Имя пользователя должно содержать только латинские буквы и цифры и состоять из 6 и более символов";
+        if (text.equals("Password must be longer than 6 symbols and consist only of latin symbols")) return "Пароль должен содержать только латинские буквы и цифры и состоять из 6 и более символов";
         if (text.equals("Age must be an integer")) return "Возраст должен быть целым числом";
         if (text.contains("Cast to Number")) return "Возраст должен быть целым числом";
         return text;
     }
+
+    public static Drawable tintMyDrawable(Drawable drawable, int color) {
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, color);
+        DrawableCompat.setTintMode(drawable, PorterDuff.Mode.SRC_IN);
+        return drawable;
+    }
+
 }

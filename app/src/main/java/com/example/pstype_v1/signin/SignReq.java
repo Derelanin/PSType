@@ -1,4 +1,4 @@
-package com.example.pstype_v1;
+package com.example.pstype_v1.signin;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
@@ -11,7 +11,7 @@ import java.util.Map;
  */
 
 public class SignReq extends StringRequest {
-    private static final String LOGIN_REQUEST_URL = "http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/signin";
+    private static final String LOGIN_REQUEST_URL = "http://pstype-pstype2.1d35.starter-us-east-1.openshiftapps.com/api/v1/signin";
     private Map<String, String> params;
 
     public SignReq(String username, String password, Response.Listener<String> listener, Response.ErrorListener errorListener) {

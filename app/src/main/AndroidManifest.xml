@@ -12,12 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".general"/>
-        <activity android:name=".register" />
-        <activity android:name=".sign" />
-        <activity android:name=".Maps" />
+        <activity android:name="com.vk.sdk.VKOpenAuthActivity" />
+        <activity android:name=".main.general" />
+        <activity android:name=".signup.register" />
+        <activity android:name=".signin.sign" />
+        <activity android:name=".main.Maps" />
         <activity
-            android:name=".Splash"
+            android:name=".useful.Splash"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,6 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -32,6 +34,10 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyC8uZOn0qeBWqA4kt7BX9OS-9kiPIzWcm0" />
 
+        <activity
+            android:name=".main.welcome"
+            android:label="@string/title_activity_welcome"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
