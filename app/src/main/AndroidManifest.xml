@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -26,6 +28,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".useful.MyPreferenceActivity"
+            android:label="Настройки" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -37,7 +42,14 @@
         <activity
             android:name=".main.welcome"
             android:label="@string/title_activity_welcome"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <service
+            android:name=".useful.tracking"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".main.Statistics"></activity>
     </application>
 
 </manifest>

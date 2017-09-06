@@ -11,7 +11,7 @@ import java.util.Map;
  */
 
 public class RegReq extends StringRequest {
-    private static final String URL = "http://pstype-pstype2.1d35.starter-us-east-1.openshiftapps.com/api/v1/signup";
+    private static final String URL = "http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/signup";
     private Map<String, String> params;
 
     public RegReq(String username, String password, String age, Boolean sex, Response.Listener<String> listener, Response.ErrorListener errorListener) {

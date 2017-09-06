@@ -1,0 +1,72 @@
+package com.example.pstype_v1.main;
+
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import com.example.pstype_v1.R;
+import com.example.pstype_v1.data.Contract.track;
+import com.example.pstype_v1.data.DbHelper;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Statistics extends AppCompatActivity {
+
+    String pattern = "##0.0000";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_statistics);
+
+        getInfo();
+    }
+
+    private void getInfo() {
+        ListView data = (ListView) findViewById(R.id.data);
+        DbHelper mDbHelper= new DbHelper(this);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        List<String> list= new ArrayList<String>();
+        String[] projection = {
+                track.COLUMN_DATE,
+                track.COLUMN_TIME,
+                track.COLUMN_SPEED,
+                track.COLUMN_LAT,
+                track.COLUMN_LON};
+        Cursor cursor = db.query(track.TABLE_NAME, projection, null, null, null, null, null);
+        DecimalFormat decimalFormat = new DecimalFormat(pattern);
+
+        try {
+            int dateColumnIndex = cursor.getColumnIndex(track.COLUMN_DATE);
+            int timeColumnIndex = cursor.getColumnIndex(track.COLUMN_TIME);
+            int speedColumnIndex = cursor.getColumnIndex(track.COLUMN_SPEED);
+            int latColumnIndex = cursor.getColumnIndex(track.COLUMN_LAT);
+            int lonColumnIndex = cursor.getColumnIndex(track.COLUMN_LON);
+
+            // Проходим через все ряды
+            while (cursor.moveToNext()) {
+                // Используем индекс для получения строки или числа
+                String currentDate = cursor.getString(dateColumnIndex);
+                String currentTime = cursor.getString(timeColumnIndex);
+                double currentSpeed = cursor.getDouble(speedColumnIndex);
+                double currentLat = cursor.getDouble(latColumnIndex);
+                double currentLon = cursor.getDouble(lonColumnIndex);
+
+                String str = "Дата: "+currentDate+"\tВремя: "+currentTime+"\t\tСкорость(м/с): "+decimalFormat.format(currentSpeed)+"\t\t\tШирота: "+decimalFormat.format(currentLat)+"\t\t\tДолгота: "+decimalFormat.format(currentLon);
+                list.add(str);
+            }
+        } finally {
+            // Всегда закрываем курсор после чтения
+            cursor.close();
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, list);
+        data.setAdapter(adapter);
+    }
+}

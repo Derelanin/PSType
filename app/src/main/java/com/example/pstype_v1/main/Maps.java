@@ -33,7 +33,6 @@ public class Maps extends AppCompatActivity {
         createMapView();
 
     }
-
     private void addMarker() {
 
         /** Make sure that the map has been initialised **/
@@ -75,6 +74,7 @@ public class Maps extends AppCompatActivity {
                     latitude=55.7531432;
                     longitude=37.6198181;
                 }
+
 
                 cameraPosition = new CameraPosition.Builder()
                         .target(new LatLng(latitude, longitude))

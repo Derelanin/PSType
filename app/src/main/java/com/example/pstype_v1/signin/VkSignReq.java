@@ -11,7 +11,7 @@ import java.util.Map;
  */
 
 public class VkSignReq extends StringRequest {
-    private static final String LOGIN_REQUEST_URL = "http://pstype-pstype2.1d35.starter-us-east-1.openshiftapps.com/api/v1/vksignin";
+    private static final String LOGIN_REQUEST_URL = "http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/vksignin";
     private Map<String, String> params;
 
     public VkSignReq (String id, Response.Listener<String> listener, Response.ErrorListener errorListener) {

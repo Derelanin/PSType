@@ -4,4 +4,7 @@
     <string name="exit">Exit</string>
     <string name="title_activity_welcome">welcome</string>
     <string name="section_format">Добро пожаловать в PSType</string>
+
+    <string name="del">del</string>
+    <string name="about">about</string>
 </resources>

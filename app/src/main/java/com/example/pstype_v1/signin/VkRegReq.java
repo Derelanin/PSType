@@ -11,7 +11,7 @@ import java.util.Map;
  */
 
 public class VkRegReq extends StringRequest {
-    private static final String URLvk = "http://pstype-pstype2.1d35.starter-us-east-1.openshiftapps.com/api/v1/vksignup";
+    private static final String URLvk = "http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/vksignup";
     private Map<String, String> params;
 
     public VkRegReq(String username, String id, boolean sex, int age, Response.Listener<String> listener2, Response.ErrorListener errorListener2) {

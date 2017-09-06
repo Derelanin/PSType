@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Основное">
+    <SwitchPreference
+        android:key="look"
+        android:summaryOff="Включить отслеживание"
+        android:summaryOn="Выключить отслеживание"
+        android:switchTextOff=" "
+        android:switchTextOn=" " />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Отладка">
+        <EditTextPreference
+            android:key="refresh"
+            android:title="Обновление данных"
+            android:enabled="false"
+            android:summary="Устанавливает минимальное время (в секундах) между получением данных"
+            android:defaultValue="10"
+            android:dialogTitle="Введите время (в секундах)" />
+
+        <Preference android:title="Очистить записи"
+            android:key="@string/del">
+           </Preference>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Справка">
+        <Preference android:title="О программе"
+            android:key="@string/about">
+        </Preference>
+    </PreferenceCategory>
+</PreferenceScreen>
