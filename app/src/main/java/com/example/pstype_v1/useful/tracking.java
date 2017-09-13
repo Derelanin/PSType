@@ -23,8 +23,6 @@ public class tracking extends Service {
     }
 
     private LocationManager locationManager;
-    StringBuilder sbGPS = new StringBuilder();
-    StringBuilder sbNet = new StringBuilder();
 
     @Override
     public void onCreate() {

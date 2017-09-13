@@ -30,6 +30,7 @@
         </activity>
         <activity
             android:name=".useful.MyPreferenceActivity"
+            android:theme="@style/AppTheme"
             android:label="Настройки" />
 
         <meta-data
@@ -49,7 +50,10 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".main.Statistics"></activity>
+        <activity android:name=".main.Statistics"
+            android:theme="@style/AppTheme"/>
+        <activity android:name=".main.profile"
+            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

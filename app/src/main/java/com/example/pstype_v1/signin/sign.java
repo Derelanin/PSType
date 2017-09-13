@@ -267,7 +267,7 @@ public class sign extends AppCompatActivity {
 //        if ((currentRequest == null)&&(flag<3) ) {
 //            return;
 //        }
-        currentRequest = VKApi.users().get(VKParameters.from(VKApiConst.FIELDS, "sex,bdate,first_name,last_name,photo_50,id"));
+        currentRequest = VKApi.users().get(VKParameters.from(VKApiConst.FIELDS, "sex,bdate,first_name,last_name,photo_200,id"));
         currentRequest.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
@@ -289,7 +289,7 @@ public class sign extends AppCompatActivity {
 
                 final String username= user.first_name +" "+ user.last_name;
                 String id="id"+user.id;
-                final String photo=user.photo_50;
+                final String photo=user.photo_200;
 
                 int age;
                 if (bdate.length()<6){

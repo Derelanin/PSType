@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="Настройки">
     <PreferenceCategory
         android:title="Основное">
     <SwitchPreference
-        android:key="look"
+        android:key="@string/look"
         android:summaryOff="Включить отслеживание"
         android:summaryOn="Выключить отслеживание"
         android:switchTextOff=" "

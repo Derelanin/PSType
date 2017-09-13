@@ -7,4 +7,6 @@
 
     <string name="del">del</string>
     <string name="about">about</string>
+    <string name="look">look</string>
+    <string name="debug">Отладочные данные</string>
 </resources>

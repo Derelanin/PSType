@@ -1,6 +1,7 @@
 package com.example.pstype_v1.main;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -8,9 +9,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -25,13 +26,13 @@ import com.example.pstype_v1.R;
 import com.example.pstype_v1.signin.sign;
 import com.example.pstype_v1.useful.MyPreferenceActivity;
 import com.example.pstype_v1.useful.tokenSaver;
-import com.example.pstype_v1.useful.tracking;
 
 import java.io.InputStream;
 
 public class general extends AppCompatActivity {
 
     SharedPreferences sp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -49,16 +50,7 @@ public class general extends AppCompatActivity {
             tokenSaver.setFIRST(general.this);
             general.this.startActivity(intent);
         }
-
-        sp = PreferenceManager.getDefaultSharedPreferences(this);
-        Boolean setting = sp.getBoolean("look", false);
-
         requestMultiplePermissions();
-
-        if (setting)
-            startService(new Intent(this, tracking.class));
-        else
-            stopService(new Intent(this, tracking.class));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general);
         //Button exit = (Button)findViewById(R.id.button3);
@@ -81,13 +73,38 @@ public class general extends AppCompatActivity {
             ram.setVisibility(ImageView.VISIBLE);
         }
 
+        bar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(general.this, profile.class);
+                general.this.startActivity(intent);
+            }
+        });
+
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tokenSaver.clearToken(general.this);
-                Intent intent = new Intent(general.this, sign.class);
-                general.this.startActivity(intent);
-                finish();
+                AlertDialog.Builder builder = new AlertDialog.Builder(general.this);
+                builder.setMessage("Вы действительно хотите выйти?")
+                        .setCancelable(false)
+                        .setPositiveButton("Да",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int id) {
+                                        tokenSaver.clearToken(general.this);
+                                        Intent intent = new Intent(general.this, sign.class);
+                                        general.this.startActivity(intent);
+                                        finish();
+                                    }
+                                })
+                        .setNegativeButton("Нет",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int id) {
+                                        dialog.cancel();
+                                    }
+                                }).create().show();
+
             }
         });
 
@@ -130,7 +147,6 @@ public class general extends AppCompatActivity {
         return permissionCheck == PackageManager.PERMISSION_GRANTED;
     }
     protected void onResume() {
-        Boolean notif = sp.getBoolean("look", false);
         super.onResume();
     }
     private void requestPermission(String permission, int requestCode) {
@@ -191,4 +207,5 @@ public class general extends AppCompatActivity {
     public void unbutton(View view){
         Toast.makeText(getApplicationContext(), "Данная функция пока недоступна", Toast.LENGTH_SHORT).show();
     }
+
 }
