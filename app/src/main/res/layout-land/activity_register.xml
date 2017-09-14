@@ -18,7 +18,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:onClick="clOK"
-        android:text="Подтвердить"
+        android:text="@string/ok_but"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -28,7 +28,7 @@
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -36,7 +36,8 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@color/colorLightBlue" />
+        app:srcCompat="@color/colorLightBlue"
+        tools:ignore="ContentDescription" />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="0dp"
@@ -62,7 +63,7 @@
             android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Подтверждение пароля"
+            android:hint="@string/pass2"
             android:inputType="textPassword"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -98,7 +99,7 @@
             android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Имя пользователя"
+            android:hint="@string/name"
             android:inputType="textPersonName"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -124,7 +125,8 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@mipmap/auth_round" />
+        app:srcCompat="@mipmap/auth_round"
+        tools:ignore="ContentDescription" />
 
     <ProgressBar
         android:id="@+id/progressBar2"
@@ -179,7 +181,7 @@
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
             android:layout_weight="1"
-            android:text="Мужчина"
+            android:text="@string/male"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.225"
@@ -197,7 +199,7 @@
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
             android:layout_weight="1"
-            android:text="Женщина"
+            android:text="@string/female"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.18"
@@ -234,7 +236,7 @@
             android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Возраст"
+            android:hint="@string/age"
             android:inputType="textPersonName"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -268,7 +270,7 @@
             android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Пароль"
+            android:hint="@string/pass"
             android:inputType="textPassword"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.0"

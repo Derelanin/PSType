@@ -22,10 +22,18 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.R;
 import com.example.pstype_v1.signin.sign;
 import com.example.pstype_v1.useful.MyPreferenceActivity;
+import com.example.pstype_v1.useful.getInfo;
 import com.example.pstype_v1.useful.tokenSaver;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.InputStream;
 
@@ -50,6 +58,9 @@ public class general extends AppCompatActivity {
             tokenSaver.setFIRST(general.this);
             general.this.startActivity(intent);
         }
+
+
+
         requestMultiplePermissions();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general);
@@ -61,8 +72,38 @@ public class general extends AppCompatActivity {
         Button set = (Button)findViewById(R.id.settings);
         Button stat = (Button)findViewById(R.id.stat);
         //String[] fingerprints = VKUtil.getCertificateFingerprint(this, this.getPackageName());
-        Toolbar bar = (Toolbar) findViewById(R.id.toolbar2);
+        final Toolbar bar = (Toolbar) findViewById(R.id.toolbar2);
         bar.setTitle(tokenSaver.getName(general.this));
+
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    String success = jsonResponse.getString("status");
+
+                    if (success.equals("ok")) {
+                        bar.setTitle(jsonResponse.getString("username"));
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        Response.ErrorListener errorListener= new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                tokenSaver.clearToken(general.this);
+                Intent intent = new Intent(general.this, sign.class);
+                general.this.startActivity(intent);
+                finish();
+            }
+        };
+        getInfo info = new getInfo(tokenSaver.getToken(general.this), responseListener, errorListener);
+        RequestQueue queue = Volley.newRequestQueue(general.this);
+        queue.add(info);
+
         bar.setLogo(R.mipmap.ic_launcher);
         ram.setVisibility(ImageView.INVISIBLE);
         if ((!tokenSaver.getURL(general.this).equals("URL"))&&(!tokenSaver.getURL(general.this).equals(""))) {

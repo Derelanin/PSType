@@ -9,4 +9,39 @@
     <string name="about">about</string>
     <string name="look">look</string>
     <string name="debug">Отладочные данные</string>
+
+    <!-- general -->
+    <string name="MAP">КАРТА</string>
+    <string name="PSYCHO">ПСИХОТИП</string>
+    <string name="STATISTICS">СТАТИСТИКА</string>
+    <string name="SETTINGS">НАСТРОЙКИ</string>
+    <string name="empty"> </string>
+
+    <!-- profile -->
+    <string name="pr_name"> </string>
+    <string name="pr_age"> </string>
+    <string name="pr_sex"> </string>
+    <string name="pr_type"> </string>
+
+    <!-- register -->
+    <string name="name">Имя пользователя</string>
+    <string name="age">Возраст</string>
+    <string name="pass">Пароль</string>
+    <string name="pass2">Подтверждение пароля</string>
+    <string name="male">Мужчина</string>
+    <string name="female">Женщина</string>
+    <string name="ok_but">Подтвердить</string>
+
+    <!-- sign -->
+    <string name="enter">Войти</string>
+    <string name="enter_vk">Войти через вк</string>
+    <string name="question">У вас нет аккаунта?</string>
+    <string name="register">Регистрация</string>
+
+    <!-- sign -->
+    <string name="skip">Пропустить</string>
+    <string name="start">Начать</string>
+    <string name="description">PSType - приложение для определния психотипа водителя. </string>
+    <string name="desc1">PSType - приложение для определения психотипа водителя.</string>
+    <string name="desc2">PSType представляет полную статистику о поведении на дороге, анализирует полученные данные и выдаёт результат.</string>
 </resources>

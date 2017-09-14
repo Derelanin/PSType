@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,12 +44,7 @@ public class welcome extends AppCompatActivity {
     ImageView zero, one;
     ImageView[] indicators;
 
-    int lastLeftValue = 0;
-
     CoordinatorLayout mCoordinator;
-
-
-    static final String TAG = "PagerActivity";
 
     int page = 0;   //  to track page position
 
@@ -231,6 +227,7 @@ public class welcome extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.fragment_welcome, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(getString(R.string.section_format));
+            textView.setGravity(Gravity.CENTER);
             TextView text = (TextView) rootView.findViewById(R.id.section_text);
             text.setText(description(getArguments().getInt(ARG_SECTION_NUMBER)));
             img = (ImageView) rootView.findViewById(R.id.section_img);
@@ -283,7 +280,7 @@ public class welcome extends AppCompatActivity {
     public static String description(int position) {
         switch (position) {
             case 1:
-                return "PSType - приложения для определения психотипа водителя.";
+                return "PSType - приложение для определения психотипа водителя.";
             case 2:
                 return "PSType представляет полную статистику о поведении на дороге, анализирует полученные данные и выдаёт результат.";
         }

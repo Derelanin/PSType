@@ -17,7 +17,8 @@
             android:adjustViewBounds="true"
             android:alpha="1"
             android:background="@mipmap/auth"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            tools:ignore="ContentDescription" />
 
 
     </FrameLayout>
@@ -47,7 +48,7 @@
             android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:alpha="0.7"
             android:gravity="center"
-            android:text="PSType - приложение для определния психотипа водителя. "
+            android:text="@string/description"
             android:textColor="@android:color/white" />
 
 

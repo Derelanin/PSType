@@ -142,18 +142,16 @@ public class sign extends AppCompatActivity {
         auth_vk.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+
+                findViewById(R.id.progressBar).setVisibility(ProgressBar.VISIBLE);
                 if (VKSdk.wakeUpSession()) {
-                    findViewById(R.id.progressBar).setVisibility(ProgressBar.VISIBLE);
                     //VKSdk.authorize(vkScope, true, false);
                     startLoading();
                     auth_vk.setText("Войти через вк");
-                    findViewById(R.id.progressBar).setVisibility(ProgressBar.INVISIBLE);
                 } else {
                     VKSdk.authorize(vkScope, true, false);
-                    findViewById(R.id.progressBar).setVisibility(ProgressBar.VISIBLE);
                     //startLoading();
                     auth_vk.setText("Войти через вк");
-                    findViewById(R.id.progressBar).setVisibility(ProgressBar.INVISIBLE);
                 }
             }
         });
@@ -368,9 +366,10 @@ public class sign extends AppCompatActivity {
                             if (success.equals("ok")) {
                                 tokenSaver.setName(sign.this, username);
                                 tokenSaver.setURL(sign.this, photo);
-                                tokenSaver.setToken(sign.this,VKSdk.getAccessToken().toString());
+                                tokenSaver.setToken(sign.this,jsonResponse.getString("token"));
                                 Intent genIntent = new Intent(sign.this, general.class);
                                 sign.this.startActivity(genIntent);
+                                findViewById(R.id.progressBar).setVisibility(ProgressBar.INVISIBLE);
                                 finish();
                             }
 
