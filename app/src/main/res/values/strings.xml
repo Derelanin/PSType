@@ -10,6 +10,8 @@
     <string name="look">look</string>
     <string name="debug">Отладочные данные</string>
 
+    <string name="item">Изменить</string>
+
     <!-- general -->
     <string name="MAP">КАРТА</string>
     <string name="PSYCHO">ПСИХОТИП</string>
@@ -22,6 +24,11 @@
     <string name="pr_age"> </string>
     <string name="pr_sex"> </string>
     <string name="pr_type"> </string>
+
+    <!-- profile change -->
+    <string name="change">Редактирование</string>
+    <string name="ok">Сохранить</string>
+    <string name="cancel">Отмена</string>
 
     <!-- register -->
     <string name="name">Имя пользователя</string>

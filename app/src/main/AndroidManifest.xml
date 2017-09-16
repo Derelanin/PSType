@@ -30,8 +30,8 @@
         </activity>
         <activity
             android:name=".useful.MyPreferenceActivity"
-            android:theme="@style/AppTheme"
-            android:label="Настройки" />
+            android:label="Настройки"
+            android:theme="@style/AppTheme" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -50,10 +50,16 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".main.Statistics"
-            android:theme="@style/AppTheme"/>
-        <activity android:name=".main.profile"
-            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".main.Statistics"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".main.profile"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".main.profile_change"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

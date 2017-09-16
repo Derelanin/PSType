@@ -343,6 +343,7 @@ public class sign extends AppCompatActivity {
                 Response.ErrorListener errorListener2= new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        findViewById(R.id.progressBar).setVisibility(ProgressBar.INVISIBLE);
                         NetworkResponse response = error.networkResponse;
                         if (response==null){
                             AlertDialog.Builder builder = new AlertDialog.Builder(sign.this);
@@ -382,6 +383,7 @@ public class sign extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         NetworkResponse response = error.networkResponse;
+                        findViewById(R.id.progressBar).setVisibility(ProgressBar.INVISIBLE);
                         if(response==null){
                             AlertDialog.Builder builder3 = new AlertDialog.Builder(sign.this);
                             builder3.setMessage("Отсутствует подключение к интернету")
@@ -410,12 +412,7 @@ public class sign extends AppCompatActivity {
             @Override
             public void onError(VKError error) {
                 super.onError(error);
-//                AlertDialog.Builder builder = new AlertDialog.Builder(sign.this);
-//                            builder.setMessage(error.toString())
-//                                    .setNegativeButton("Повторить", null)
-//                                    .create()
-//                                    .show();
-//                Log.d("VkDemoApp", "onError: " + error);
+                findViewById(R.id.progressBar).setVisibility(ProgressBar.INVISIBLE);
                 if (flag == 1) {
                     flag++;
                     startLoading();
