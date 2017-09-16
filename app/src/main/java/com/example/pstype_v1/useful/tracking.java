@@ -13,8 +13,15 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.data.Contract.track;
 import com.example.pstype_v1.data.DbHelper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Date;
 
@@ -93,6 +100,31 @@ public class tracking extends Service {
             InputData(date.getDate()+"-"+(date.getMonth()+1)+"-"+year.substring(1),
                     date.getHours()+":"+date.getMinutes()+":"+date.getSeconds(),
                     (location.getSpeed()*3600.0)/1000.0,location.getLatitude(), location.getLongitude());
+
+            Response.Listener<String> responseListener = new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        String success = jsonResponse.getString("status");
+                        //Тут, в принципе, я никак на ответы не должна реагировать. Оно всё в фоновом режиме посылается.
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            Response.ErrorListener errorListener= new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    //Тут аналогично. Оно всё в фоновом режиме посылается.
+                }
+            };
+            String[] headers = {"token", "longitude", "latitude", "speed"};
+            String[] values = {tokenSaver.getToken(tracking.this), String.valueOf(location.getLongitude()), String.valueOf(location.getLatitude()), String.valueOf((location.getSpeed()*3600.0)/1000.0)};
+            String url="http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/map/pos";
+            Request maps = new Request(headers,values,url,responseListener,errorListener);
+            RequestQueue queue = Volley.newRequestQueue(tracking.this);
+            queue.add(maps);
         }
     }
 

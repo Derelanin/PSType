@@ -12,7 +12,6 @@ import com.example.pstype_v1.data.Contract.track;
 
 public class DbHelper extends SQLiteOpenHelper {
 
-    public static final String LOG_TAG = DbHelper.class.getSimpleName();
     public static final String DATABASE_NAME = "track.db";
     private static final int DATABASE_VERSION = 1;
 

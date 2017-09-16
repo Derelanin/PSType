@@ -65,7 +65,7 @@ public class Statistics extends AppCompatActivity {
                 double currentLat = cursor.getDouble(latColumnIndex);
                 double currentLon = cursor.getDouble(lonColumnIndex);
 
-                String str = "Дата: "+currentDate+"\tВремя: "+currentTime+"\t\tСкорость(км/ч): "+decimalFormat.format(currentSpeed)+"\t\t\tШирота: "+decimalFormat.format(currentLat)+"\t\t\tДолгота: "+decimalFormat.format(currentLon);
+                String str = "Дата: "+currentDate+"\t\tВремя: "+currentTime+"\t\tСкорость(км/ч): "+decimalFormat.format(currentSpeed)+"\t\t\tШирота: "+decimalFormat.format(currentLat)+"\t\t\tДолгота: "+decimalFormat.format(currentLon);
                 list.add(str);
             }
         } finally {
