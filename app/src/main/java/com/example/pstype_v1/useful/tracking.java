@@ -92,7 +92,7 @@ public class tracking extends Service {
             String year = date.getYear()+"";
             InputData(date.getDate()+"-"+(date.getMonth()+1)+"-"+year.substring(1),
                     date.getHours()+":"+date.getMinutes()+":"+date.getSeconds(),
-                    location.getSpeed(),location.getLatitude(), location.getLongitude());
+                    (location.getSpeed()*3600.0)/1000.0,location.getLatitude(), location.getLongitude());
         }
     }
 

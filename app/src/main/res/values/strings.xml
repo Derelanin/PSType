@@ -11,6 +11,7 @@
     <string name="debug">Отладочные данные</string>
 
     <string name="item">Изменить</string>
+    <string name="item_re">Обновить</string>
 
     <!-- general -->
     <string name="MAP">КАРТА</string>

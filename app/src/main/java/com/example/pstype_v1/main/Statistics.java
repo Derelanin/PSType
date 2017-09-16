@@ -65,7 +65,7 @@ public class Statistics extends AppCompatActivity {
                 double currentLat = cursor.getDouble(latColumnIndex);
                 double currentLon = cursor.getDouble(lonColumnIndex);
 
-                String str = "Дата: "+currentDate+"\tВремя: "+currentTime+"\t\tСкорость(м/с): "+decimalFormat.format(currentSpeed)+"\t\t\tШирота: "+decimalFormat.format(currentLat)+"\t\t\tДолгота: "+decimalFormat.format(currentLon);
+                String str = "Дата: "+currentDate+"\tВремя: "+currentTime+"\t\tСкорость(км/ч): "+decimalFormat.format(currentSpeed)+"\t\t\tШирота: "+decimalFormat.format(currentLat)+"\t\t\tДолгота: "+decimalFormat.format(currentLon);
                 list.add(str);
             }
         } finally {
@@ -90,6 +90,10 @@ public class Statistics extends AppCompatActivity {
             case android.R.id.home:
                 startActivity(new Intent(this, general.class));
                 finish();
+                return true;
+            case R.id.update:
+                finish();
+                this.startActivity(new Intent(this, this.getClass()));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

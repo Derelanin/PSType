@@ -4,4 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:setTitle="@string/debug"
     tools:context="com.example.pstype_v1.main.Statistics">
+
+    <item
+        android:id="@+id/update"
+        android:icon="@drawable/update"
+        android:title="@string/item_re"
+        android:visible="true"
+        app:showAsAction="always">
+    </item>
 </menu>
