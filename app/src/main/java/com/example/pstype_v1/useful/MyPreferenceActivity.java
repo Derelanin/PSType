@@ -117,7 +117,7 @@ public class MyPreferenceActivity extends PreferenceActivity {
                 .setTicker("Кажется, что за вами следят")
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setWhen(System.currentTimeMillis())
-                .setAutoCancel(true)
+                .setAutoCancel(false)
                 //.setContentTitle(res.getString(R.string.notifytitle)) // Заголовок уведомления
                 .setContentTitle("Слежка")
                 //.setContentText(res.getString(R.string.notifytext))
