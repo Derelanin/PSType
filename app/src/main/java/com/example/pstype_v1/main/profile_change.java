@@ -21,8 +21,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.R;
 import com.example.pstype_v1.signin.sign;
-import com.example.pstype_v1.useful.getInfo;
-import com.example.pstype_v1.useful.pr_change;
+import com.example.pstype_v1.useful.Request;
 import com.example.pstype_v1.useful.tokenSaver;
 
 import org.json.JSONException;
@@ -77,7 +76,10 @@ public class profile_change extends AppCompatActivity {
                 finish();
             }
         };
-        getInfo info = new getInfo(tokenSaver.getToken(profile_change.this), responseListener, errorListener);
+        String[] headers = {"token"};
+        String[] values = {tokenSaver.getToken(profile_change.this)};
+        String url="http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/change/data";
+        Request info = new Request(headers,values,url,responseListener,errorListener);
         RequestQueue queue = Volley.newRequestQueue(profile_change.this);
         queue.add(info);
 
@@ -143,7 +145,10 @@ public class profile_change extends AppCompatActivity {
                         finish();
                     }
                 };
-                pr_change inf = new pr_change(tokenSaver.getToken(profile_change.this),age.getText().toString(),sex[0], responseListener, errorListener);
+                String[] headers = {"token","age", "sex"};
+                String[] values = {tokenSaver.getToken(profile_change.this), age.getText().toString(), String.valueOf(sex[0])};
+                String url="http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/change";
+                Request inf = new Request(headers,values,url,responseListener,errorListener);
                 RequestQueue queue = Volley.newRequestQueue(profile_change.this);
                 queue.add(inf);
             }

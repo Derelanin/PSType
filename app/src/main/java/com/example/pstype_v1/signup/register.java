@@ -20,6 +20,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.R;
 import com.example.pstype_v1.signin.sign;
 import com.example.pstype_v1.useful.Functions;
+import com.example.pstype_v1.useful.Request;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -128,7 +129,10 @@ public class register extends AppCompatActivity {
                     }
                 };
                 progressBar.setVisibility(ProgressBar.VISIBLE);
-                RegReq regReq = new RegReq(username, password, age, sex[0], responseListener, errorListener);
+                String[] headers = {"username", "password", "age", "sex"};
+                String[] values = {username, password, String.valueOf(age), String .valueOf(sex[0])};
+                String url="http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/signup";
+                Request regReq = new Request(headers,values,url,responseListener,errorListener);
                 RequestQueue queue = Volley.newRequestQueue(register.this);
                 queue.add(regReq);
             }

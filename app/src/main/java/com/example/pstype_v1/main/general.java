@@ -29,7 +29,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.R;
 import com.example.pstype_v1.signin.sign;
 import com.example.pstype_v1.useful.MyPreferenceActivity;
-import com.example.pstype_v1.useful.getInfo;
+import com.example.pstype_v1.useful.Request;
 import com.example.pstype_v1.useful.tokenSaver;
 
 import org.json.JSONException;
@@ -100,7 +100,10 @@ public class general extends AppCompatActivity {
                 finish();
             }
         };
-        getInfo info = new getInfo(tokenSaver.getToken(general.this), responseListener, errorListener);
+        String[] headers = {"token"};
+        String[] values = {tokenSaver.getToken(general.this)};
+        String url="http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/change/data";
+        Request info = new Request(headers,values,url,responseListener,errorListener);
         RequestQueue queue = Volley.newRequestQueue(general.this);
         queue.add(info);
 

@@ -20,7 +20,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.R;
 import com.example.pstype_v1.signin.sign;
-import com.example.pstype_v1.useful.getInfo;
+import com.example.pstype_v1.useful.Request;
 import com.example.pstype_v1.useful.tokenSaver;
 
 import org.json.JSONException;
@@ -86,17 +86,16 @@ public class profile extends AppCompatActivity {
         Response.ErrorListener errorListener= new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
-//                TextView name = (TextView)findViewById(R.id.textView6);
-//                name.setText("Какая-то ошибка");
-//                progressBar.setVisibility(ProgressBar.INVISIBLE);
                 tokenSaver.clearToken(profile.this);
                 Intent intent = new Intent(profile.this, sign.class);
                 profile.this.startActivity(intent);
                 finish();
             }
         };
-        getInfo info = new getInfo(tokenSaver.getToken(profile.this), responseListener, errorListener);
+        String[] headers = {"token"};
+        String[] values = {tokenSaver.getToken(profile.this)};
+        String url="http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/change/data";
+        Request info = new Request(headers,values,url,responseListener,errorListener);
         RequestQueue queue = Volley.newRequestQueue(profile.this);
         queue.add(info);
     }
