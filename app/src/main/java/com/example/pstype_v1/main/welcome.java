@@ -70,7 +70,7 @@ public class welcome extends AppCompatActivity {
         mNextBtn = (ImageButton) findViewById(R.id.intro_btn_next);
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP)
             mNextBtn.setImageDrawable(
-                    Functions.tintMyDrawable(ContextCompat.getDrawable(this, R.drawable.ic_keyboard_arrow_right_white_48dp), Color.WHITE)
+                    Functions.tintMyDrawable(ContextCompat.getDrawable(this, R.drawable.arrow_right), Color.WHITE)
             );
 
         mSkipBtn = (Button) findViewById(R.id.intro_btn_skip);

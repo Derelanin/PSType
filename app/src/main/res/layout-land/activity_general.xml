@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.pstype_v1.general">
+    tools:context="com.example.pstype_v1.main.general">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar2"
@@ -19,55 +19,48 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/avatar"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="0dp"
-        android:visibility="invisible"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@color/colorLightBlue"
-        tools:ignore="ContentDescription" />
-
-    <ImageView
-        android:id="@+id/round"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="0dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/avatar"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="@+id/avatar"
-        app:layout_constraintRight_toRightOf="@+id/avatar"
-        app:layout_constraintTop_toTopOf="@+id/avatar"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@mipmap/round"
-        tools:ignore="ContentDescription" />
-
-    <ImageView
         android:id="@+id/exit"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar2"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="@+id/toolbar2"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_exit_to_app_white_24dp"
-        android:layout_marginStart="8dp"
+        app:srcCompat="@drawable/exit"
+        tools:ignore="ContentDescription,VectorDrawableCompat" />
+
+    <ImageView
+        android:id="@+id/imageView10"
+        android:layout_width="55dp"
+        android:layout_height="52dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@color/colorLightBlue"
+        tools:ignore="ContentDescription,RtlHardcoded" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/avatar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginEnd="8dp"
-        tools:ignore="ContentDescription" />
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="1dp"
+        android:src="@mipmap/auth_round"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.Guideline
         android:layout_width="wrap_content"
@@ -108,8 +101,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/button5"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@mipmap/ic_psycho_dis"
-            tools:ignore="ContentDescription" />
+            app:srcCompat="@drawable/psycho"
+            android:tint="@color/colorLightGray"
+            tools:ignore="ContentDescription,VectorDrawableCompat" />
 
         <ImageView
             android:id="@+id/imageView7"
@@ -120,8 +114,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/imageView6"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@mipmap/ic_stat"
-            tools:ignore="ContentDescription" />
+            android:tint="@color/colorDarkBlue"
+            app:srcCompat="@drawable/statistics"
+            tools:ignore="ContentDescription,VectorDrawableCompat" />
 
         <ImageView
             android:id="@+id/imageView8"
@@ -129,12 +124,13 @@
             android:layout_height="120dp"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
+            android:tint="@color/colorDarkBlue"
             android:rotation="30"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/imageView7"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@mipmap/ic_setting"
-            tools:ignore="ContentDescription" />
+            app:srcCompat="@drawable/settings"
+            tools:ignore="ContentDescription,VectorDrawableCompat" />
 
         <ImageView
             android:id="@+id/imageView9"
@@ -145,8 +141,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.497"
-            app:srcCompat="@mipmap/ic_map"
-            tools:ignore="ContentDescription" />
+            app:srcCompat="@drawable/map"
+            android:tint="@color/colorDarkBlue"
+            tools:ignore="ContentDescription,VectorDrawableCompat" />
 
         <TextView
             android:id="@+id/textView5"
@@ -268,25 +265,6 @@
             app:layout_constraintLeft_toLeftOf="@+id/imageView7"
             app:layout_constraintRight_toRightOf="@+id/imageView7" />
     </android.support.constraint.ConstraintLayout>
-
-    <ProgressBar
-        android:id="@+id/progressBar3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:theme="@style/CircularProgress"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.071"
-        app:layout_constraintVertical_bias="0.918"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" />
 
     <android.support.constraint.Guideline
         android:layout_width="wrap_content"

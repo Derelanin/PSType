@@ -31,7 +31,7 @@
             tools:ignore="ContentDescription" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profile_image"
+            android:id="@+id/avatar"
             android:layout_width="144dp"
             android:layout_height="144dp"
             android:layout_marginEnd="8dp"
@@ -58,7 +58,7 @@
             android:textSize="26sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+            app:layout_constraintTop_toBottomOf="@+id/avatar" />
 
         <TextView
             android:id="@+id/textView7"

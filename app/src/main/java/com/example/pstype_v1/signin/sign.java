@@ -118,12 +118,12 @@ public class sign extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (eyeAv[0]) {
-                    eye.setImageResource(R.drawable.ic_visibility_black_24dp);
+                    eye.setImageResource(R.drawable.visibility);
                     etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
                     eyeAv[0] =false;
                 }
                 else {
-                    eye.setImageResource(R.drawable.ic_visibility_off_black_24dp);
+                    eye.setImageResource(R.drawable.visibility_off);
                     etPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
                     eyeAv[0]=true;
                 }

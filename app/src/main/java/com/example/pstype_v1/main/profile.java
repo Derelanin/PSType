@@ -65,9 +65,9 @@ public class profile extends AppCompatActivity {
                         else{
                             sex.setText("Пол: женский");
                         }
-                        CircleImageView photo = (CircleImageView)findViewById(R.id.profile_image);
+                        CircleImageView photo = (CircleImageView)findViewById(R.id.avatar);
                         if ((!tokenSaver.getURL(profile.this).equals("URL"))&&(!tokenSaver.getURL(profile.this).equals(""))) {
-                            new DownloadImageFromInternet((CircleImageView) findViewById(R.id.profile_image))
+                            new DownloadImageFromInternet((CircleImageView) findViewById(R.id.avatar))
                                     .execute(tokenSaver.getURL(profile.this));
                         }
 

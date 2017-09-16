@@ -88,9 +88,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end|center"
             android:padding="@dimen/activity_horizontal_margin"
-            android:src="@drawable/ic_keyboard_arrow_right_white_48dp"
+            android:src="@drawable/arrow_right"
             android:tint="@android:color/white"
-            tools:ignore="ContentDescription" />
+            app:srcCompat="@drawable/arrow_right"
+            tools:ignore="ContentDescription,VectorDrawableCompat" />
 
 
     </FrameLayout>

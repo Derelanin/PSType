@@ -3,7 +3,6 @@ package com.example.pstype_v1.main;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,7 +18,6 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -37,14 +35,11 @@ import org.json.JSONObject;
 
 import java.io.InputStream;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class general extends AppCompatActivity {
-
-    SharedPreferences sp;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
         String flag = tokenSaver.getToken(general.this);
         if (flag.isEmpty())
         {
@@ -59,15 +54,11 @@ public class general extends AppCompatActivity {
             general.this.startActivity(intent);
         }
 
-
-
         requestMultiplePermissions();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general);
         //Button exit = (Button)findViewById(R.id.button3);
-        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar3);
         ImageView exit = (ImageView) findViewById(R.id.exit);
-        ImageView ram = (ImageView) findViewById(R.id.round);
         Button map = (Button)findViewById(R.id.button5);
         Button set = (Button)findViewById(R.id.settings);
         Button stat = (Button)findViewById(R.id.stat);
@@ -108,13 +99,11 @@ public class general extends AppCompatActivity {
         queue.add(info);
 
         bar.setLogo(R.mipmap.ic_launcher);
-        ram.setVisibility(ImageView.INVISIBLE);
         if ((!tokenSaver.getURL(general.this).equals("URL"))&&(!tokenSaver.getURL(general.this).equals(""))) {
-            new DownloadImageFromInternet((ImageView) findViewById(R.id.avatar))
+            new DownloadImageFromInternet((CircleImageView) findViewById(R.id.avatar))
                     .execute(tokenSaver.getURL(general.this));
-            ImageView ava = (ImageView) findViewById(R.id.avatar);
+            CircleImageView ava = (CircleImageView) findViewById(R.id.avatar);
             ava.setVisibility(ImageView.VISIBLE);
-            ram.setVisibility(ImageView.VISIBLE);
         }
 
         bar.setOnClickListener(new View.OnClickListener() {
@@ -156,10 +145,8 @@ public class general extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                    progressBar.setVisibility(ProgressBar.VISIBLE);
                     Intent intent = new Intent(general.this, Maps.class);
                     general.this.startActivity(intent);
-                    progressBar.setVisibility(ProgressBar.INVISIBLE);
             }
         });
 

@@ -19,7 +19,7 @@
         tools:ignore="ContentDescription" />
 
     <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/profile_image"
+        android:id="@+id/avatar"
         android:layout_width="144dp"
         android:layout_height="144dp"
         android:src="@mipmap/auth_round"
@@ -41,9 +41,9 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/profile_image"
-        app:layout_constraintLeft_toLeftOf="@+id/profile_image"
-        app:layout_constraintRight_toRightOf="@+id/profile_image" />
+        app:layout_constraintBottom_toBottomOf="@+id/avatar"
+        app:layout_constraintLeft_toLeftOf="@+id/avatar"
+        app:layout_constraintRight_toRightOf="@+id/avatar" />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="0dp"
@@ -55,7 +55,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintVertical_bias="0.167"
         android:id="@+id/textInputLayout4"
-        app:layout_constraintTop_toBottomOf="@+id/profile_image"
+        app:layout_constraintTop_toBottomOf="@+id/avatar"
         app:layout_constraintHorizontal_bias="0.0">
 
         <EditText

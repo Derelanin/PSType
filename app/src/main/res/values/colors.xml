@@ -10,6 +10,7 @@
     <color name="colorLightBlue">#006c7d</color>
     <color name="colorDarkBlue">#043e6d</color>
     <color name="colorGray">#737373</color>
+    <color name="colorLightGray">#c0c0c0</color>
 
     <color name="indicator_unselected">#4D000000</color>
     <color name="black_trans80">#14000000</color>
