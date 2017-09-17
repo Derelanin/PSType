@@ -100,7 +100,6 @@ public class MyPreferenceActivity extends PreferenceActivity {
                 .create()
                 .show();
     }
-
     public void not (){
         SharedPreferences sp;
         sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -137,6 +136,4 @@ public class MyPreferenceActivity extends PreferenceActivity {
             notificationManager.cancel(NOTIFY_ID);
         }
     }
-
-
 }

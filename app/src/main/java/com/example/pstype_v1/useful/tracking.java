@@ -62,7 +62,7 @@ public class tracking extends Service {
             return START_STICKY;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                1000 * 10, 10, locationListener);
+                2000, 10, locationListener);
         locationManager.requestLocationUpdates(
                 LocationManager.NETWORK_PROVIDER, 1000 * 10, 10,
                 locationListener);

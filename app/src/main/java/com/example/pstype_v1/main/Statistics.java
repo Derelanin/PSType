@@ -14,6 +14,7 @@ import android.widget.ListView;
 import com.example.pstype_v1.R;
 import com.example.pstype_v1.data.Contract.track;
 import com.example.pstype_v1.data.DbHelper;
+import com.example.pstype_v1.useful.tracking;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -31,7 +32,12 @@ public class Statistics extends AppCompatActivity {
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(R.string.debug);
-
+        String num = "["+count()+"]";
+        actionBar.setTitle("Отладка "+num);
+        if (count()>510)
+        {
+           stopService(new Intent(this, tracking.class));
+        }
         getInfo();
     }
 
@@ -76,6 +82,25 @@ public class Statistics extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, list);
         data.setAdapter(adapter);
+    }
+
+    int count (){
+        int count=0;
+        DbHelper mDbHelper= new DbHelper(this);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Cursor cursor = db.query(
+                track.TABLE_NAME,
+                new String[] {"COUNT("+ track.COLUMN_DATE +") AS Count"},
+                null, null, null, null, null);
+        try {
+            int idCount = cursor.getColumnIndex("Count");
+            while (cursor.moveToNext()) {
+                count = cursor.getInt(idCount);
+            }
+        } finally {
+            cursor.close();
+        }
+        return count;
     }
 
     @Override
