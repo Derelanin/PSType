@@ -20,7 +20,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.R;
-import com.example.pstype_v1.signin.sign;
 import com.example.pstype_v1.useful.Request;
 import com.example.pstype_v1.useful.tokenSaver;
 
@@ -45,43 +44,14 @@ public class profile_change extends AppCompatActivity {
         final EditText age = (EditText)findViewById(R.id.age);
         final Boolean[] sex = {true};
 
-        Response.Listener<String> responseListener = new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jsonResponse = new JSONObject(response);
-                    String success = jsonResponse.getString("status");
-
-                    if (success.equals("ok")) {
-                        age.setText(jsonResponse.getString("age"));
-                        if (jsonResponse.getString("sex").equals("true")){
-                            male.setChecked(true);
-                        }
-                        else{
-                            female.setChecked(true);
-                        }
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        Response.ErrorListener errorListener= new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                tokenSaver.clearToken(profile_change.this);
-                Intent intent = new Intent(profile_change.this, sign.class);
-                profile_change.this.startActivity(intent);
-                finish();
-            }
-        };
-        String[] headers = {"token"};
-        String[] values = {tokenSaver.getToken(profile_change.this)};
-        String url="http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/change/data";
-        Request info = new Request(headers,values,url,responseListener,errorListener);
-        RequestQueue queue = Volley.newRequestQueue(profile_change.this);
-        queue.add(info);
+        Intent intent = getIntent();
+        age.setText(intent.getStringExtra("age"));
+        if (intent.getStringExtra("sex").equals("true")){
+            male.setChecked(true);
+        }
+        else{
+            female.setChecked(true);
+        }
 
         Button cancel = (Button)findViewById(R.id.but_canc);
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -147,8 +117,7 @@ public class profile_change extends AppCompatActivity {
                 };
                 String[] headers = {"token","age", "sex"};
                 String[] values = {tokenSaver.getToken(profile_change.this), age.getText().toString(), String.valueOf(sex[0])};
-                String url="http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/change";
-                Request inf = new Request(headers,values,url,responseListener,errorListener);
+                Request inf = new Request(headers,values,getString(R.string.url_change),responseListener,errorListener);
                 RequestQueue queue = Volley.newRequestQueue(profile_change.this);
                 queue.add(inf);
             }

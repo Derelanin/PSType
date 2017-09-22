@@ -1,4 +1,4 @@
-package com.example.pstype_v1.signin;
+package com.example.pstype_v1.main;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,8 +20,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.R;
-import com.example.pstype_v1.main.general;
-import com.example.pstype_v1.signup.register;
 import com.example.pstype_v1.useful.Functions;
 import com.example.pstype_v1.useful.Request;
 import com.example.pstype_v1.useful.tokenSaver;
@@ -223,8 +221,7 @@ public class sign extends AppCompatActivity {
                 progressBar.setVisibility(ProgressBar.VISIBLE);
                 String[] headers = {"username","password"};
                 String[] values = {username,password};
-                String url="http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/signin";
-                Request signReq = new Request(headers,values,url,responseListener,errorListener);
+                Request signReq = new Request(headers,values,getString(R.string.url_signin),responseListener,errorListener);
                 RequestQueue queue = Volley.newRequestQueue(sign.this);
                 queue.add(signReq);
             }
@@ -361,8 +358,7 @@ public class sign extends AppCompatActivity {
 
                 String[] headers = {"usernamevk","idvk","sex", "age"};
                 String[] values = {username, id, String.valueOf(sex), String.valueOf(age)};
-                String url="http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/vksignup";
-                Request VKregReq = new Request(headers,values,url,responseListener2,errorListener2);
+                Request VKregReq = new Request(headers,values,getString(R.string.url_vksignup),responseListener2,errorListener2);
                 RequestQueue queue2 = Volley.newRequestQueue(sign.this);
                 queue2.add(VKregReq);
 
@@ -404,8 +400,7 @@ public class sign extends AppCompatActivity {
 
                 String[] headers2 = {"idvk"};
                 String[] values2 = {id};
-                String url2="http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/vksignin";
-                Request vksignReq = new Request(headers2,values2,url2,responseListener3,errorListener3);
+                Request vksignReq = new Request(headers2,values2,getString(R.string.url_vksignin),responseListener3,errorListener3);
                 RequestQueue queue3 = Volley.newRequestQueue(sign.this);
                 queue3.add(vksignReq);
             }

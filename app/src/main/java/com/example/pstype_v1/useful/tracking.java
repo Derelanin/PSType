@@ -17,6 +17,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.example.pstype_v1.R;
 import com.example.pstype_v1.data.Contract.track;
 import com.example.pstype_v1.data.DbHelper;
 
@@ -121,8 +122,7 @@ public class tracking extends Service {
             };
             String[] headers = {"token", "longitude", "latitude", "speed"};
             String[] values = {tokenSaver.getToken(tracking.this), String.valueOf(location.getLongitude()), String.valueOf(location.getLatitude()), String.valueOf((location.getSpeed()*3600.0)/1000.0)};
-            String url="http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/map/pos";
-            Request maps = new Request(headers,values,url,responseListener,errorListener);
+            Request maps = new Request(headers,values,getString(R.string.url_pos),responseListener,errorListener);
             RequestQueue queue = Volley.newRequestQueue(tracking.this);
             queue.add(maps);
         }

@@ -25,7 +25,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.R;
-import com.example.pstype_v1.signin.sign;
 import com.example.pstype_v1.useful.MyPreferenceActivity;
 import com.example.pstype_v1.useful.Request;
 import com.example.pstype_v1.useful.tokenSaver;
@@ -85,16 +84,23 @@ public class general extends AppCompatActivity {
         Response.ErrorListener errorListener= new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                tokenSaver.clearToken(general.this);
-                Intent intent = new Intent(general.this, sign.class);
-                general.this.startActivity(intent);
-                finish();
+//                tokenSaver.clearToken(general.this);
+//                Intent intent = new Intent(general.this, sign.class);
+//                general.this.startActivity(intent);
+//                finish();
+//                NetworkResponse response = error.networkResponse;
+//                String json = new String(response.data);
+//                json = trimMessage(json, "message", general.this);
+//                AlertDialog.Builder builder = new AlertDialog.Builder(general.this);
+//                builder.setMessage(json+"")
+//                        .setNegativeButton("Повторить", null)
+//                        .create()
+//                        .show();
             }
         };
         String[] headers = {"token"};
         String[] values = {tokenSaver.getToken(general.this)};
-        String url="http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/change/data";
-        Request info = new Request(headers,values,url,responseListener,errorListener);
+        Request info = new Request(headers,values,getString(R.string.url_data),responseListener,errorListener);
         RequestQueue queue = Volley.newRequestQueue(general.this);
         queue.add(info);
 

@@ -19,7 +19,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.R;
-import com.example.pstype_v1.signin.sign;
 import com.example.pstype_v1.useful.Request;
 import com.example.pstype_v1.useful.tokenSaver;
 
@@ -32,14 +31,16 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class profile extends AppCompatActivity {
 
+    String Age, Sex;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        ActionBar actionBar = getSupportActionBar();
+        final ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Профиль");
+        actionBar.hide();
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar4);
         final ConstraintLayout layout = (ConstraintLayout)findViewById(R.id.all);
 
@@ -58,13 +59,16 @@ public class profile extends AppCompatActivity {
                         TextView age = (TextView)findViewById(R.id.textView7);
                         TextView sex = (TextView)findViewById(R.id.textView8);
                         String buf="Возраст: "+jsonResponse.getString("age");
+                        Age=jsonResponse.getString("age");
                         age.setText(buf);
+                        Sex=jsonResponse.getString("sex");
                         if (jsonResponse.getString("sex").equals("true")){
                             sex.setText("Пол: мужской");
                         }
                         else{
                             sex.setText("Пол: женский");
                         }
+                        actionBar.show();
                         CircleImageView photo = (CircleImageView)findViewById(R.id.avatar);
                         if ((!tokenSaver.getURL(profile.this).equals("URL"))&&(!tokenSaver.getURL(profile.this).equals(""))) {
                             new DownloadImageFromInternet((CircleImageView) findViewById(R.id.avatar))
@@ -94,8 +98,7 @@ public class profile extends AppCompatActivity {
         };
         String[] headers = {"token"};
         String[] values = {tokenSaver.getToken(profile.this)};
-        String url="http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/change/data";
-        Request info = new Request(headers,values,url,responseListener,errorListener);
+        Request info = new Request(headers,values,getString(R.string.url_data),responseListener,errorListener);
         RequestQueue queue = Volley.newRequestQueue(profile.this);
         queue.add(info);
     }
@@ -142,7 +145,11 @@ public class profile extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.item2:
-                startActivity(new Intent(this, profile_change.class));
+                //startActivity(new Intent(this, profile_change.class));
+                Intent intent = new Intent(this, profile_change.class);
+                intent.putExtra("age", Age);
+                intent.putExtra("sex", Sex);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

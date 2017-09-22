@@ -52,4 +52,13 @@
     <string name="description">PSType - приложение для определния психотипа водителя. </string>
     <string name="desc1">PSType - приложение для определения психотипа водителя.</string>
     <string name="desc2">PSType представляет полную статистику о поведении на дороге, анализирует полученные данные и выдаёт результат.</string>
+
+    <!--url-->
+    <string name="url_data">http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/change/data</string>
+    <string name="url_change">http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/change</string>
+    <string name="url_signup">http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/signup</string>
+    <string name="url_signin">http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/signin</string>
+    <string name="url_vksignup">http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/vksignup</string>
+    <string name="url_vksignin">http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/vksignin</string>
+    <string name="url_pos">http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/map/pos</string>
 </resources>

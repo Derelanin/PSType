@@ -1,6 +1,7 @@
-package com.example.pstype_v1.signup;
+package com.example.pstype_v1.main;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -18,7 +19,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.R;
-import com.example.pstype_v1.signin.sign;
 import com.example.pstype_v1.useful.Functions;
 import com.example.pstype_v1.useful.Request;
 
@@ -111,13 +111,13 @@ public class register extends AppCompatActivity {
                             switch(response.statusCode){
                                 case 400:
                                     json = new String(response.data);
-                                    json = trimMessage(json, "message");
+                                    json = trimMessage(json, "message", register.this);
                                     //displayMessage(json);
                                     displayMessage(json+"");
                                     break;
                                 case 503:
                                     json = new String(response.data);
-                                    json = trimMessage(json, "message");
+                                    json = trimMessage(json, "message", register.this);
                                     displayMessage("Database error");
                                     break;
                             }
@@ -131,17 +131,16 @@ public class register extends AppCompatActivity {
                 progressBar.setVisibility(ProgressBar.VISIBLE);
                 String[] headers = {"username", "password", "age", "sex"};
                 String[] values = {username, password, String.valueOf(age), String .valueOf(sex[0])};
-                String url="http://pstype-pstype.1d35.starter-us-east-1.openshiftapps.com/api/v1/signup";
-                Request regReq = new Request(headers,values,url,responseListener,errorListener);
+                Request regReq = new Request(headers,values,getString(R.string.url_signup),responseListener,errorListener);
                 RequestQueue queue = Volley.newRequestQueue(register.this);
                 queue.add(regReq);
             }
         });
 
     }
-    public String trimMessage(String json, String key){
+    public static String trimMessage(String json, String key, Context c){
         String trimmedString = null;
-        Functions fun=new Functions(this);
+        Functions fun=new Functions(c);
         try{
             JSONObject obj = new JSONObject(json);
             trimmedString = obj.getString(key);

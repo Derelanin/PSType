@@ -16,8 +16,8 @@
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name="com.vk.sdk.VKOpenAuthActivity" />
         <activity android:name=".main.general" />
-        <activity android:name=".signup.register" />
-        <activity android:name=".signin.sign" />
+        <activity android:name=".main.register" />
+        <activity android:name=".main.sign" />
         <activity android:name=".main.Maps" />
         <activity
             android:name=".useful.Splash"

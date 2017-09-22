@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:clickable="true"
     android:focusableInTouchMode="true"
-    tools:context="com.example.pstype_v1.signin.sign">
+    tools:context="com.example.pstype_v1.main.sign">
 
     <Button
         android:id="@+id/button"
