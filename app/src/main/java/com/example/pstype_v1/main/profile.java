@@ -3,12 +3,11 @@ package com.example.pstype_v1.main;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
@@ -25,7 +24,7 @@ import com.example.pstype_v1.useful.tokenSaver;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStream;
+import java.io.File;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -70,9 +69,12 @@ public class profile extends AppCompatActivity {
                         }
                         actionBar.show();
                         CircleImageView photo = (CircleImageView)findViewById(R.id.avatar);
-                        if ((!tokenSaver.getURL(profile.this).equals("URL"))&&(!tokenSaver.getURL(profile.this).equals(""))) {
-                            new DownloadImageFromInternet((CircleImageView) findViewById(R.id.avatar))
-                                    .execute(tokenSaver.getURL(profile.this));
+                        if (tokenSaver.getURL(profile.this).equals("VK")) {
+                            File file = new File(Environment.
+                                    getExternalStorageDirectory()+ File.separator,"myBitmap.jpg");
+                            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                            CircleImageView ava = (CircleImageView) findViewById(R.id.avatar);
+                            ava.setImageBitmap(bitmap);
                         }
 
                         TextView ps = (TextView)findViewById(R.id.textView9);
@@ -101,34 +103,6 @@ public class profile extends AppCompatActivity {
         Request info = new Request(headers,values,getString(R.string.url_data),responseListener,errorListener);
         RequestQueue queue = Volley.newRequestQueue(profile.this);
         queue.add(info);
-    }
-
-
-    private class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {
-        CircleImageView imageView;
-
-        public DownloadImageFromInternet(CircleImageView imageView) {
-            this.imageView = imageView;
-            //Toast.makeText(getApplicationContext(), "Загрузка изображения профиля", Toast.LENGTH_SHORT).show();
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String imageURL = urls[0];
-            Bitmap bimage = null;
-            try {
-                InputStream in = new java.net.URL(imageURL).openStream();
-                bimage = BitmapFactory.decodeStream(in);
-
-            } catch (Exception e) {
-                Log.e("Error Message", e.getMessage());
-                e.printStackTrace();
-            }
-            return bimage;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            imageView.setImageBitmap(result);
-        }
     }
 
     @Override

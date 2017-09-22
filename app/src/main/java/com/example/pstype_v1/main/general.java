@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -32,6 +33,9 @@ import com.example.pstype_v1.useful.tokenSaver;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -105,11 +109,22 @@ public class general extends AppCompatActivity {
         queue.add(info);
 
         bar.setLogo(R.mipmap.ic_launcher);
-        if ((!tokenSaver.getURL(general.this).equals("URL"))&&(!tokenSaver.getURL(general.this).equals(""))) {
+
+
+        if ((!tokenSaver.getURL(general.this).equals("URL"))&&(!tokenSaver.getURL(general.this).equals(""))&&(!tokenSaver.getURL(general.this).equals("VK"))) {
             new DownloadImageFromInternet((CircleImageView) findViewById(R.id.avatar))
                     .execute(tokenSaver.getURL(general.this));
             CircleImageView ava = (CircleImageView) findViewById(R.id.avatar);
             ava.setVisibility(ImageView.VISIBLE);
+            tokenSaver.setURL(general.this, "VK");
+        }
+        else if (tokenSaver.getURL(general.this).equals("VK"))
+        {
+            File file = new File(Environment.
+                    getExternalStorageDirectory(),"myBitmap.jpg");
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            CircleImageView ava = (CircleImageView) findViewById(R.id.avatar);
+            ava.setImageBitmap(bitmap);
         }
 
         bar.setOnClickListener(new View.OnClickListener() {
@@ -229,6 +244,13 @@ public class general extends AppCompatActivity {
                 InputStream in = new java.net.URL(imageURL).openStream();
                 bimage = BitmapFactory.decodeStream(in);
 
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                bimage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+                File file = new File(Environment.getExternalStorageDirectory()+ File.separator + "myBitmap.jpg");
+                file.createNewFile();
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                fileOutputStream.write(bytes.toByteArray());
+                fileOutputStream.close();
             } catch (Exception e) {
                 Log.e("Error Message", e.getMessage());
                 e.printStackTrace();

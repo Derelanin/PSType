@@ -372,6 +372,8 @@ public class sign extends AppCompatActivity {
                                 tokenSaver.setName(sign.this, username);
                                 tokenSaver.setURL(sign.this, photo);
                                 tokenSaver.setToken(sign.this,jsonResponse.getString("token"));
+
+
                                 Intent genIntent = new Intent(sign.this, general.class);
                                 sign.this.startActivity(genIntent);
                                 findViewById(R.id.progressBar).setVisibility(ProgressBar.INVISIBLE);

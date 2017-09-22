@@ -1,7 +1,6 @@
 package com.example.pstype_v1.main;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -111,13 +110,13 @@ public class register extends AppCompatActivity {
                             switch(response.statusCode){
                                 case 400:
                                     json = new String(response.data);
-                                    json = trimMessage(json, "message", register.this);
+                                    json = trimMessage(json, "message");
                                     //displayMessage(json);
                                     displayMessage(json+"");
                                     break;
                                 case 503:
                                     json = new String(response.data);
-                                    json = trimMessage(json, "message", register.this);
+                                    json = trimMessage(json, "message");
                                     displayMessage("Database error");
                                     break;
                             }
@@ -138,13 +137,12 @@ public class register extends AppCompatActivity {
         });
 
     }
-    public static String trimMessage(String json, String key, Context c){
-        String trimmedString = null;
-        Functions fun=new Functions(c);
+    public static String trimMessage(String json, String key){
+        String trimmedString;
         try{
             JSONObject obj = new JSONObject(json);
             trimmedString = obj.getString(key);
-            trimmedString=fun.translate(trimmedString);
+            trimmedString=Functions.translate(trimmedString);
         } catch(JSONException e){
             e.printStackTrace();
             return null;
