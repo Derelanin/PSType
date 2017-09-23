@@ -25,6 +25,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.Calendar;
+import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -57,9 +59,21 @@ public class profile extends AppCompatActivity {
                         name.setText(jsonResponse.getString("username"));
                         TextView age = (TextView)findViewById(R.id.textView7);
                         TextView sex = (TextView)findViewById(R.id.textView8);
-                        String buf="Возраст: "+jsonResponse.getString("age");
+
                         Age=jsonResponse.getString("age");
+                        try{
+                        Age=AgeProfile(Age)+"";
+                        }
+                        catch(Exception e){
+
+                        }
+                        finally {
+
+                        }
+                        String buf="Возраст: "+Age;
                         age.setText(buf);
+
+
                         Sex=jsonResponse.getString("sex");
                         if (jsonResponse.getString("sex").equals("true")){
                             sex.setText("Пол: мужской");
@@ -128,5 +142,25 @@ public class profile extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    int AgeProfile (String date){
+        int age;
+        String[] bdata = date.split(Pattern.quote("-"));
+        Calendar calendar = Calendar.getInstance();
+        int byear=Integer.parseInt(bdata[2]);
+        int year=calendar.get(Calendar.YEAR);
+        age=year-byear;
+        int month= calendar.get(Calendar.MONTH);
+        int bmonth=Integer.parseInt(bdata[1]);
+        if (bmonth>month)
+            age--;
+        if (bmonth==month){
+            int bday=Integer.parseInt(bdata[0]);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            if (bday>day)
+                age--;
+        }
+        return age;
     }
 }

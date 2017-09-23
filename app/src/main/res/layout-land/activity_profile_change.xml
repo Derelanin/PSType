@@ -9,11 +9,7 @@
     <ImageView
         android:id="@+id/imageView5"
         android:layout_width="103dp"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -30,13 +26,13 @@
         android:src="@mipmap/auth_round"
         app:layout_constraintLeft_toRightOf="@+id/imageView5"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="0dp"
         app:layout_constraintRight_toRightOf="@+id/imageView5"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="8dp"
-        tools:ignore="RtlHardcoded" />
+        tools:ignore="RtlHardcoded"
+        android:layout_marginStart="8dp" />
 
     <ProgressBar
         android:id="@+id/progressBar4"
@@ -49,7 +45,9 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/avatar"
         app:layout_constraintLeft_toLeftOf="@+id/avatar"
-        app:layout_constraintRight_toRightOf="@+id/avatar" />
+        app:layout_constraintRight_toRightOf="@+id/avatar"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="0dp"
@@ -60,44 +58,59 @@
         android:id="@+id/textInputLayout4"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintTop_toTopOf="@+id/guideline13"
-        android:layout_marginLeft="0dp"
         tools:ignore="RtlHardcoded">
 
-        <EditText
-            android:id="@+id/age"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="@string/age"
-            android:inputType="textPersonName"
-            android:selectAllOnFocus="false"
-            android:theme="@style/MyEditText"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.454" />
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <EditText
+                android:id="@+id/age"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="@string/age"
+                android:inputType="textPersonName"
+                android:selectAllOnFocus="false"
+                android:theme="@style/MyEditText"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.454" />
+
+            <Button
+                android:id="@+id/date"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/pr_age"
+                app:layout_constraintBottom_toBottomOf="@+id/age"
+                app:layout_constraintLeft_toLeftOf="@+id/age"
+                app:layout_constraintRight_toRightOf="@+id/age"
+                app:layout_constraintTop_toTopOf="@+id/age"
+                app:layout_constraintVertical_bias="0.362" />
+        </android.support.constraint.ConstraintLayout>
     </android.support.design.widget.TextInputLayout>
 
     <RadioGroup
         android:id="@+id/RadioGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
         android:orientation="horizontal"
         app:layout_constraintLeft_toLeftOf="@+id/guideline12"
-        tools:layout_constraintRight_creator="1"
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout4"
-        android:layout_marginLeft="0dp"
         tools:ignore="RtlHardcoded">
 
         <RadioButton
@@ -135,6 +148,24 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.668" />
+
+        <RadioButton
+            android:id="@+id/radioButton3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:text="@string/not"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.18"
+            app:layout_constraintLeft_toRightOf="@+id/radioButton2"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.668" />
     </RadioGroup>
 
     <Button
@@ -168,12 +199,16 @@
         android:layout_height="wrap_content"
         android:id="@+id/guideline12"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.35" />
+        app:layout_constraintGuide_percent="0.35"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="207dp" />
 
     <android.support.constraint.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/guideline13"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.3" />
+        app:layout_constraintGuide_percent="0.3"
+        tools:layout_editor_absoluteY="94dp"
+        tools:layout_editor_absoluteX="0dp" />
 </android.support.constraint.ConstraintLayout>

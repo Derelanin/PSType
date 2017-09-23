@@ -312,20 +312,6 @@ public class sign extends AppCompatActivity {
                     }
                 }
 
-
-                Boolean sex = true;
-                switch(sex1){
-                        case 0:
-                            sex=true;
-                            break;
-                        case 1:
-                            sex=false;
-                            break;
-                        case 2:
-                            sex=true;
-                            break;
-                    }
-
                 Response.Listener<String> responseListener2 = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -356,8 +342,9 @@ public class sign extends AppCompatActivity {
                     }
                 };
 
+                bdate.replace(Pattern.quote("."), "-");
                 String[] headers = {"usernamevk","idvk","sex", "age"};
-                String[] values = {username, id, String.valueOf(sex), String.valueOf(age)};
+                String[] values = {username, id, String.valueOf(sex1), bdate};
                 Request VKregReq = new Request(headers,values,getString(R.string.url_vksignup),responseListener2,errorListener2);
                 RequestQueue queue2 = Volley.newRequestQueue(sign.this);
                 queue2.add(VKregReq);

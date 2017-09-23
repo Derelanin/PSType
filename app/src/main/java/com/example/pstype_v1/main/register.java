@@ -1,6 +1,8 @@
 package com.example.pstype_v1.main;
 
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -8,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
@@ -24,8 +27,17 @@ import com.example.pstype_v1.useful.Request;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class register extends AppCompatActivity {
+import java.util.Calendar;
+import java.util.regex.Pattern;
 
+public class register extends AppCompatActivity {
+    int dialog_date=1;
+    Calendar calendar = Calendar.getInstance();
+    int myYear = calendar.get(Calendar.YEAR);
+    int myMonth = calendar.get(Calendar.MONTH);
+    int myDay = calendar.get(Calendar.DAY_OF_MONTH);
+    String date = myDay+"-"+(myMonth+1)+"-"+myYear;
+    EditText datePick;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +48,9 @@ public class register extends AppCompatActivity {
         final EditText etusername=(EditText)findViewById(R.id.editText3);
         final EditText etpassword=(EditText)findViewById(R.id.editText4);
         final EditText etpassword2=(EditText)findViewById(R.id.editText7);
-        final EditText etage=(EditText)findViewById(R.id.editText5);
         final Button buttonReg = (Button) findViewById(R.id.button4);
         final RadioGroup buttonSex = (RadioGroup)findViewById(R.id.RadioGroup);
-        final Boolean[] sex = {true};
+        final int[] sex = {0};
 
         etpassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -55,15 +66,23 @@ public class register extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 switch (checkedId){
                     case R.id.radioButton:
-                        sex[0]=true;
+                        sex[0] =1;
                         break;
                     case R.id.radioButton2:
-                        sex[0]=false;
+                        sex[0] =2;
                         break;
                     default:
-                        sex[0] =true;
+                        sex[0] =0;
                         break;
                 }
+            }
+        });
+        datePick = (EditText)findViewById(R.id.editText5);
+        Button bdate = (Button)findViewById(R.id.date);
+        bdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(dialog_date);
             }
         });
 
@@ -83,7 +102,25 @@ public class register extends AppCompatActivity {
                             .show();
                     return;
                 }
-                String age = etage.getText().toString();
+                String age = datePick.getText().toString();
+                if (Age()<14) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(register.this);
+                    builder.setMessage("Возраст должен быть больше либо равен 14")
+                            .setNegativeButton("Повторить", null)
+                            .create()
+                            .show();
+                    return;
+                }
+                if (Age()>110) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(register.this);
+                    builder.setMessage("Возраст должен быть меньше либо равен 110")
+                            .setNegativeButton("Повторить", null)
+                            .create()
+                            .show();
+                    return;
+                }
+
+
                 Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -129,7 +166,7 @@ public class register extends AppCompatActivity {
                 };
                 progressBar.setVisibility(ProgressBar.VISIBLE);
                 String[] headers = {"username", "password", "age", "sex"};
-                String[] values = {username, password, String.valueOf(age), String .valueOf(sex[0])};
+                String[] values = {username, password, age, String.valueOf(sex[0])};
                 Request regReq = new Request(headers,values,getString(R.string.url_signup),responseListener,errorListener);
                 RequestQueue queue = Volley.newRequestQueue(register.this);
                 queue.add(regReq);
@@ -155,5 +192,50 @@ public class register extends AppCompatActivity {
                 .setNegativeButton("Повторить", null)
                 .create()
                 .show();
+    }
+
+
+    protected Dialog onCreateDialog(int id) {
+        if (id == dialog_date) {
+            DatePickerDialog tpd = new DatePickerDialog(this, myCallBack, myYear, myMonth, myDay);
+            return tpd;
+        }
+        return super.onCreateDialog(id);
+    }
+
+    DatePickerDialog.OnDateSetListener myCallBack = new DatePickerDialog.OnDateSetListener() {
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            myYear = year;
+            myMonth = monthOfYear+1;
+            myDay = dayOfMonth;
+            String day = myDay+"";
+            String month = myMonth+"";
+            if (day.length()==1)
+                day="0"+day;
+            if(month.length()==1)
+                month="0"+month;
+            date=day+"-"+month+"-"+myYear;
+            datePick.setText(date);
+        }
+    };
+
+    int Age (){
+        int age;
+         String[] bdata = date.split(Pattern.quote("-"));
+            Calendar calendar = Calendar.getInstance();
+            int byear=Integer.parseInt(bdata[2]);
+            int year=calendar.get(Calendar.YEAR);
+            age=year-byear;
+            int month= calendar.get(Calendar.MONTH);
+            int bmonth=Integer.parseInt(bdata[1]);
+            if (bmonth>month)
+                age--;
+            if (bmonth==month){
+                int bday=Integer.parseInt(bdata[0]);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                if (bday>day)
+                    age--;
+            }
+            return age;
     }
 }
