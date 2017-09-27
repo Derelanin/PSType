@@ -24,6 +24,15 @@
         <Preference android:title="Очистить записи"
             android:key="@string/del">
            </Preference>
+        <Preference android:title="Открыть текстовый лог"
+            android:key="@string/log_read">
+        </Preference>
+        <Preference android:title="Копировать текстовый лог"
+            android:key="@string/log_copy">
+        </Preference>
+        <Preference android:title="Очистить тектовый лог"
+            android:key="@string/log_clear">
+        </Preference>
     </PreferenceCategory>
 
     <PreferenceCategory

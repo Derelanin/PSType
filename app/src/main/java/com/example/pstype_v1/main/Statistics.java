@@ -23,12 +23,13 @@ import java.util.List;
 public class Statistics extends AppCompatActivity {
 
     String pattern = "##0.0000";
+    ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
-        ActionBar actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(R.string.debug);
@@ -117,8 +118,11 @@ public class Statistics extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.update:
-                finish();
-                this.startActivity(new Intent(this, this.getClass()));
+//                finish();
+//                this.startActivity(new Intent(this, this.getClass()));
+                getInfo();
+                String num = "["+count()+"]";
+                actionBar.setTitle("Отладка "+num);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

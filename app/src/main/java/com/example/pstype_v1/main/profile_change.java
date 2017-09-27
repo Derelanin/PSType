@@ -40,6 +40,7 @@ public class profile_change extends AppCompatActivity {
     int myMonth = calendar.get(Calendar.MONTH);
     int myDay = calendar.get(Calendar.DAY_OF_MONTH);
     String date = myDay+"-"+(myMonth+1)+"-"+myYear;
+    String americanDate;
     EditText datePick;
 
     @Override
@@ -60,6 +61,17 @@ public class profile_change extends AppCompatActivity {
         final int[] sex = {0};
 
         datePick = (EditText)findViewById(R.id.age);
+        Intent intent = getIntent();
+        datePick.setText(intent.getStringExtra("age"));
+        date = intent.getStringExtra("age");
+
+        String[] bdata = (intent.getStringExtra("age")).split(Pattern.quote("-"));
+        Calendar calendar = Calendar.getInstance();
+        myDay=Integer.parseInt(bdata[0]);
+        myMonth=Integer.parseInt(bdata[1])-1;
+        myYear=Integer.parseInt(bdata[2]);
+        americanDate = (myMonth+1)+"-"+myDay+"-"+myYear;
+
         Button bdate = (Button)findViewById(R.id.date);
         bdate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,15 +80,8 @@ public class profile_change extends AppCompatActivity {
             }
         });
 
-        Intent intent = getIntent();
-        datePick.setText(intent.getStringExtra("age"));
-        String[] bdata = date.split(Pattern.quote("-"));
-        Calendar calendar = Calendar.getInstance();
-        myDay=Integer.parseInt(bdata[2]);
-        myMonth=Integer.parseInt(bdata[1]);
-        myYear=Integer.parseInt(bdata[0]);
 
-
+        sex[0]=Integer.parseInt(intent.getStringExtra("sex"));
         if (sex[0]==1){
             male.setChecked(true);
         }
@@ -95,32 +100,33 @@ public class profile_change extends AppCompatActivity {
                 finish();
             }
         });
-
+        buttonSex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                switch (checkedId){
+                    case R.id.radioButton:
+                        sex[0]=1;
+                        break;
+                    case R.id.radioButton2:
+                        sex[0]=2;
+                        break;
+                    case R.id.radioButton3:
+                        sex[0] =0;
+                        break;
+                }
+            }
+        });
         Button accept = (Button)findViewById(R.id.but_ok);
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final ProgressBar progressBar = (ProgressBar)findViewById(R.id.progressBar4);
                 progressBar.setVisibility(ProgressBar.VISIBLE);
-                buttonSex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                        switch (checkedId){
-                            case R.id.radioButton:
-                                sex[0]=1;
-                                break;
-                            case R.id.radioButton2:
-                                sex[0]=2;
-                                break;
-                            default:
-                                sex[0] =0;
-                                break;
-                        }
-                    }
-                });
+
 
                 String age = datePick.getText().toString();
                 if (Age()<14) {
+                    progressBar.setVisibility(ProgressBar.INVISIBLE);
                     AlertDialog.Builder builder = new AlertDialog.Builder(profile_change.this);
                     builder.setMessage("Возраст должен быть больше либо равен 14")
                             .setNegativeButton("Повторить", null)
@@ -129,6 +135,7 @@ public class profile_change extends AppCompatActivity {
                     return;
                 }
                 if (Age()>110) {
+                    progressBar.setVisibility(ProgressBar.INVISIBLE);
                     AlertDialog.Builder builder = new AlertDialog.Builder(profile_change.this);
                     builder.setMessage("Возраст должен быть меньше либо равен 110")
                             .setNegativeButton("Повторить", null)
@@ -168,7 +175,7 @@ public class profile_change extends AppCompatActivity {
                     }
                 };
                 String[] headers = {"token","age", "sex"};
-                String[] values = {tokenSaver.getToken(profile_change.this), age, String.valueOf(sex[0])};
+                String[] values = {tokenSaver.getToken(profile_change.this), americanDate, String.valueOf(sex[0])};
                 Request inf = new Request(headers,values,getString(R.string.url_change),responseListener,errorListener);
                 RequestQueue queue = Volley.newRequestQueue(profile_change.this);
                 queue.add(inf);
@@ -214,6 +221,7 @@ public class profile_change extends AppCompatActivity {
             if(month.length()==1)
                 month="0"+month;
             date=day+"-"+month+"-"+myYear;
+            americanDate = month+"-"+day+"-"+myYear;
             datePick.setText(date);
         }
     };
@@ -225,7 +233,7 @@ public class profile_change extends AppCompatActivity {
         int byear=Integer.parseInt(bdata[2]);
         int year=calendar.get(Calendar.YEAR);
         age=year-byear;
-        int month= calendar.get(Calendar.MONTH);
+        int month= calendar.get(Calendar.MONTH)+1;
         int bmonth=Integer.parseInt(bdata[1]);
         if (bmonth>month)
             age--;

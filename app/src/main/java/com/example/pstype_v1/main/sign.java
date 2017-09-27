@@ -290,6 +290,7 @@ public class sign extends AppCompatActivity {
                 String id="id"+user.id;
                 final String photo=user.photo_200;
 
+                String americanDate;
                 int age;
                 if (bdate.length()<6){
                     age=0;
@@ -301,7 +302,7 @@ public class sign extends AppCompatActivity {
                     int year=calendar.get(Calendar.YEAR);
                     age=year-byear;
                     int month= calendar.get(Calendar.MONTH);
-                    int bmonth=Integer.parseInt(bdata[1]);
+                    int bmonth=Integer.parseInt(bdata[1])+1;
                     if (bmonth>month)
                         age--;
                     if (bmonth==month){
@@ -311,6 +312,8 @@ public class sign extends AppCompatActivity {
                             age--;
                     }
                 }
+                String[] bdata = bdate.split(Pattern.quote("."));
+                americanDate = bdata[0]+"-"+bdata[1]+"-"+bdata[2];
 
                 Response.Listener<String> responseListener2 = new Response.Listener<String>() {
                     @Override
@@ -344,7 +347,7 @@ public class sign extends AppCompatActivity {
 
                 bdate.replace(Pattern.quote("."), "-");
                 String[] headers = {"usernamevk","idvk","sex", "age"};
-                String[] values = {username, id, String.valueOf(sex1), bdate};
+                String[] values = {username, id, String.valueOf(sex1), americanDate};
                 Request VKregReq = new Request(headers,values,getString(R.string.url_vksignup),responseListener2,errorListener2);
                 RequestQueue queue2 = Volley.newRequestQueue(sign.this);
                 queue2.add(VKregReq);

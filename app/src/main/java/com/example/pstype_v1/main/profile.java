@@ -32,7 +32,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class profile extends AppCompatActivity {
 
-    String Age, Sex;
+    String Age, Sex, dateAge;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +61,8 @@ public class profile extends AppCompatActivity {
                         TextView sex = (TextView)findViewById(R.id.textView8);
 
                         Age=jsonResponse.getString("age");
+                        Age=Age.substring(0,10);
+                        dateAge=parseAge(Age);
                         try{
                         Age=AgeProfile(Age)+"";
                         }
@@ -73,13 +75,17 @@ public class profile extends AppCompatActivity {
                         String buf="Возраст: "+Age;
                         age.setText(buf);
 
-
                         Sex=jsonResponse.getString("sex");
-                        if (jsonResponse.getString("sex").equals("true")){
-                            sex.setText("Пол: мужской");
-                        }
-                        else{
-                            sex.setText("Пол: женский");
+                        switch (Integer.parseInt(Sex)){
+                            case 1:
+                                sex.setText("Пол: мужской");;
+                                break;
+                            case 2:
+                                sex.setText("Пол: женский");
+                                break;
+                            case 0:
+                                sex.setText("Пол: не указан");
+                                break;
                         }
                         actionBar.show();
                         CircleImageView photo = (CircleImageView)findViewById(R.id.avatar);
@@ -135,7 +141,7 @@ public class profile extends AppCompatActivity {
             case R.id.item2:
                 //startActivity(new Intent(this, profile_change.class));
                 Intent intent = new Intent(this, profile_change.class);
-                intent.putExtra("age", Age);
+                intent.putExtra("age", dateAge);
                 intent.putExtra("sex", Sex);
                 startActivity(intent);
                 return true;
@@ -148,19 +154,23 @@ public class profile extends AppCompatActivity {
         int age;
         String[] bdata = date.split(Pattern.quote("-"));
         Calendar calendar = Calendar.getInstance();
-        int byear=Integer.parseInt(bdata[2]);
+        int byear=Integer.parseInt(bdata[0]);
         int year=calendar.get(Calendar.YEAR);
         age=year-byear;
-        int month= calendar.get(Calendar.MONTH);
+        int month= calendar.get(Calendar.MONTH)+1;
         int bmonth=Integer.parseInt(bdata[1]);
         if (bmonth>month)
             age--;
         if (bmonth==month){
-            int bday=Integer.parseInt(bdata[0]);
+            int bday=Integer.parseInt(bdata[2]);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
             if (bday>day)
                 age--;
         }
         return age;
+    }
+    String parseAge(String Age){
+        String[] date = Age.split(Pattern.quote("-"));
+        return (date[2]+"-"+date[1]+"-"+date[0]);
     }
 }

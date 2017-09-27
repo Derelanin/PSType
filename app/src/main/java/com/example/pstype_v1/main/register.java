@@ -37,6 +37,7 @@ public class register extends AppCompatActivity {
     int myMonth = calendar.get(Calendar.MONTH);
     int myDay = calendar.get(Calendar.DAY_OF_MONTH);
     String date = myDay+"-"+(myMonth+1)+"-"+myYear;
+    String americanDate;
     EditText datePick;
 
     @Override
@@ -166,7 +167,7 @@ public class register extends AppCompatActivity {
                 };
                 progressBar.setVisibility(ProgressBar.VISIBLE);
                 String[] headers = {"username", "password", "age", "sex"};
-                String[] values = {username, password, age, String.valueOf(sex[0])};
+                String[] values = {username, password, americanDate, String.valueOf(sex[0])};
                 Request regReq = new Request(headers,values,getString(R.string.url_signup),responseListener,errorListener);
                 RequestQueue queue = Volley.newRequestQueue(register.this);
                 queue.add(regReq);
@@ -215,6 +216,7 @@ public class register extends AppCompatActivity {
             if(month.length()==1)
                 month="0"+month;
             date=day+"-"+month+"-"+myYear;
+            americanDate = month+"-"+day+"-"+myYear;
             datePick.setText(date);
         }
     };
@@ -226,7 +228,7 @@ public class register extends AppCompatActivity {
             int byear=Integer.parseInt(bdata[2]);
             int year=calendar.get(Calendar.YEAR);
             age=year-byear;
-            int month= calendar.get(Calendar.MONTH);
+            int month= calendar.get(Calendar.MONTH)+1;
             int bmonth=Integer.parseInt(bdata[1]);
             if (bmonth>month)
                 age--;

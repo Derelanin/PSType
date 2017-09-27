@@ -8,6 +8,9 @@
     <string name="del">del</string>
     <string name="about">about</string>
     <string name="look">look</string>
+    <string name="log_read">log_read</string>
+    <string name="log_copy">log_copy</string>
+    <string name="log_clear">log_clear</string>
     <string name="debug">Отладочные данные</string>
 
     <string name="item">Изменить</string>

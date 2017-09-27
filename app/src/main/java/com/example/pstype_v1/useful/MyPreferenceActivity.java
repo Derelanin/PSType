@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -11,6 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
@@ -25,6 +27,14 @@ import android.widget.Toast;
 import com.example.pstype_v1.R;
 import com.example.pstype_v1.data.DbHelper;
 import com.example.pstype_v1.main.general;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 import static android.app.PendingIntent.getActivity;
 
@@ -61,8 +71,24 @@ public class MyPreferenceActivity extends PreferenceActivity {
         del.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                delfun();
-                Toast.makeText(getApplicationContext(), "База данных успешно очищена", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(MyPreferenceActivity.this);
+                builder.setMessage("Вы действительно хотите удалить записи из БД?")
+                        .setCancelable(false)
+                        .setPositiveButton("Да",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int id) {
+                                        delfun();
+                                        Toast.makeText(getApplicationContext(), "База данных успешно очищена", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                        .setNegativeButton("Нет",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int id) {
+                                        dialog.cancel();
+                                    }
+                                }).create().show();
                 return true;
             }
         });
@@ -72,6 +98,94 @@ public class MyPreferenceActivity extends PreferenceActivity {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 message();
+                return true;
+            }
+        });
+
+        Preference log_read = findPreference(getString(R.string.log_read));
+        log_read.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                readLog();
+                return true;
+            }
+        });
+
+        Preference log_copy = findPreference(getString(R.string.log_copy));
+        log_copy.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                String FILENAME = "PSType-log";
+
+                String DIR_SD = "PSType";
+                String FILENAME_SD = "PSType-log(2)";
+
+                if (!Environment.getExternalStorageState().equals(
+                        Environment.MEDIA_MOUNTED)) {
+                    Toast.makeText(getApplicationContext(), "Нет доступа к SD", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    // получаем путь к SD
+                    File sdPath = Environment.getExternalStorageDirectory();
+                    // добавляем свой каталог к пути
+                    sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD);
+                    // создаем каталог
+                    sdPath.mkdirs();
+                    // формируем объект File, который содержит путь к файлу
+                    File sdFile = new File(sdPath, FILENAME_SD);
+
+                    try {
+                        BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
+                        // открываем поток для чтения
+                        BufferedReader br = new BufferedReader(new InputStreamReader(openFileInput(FILENAME)));
+                        String str = "";
+                        while ((str = br.readLine()) != null) {
+                            bw.append(str);
+                            bw.append("\n");
+                        }
+                        bw.close();
+                        Toast.makeText(getApplicationContext(), "Вроде успешно", Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+
+
+                return true;
+            }
+        });
+
+        Preference log_clear = findPreference(getString(R.string.log_clear));
+        log_clear.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MyPreferenceActivity.this);
+                builder.setMessage("Вы действительно хотите удалить записи из лога?")
+                        .setCancelable(false)
+                        .setPositiveButton("Да",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int id) {
+                                        try {
+                                            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(openFileOutput("PSType-log", MODE_PRIVATE)));
+                                            bw.write(" ");
+                                            bw.close();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        Toast.makeText(getApplicationContext(), "Логи очищены", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                        .setNegativeButton("Нет",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int id) {
+                                        dialog.cancel();
+                                    }
+                                }).create().show();
+
                 return true;
             }
         });
@@ -100,6 +214,12 @@ public class MyPreferenceActivity extends PreferenceActivity {
                 .create()
                 .show();
     }
+
+    void readLog(){
+        Intent intent = new Intent(this,debugging_log.class);
+        startActivity(intent);
+    }
+
     public void not (){
         SharedPreferences sp;
         sp = PreferenceManager.getDefaultSharedPreferences(this);
