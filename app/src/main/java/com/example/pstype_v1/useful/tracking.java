@@ -89,27 +89,6 @@ public class tracking extends Service {
 
     };
 
-
-
-//        public void run() {
-//            SetLogMessage("-----Движение. Включено отслеживание раз в 1 секунду\n");
-//            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//                return;
-//            }
-//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
-//            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, locationListener);
-//        }
-//
-//        void stop() {
-//            SetLogMessage("-----Остановка. Включено отслеживание раз в 2 минуты\n");
-//            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//                return;
-//            }
-//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 120000, 0, locationListener);
-//            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 120000, 0, locationListener);
-//        }
-
-
     private void showLocation(Location location) {
         if (location == null)
             return;
@@ -183,7 +162,7 @@ public class tracking extends Service {
             else if (speed<10 && flag==2 && (date.getTime()-trackStart)>6000000){
                 SetLogMessage("-------Остановка. Включено отслеживание раз в 2 минуты\\n");
                 SetLogMessage("-------//Если скорость меньше 10 км/ч, флаг 2 и прошло 10 минут, то запуск слежки раз в 10 минут.\n");
-                SetLogMessage("-------//flag: 2 -> 1\n");
+                SetLogMessage("-------//flag: 2 -> 0\n");
                 flag=0;
                 time=120000;
             }
