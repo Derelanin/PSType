@@ -15,9 +15,11 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.R;
@@ -170,6 +172,9 @@ public class register extends AppCompatActivity {
                 String[] values = {username, password, americanDate, String.valueOf(sex[0])};
                 Request regReq = new Request(headers,values,getString(R.string.url_signup),responseListener,errorListener);
                 RequestQueue queue = Volley.newRequestQueue(register.this);
+                int socketTimeout = 30000;//30 seconds - change to what you want
+                RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+                regReq.setRetryPolicy(policy);
                 queue.add(regReq);
             }
         });

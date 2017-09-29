@@ -19,8 +19,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.R;
@@ -178,6 +180,9 @@ public class profile_change extends AppCompatActivity {
                 String[] values = {tokenSaver.getToken(profile_change.this), americanDate, String.valueOf(sex[0])};
                 Request inf = new Request(headers,values,getString(R.string.url_change),responseListener,errorListener);
                 RequestQueue queue = Volley.newRequestQueue(profile_change.this);
+                int socketTimeout = 30000;//30 seconds - change to what you want
+                RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+                inf.setRetryPolicy(policy);
                 queue.add(inf);
             }
         });

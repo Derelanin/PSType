@@ -14,9 +14,11 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.R;
@@ -188,6 +190,7 @@ public class sign extends AppCompatActivity {
                         NetworkResponse response = error.networkResponse;
                         AlertDialog.Builder builder = new AlertDialog.Builder(sign.this);
                         if(response != null && response.data != null){
+
                             switch(response.statusCode){
                                 case 404:
                                     builder.setMessage("Пользователь с данным именем не найден")
@@ -223,6 +226,9 @@ public class sign extends AppCompatActivity {
                 String[] values = {username,password};
                 Request signReq = new Request(headers,values,getString(R.string.url_signin),responseListener,errorListener);
                 RequestQueue queue = Volley.newRequestQueue(sign.this);
+                int socketTimeout = 30000;//30 seconds - change to what you want
+                RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+                signReq.setRetryPolicy(policy);
                 queue.add(signReq);
             }
         });
@@ -350,6 +356,9 @@ public class sign extends AppCompatActivity {
                 String[] values = {username, id, String.valueOf(sex1), americanDate};
                 Request VKregReq = new Request(headers,values,getString(R.string.url_vksignup),responseListener2,errorListener2);
                 RequestQueue queue2 = Volley.newRequestQueue(sign.this);
+                int socketTimeout = 30000;//30 seconds - change to what you want
+                RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+                VKregReq.setRetryPolicy(policy);
                 queue2.add(VKregReq);
 
                 Response.Listener<String> responseListener3 = new Response.Listener<String>() {
@@ -394,6 +403,9 @@ public class sign extends AppCompatActivity {
                 String[] values2 = {id};
                 Request vksignReq = new Request(headers2,values2,getString(R.string.url_vksignin),responseListener3,errorListener3);
                 RequestQueue queue3 = Volley.newRequestQueue(sign.this);
+                //int socketTimeout = 30000;//30 seconds - change to what you want
+                //RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+                vksignReq.setRetryPolicy(policy);
                 queue3.add(vksignReq);
             }
 
