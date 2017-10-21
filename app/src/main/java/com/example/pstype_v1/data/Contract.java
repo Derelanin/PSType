@@ -13,6 +13,7 @@ public class Contract {
     public static final class track implements BaseColumns {
         public final static String TABLE_NAME = "track";
 
+        public final static String COLUMN_ID = "id";
         public final static String COLUMN_DATE = "date";
         public final static String COLUMN_TIME = "time";
         public final static String COLUMN_SPEED = "speed";

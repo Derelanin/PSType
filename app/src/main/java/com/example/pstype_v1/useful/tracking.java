@@ -13,18 +13,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
-import com.example.pstype_v1.R;
 import com.example.pstype_v1.data.Contract.track;
 import com.example.pstype_v1.data.DbHelper;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -97,41 +87,17 @@ public class tracking extends Service {
         if ((location.getProvider().equals(LocationManager.GPS_PROVIDER)) || (location.getProvider().equals(LocationManager.NETWORK_PROVIDER))) {
             Date date = new Date(location.getTime());
             String year = date.getYear()+"";
-            InputData(date.getDate()+"-"+(date.getMonth()+1)+"-"+year.substring(1),
-                    date.getHours()+":"+date.getMinutes()+":"+date.getSeconds(),
-                    (location.getSpeed()*3600.0)/1000.0,location.getLatitude(), location.getLongitude());
             double speed = (location.getSpeed()*3600.0)/1000.0;
 
-            //decimalFormat.format(currentLat)
-            SetLogMessage("["+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+"] Ш: "+decimalFormat.format(location.getLatitude())+"; Д: "+decimalFormat.format(location.getLongitude())+
-                    "; С: "+decimalFormat.format(speed)+"\n");
+            if (speed>10) {
+                InputData(date.getDate() + "-" + (date.getMonth() + 1) + "-" + year.substring(1),
+                        date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds(),
+                        speed, location.getLatitude(), location.getLongitude());
+                //decimalFormat.format(currentLat)
+                SetLogMessage("["+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+"] Ш: "+decimalFormat.format(location.getLatitude())+"; Д: "+decimalFormat.format(location.getLongitude())+
+                        "; С: "+decimalFormat.format(speed)+"\n");
+            }
 
-            Response.Listener<String> responseListener = new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    try {
-                        JSONObject jsonResponse = new JSONObject(response);
-                        String success = jsonResponse.getString("status");
-                        //Тут, в принципе, я никак на ответы не должна реагировать. Оно всё в фоновом режиме посылается.
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            Response.ErrorListener errorListener= new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    //Тут аналогично. Оно всё в фоновом режиме посылается.
-                }
-            };
-            String[] headers = {"token", "longitude", "latitude", "speed"};
-            String[] values = {tokenSaver.getToken(tracking.this), String.valueOf(location.getLongitude()), String.valueOf(location.getLatitude()), String.valueOf((location.getSpeed()*3600.0)/1000.0)};
-            Request maps = new Request(headers,values,getString(R.string.url_pos),responseListener,errorListener);
-            RequestQueue queue = Volley.newRequestQueue(tracking.this);
-            int socketTimeout = 30000;//30 seconds - change to what you want
-            RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-            maps.setRetryPolicy(policy);
-            queue.add(maps);
 
             //Надеюсь, это это работает.
             /*
@@ -147,6 +113,7 @@ public class tracking extends Service {
                 SetLogMessage("-------//flag: 0 -> 1\n");
                 flag=1;
                 time=1000;
+                startService(new Intent(this, SendTracking.class));
             }
             //Если скорость меньше 10 км/ч и флаг 1, то засекаем время.
             else if (speed<10 && flag==1){

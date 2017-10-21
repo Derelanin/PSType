@@ -14,7 +14,6 @@ import android.widget.ListView;
 import com.example.pstype_v1.R;
 import com.example.pstype_v1.data.Contract.track;
 import com.example.pstype_v1.data.DbHelper;
-import com.example.pstype_v1.useful.tracking;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -33,13 +32,13 @@ public class Statistics extends AppCompatActivity {
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(R.string.debug);
-        String num = "["+count()+"]";
-        actionBar.setTitle("Отладка "+num);
-        if (count()>510)
-        {
-           stopService(new Intent(this, tracking.class));
+        try {
+            getInfo();
         }
-        getInfo();
+        catch(Exception e)
+        {
+
+        }
     }
 
     private void getInfo() {
