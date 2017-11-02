@@ -89,7 +89,7 @@ public class tracking extends Service {
             String year = date.getYear()+"";
             double speed = (location.getSpeed()*3600.0)/1000.0;
 
-            if (speed>10) {
+            if (flag!=0) {
                 InputData(date.getDate() + "-" + (date.getMonth() + 1) + "-" + year.substring(1),
                         date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds(),
                         speed, location.getLatitude(), location.getLongitude());
@@ -113,7 +113,7 @@ public class tracking extends Service {
                 SetLogMessage("-------//flag: 0 -> 1\n");
                 flag=1;
                 time=1000;
-                startService(new Intent(this, SendTracking.class));
+
             }
             //Если скорость меньше 10 км/ч и флаг 1, то засекаем время.
             else if (speed<10 && flag==1){
@@ -137,6 +137,7 @@ public class tracking extends Service {
                 SetLogMessage("-------//flag: 2 -> 0\n");
                 flag=0;
                 time=120000;
+                startService(new Intent(this, SendTracking.class));
             }
         }
     }
