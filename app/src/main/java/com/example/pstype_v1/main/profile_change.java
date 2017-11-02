@@ -64,15 +64,15 @@ public class profile_change extends AppCompatActivity {
 
         datePick = (EditText)findViewById(R.id.age);
         Intent intent = getIntent();
-        datePick.setText(intent.getStringExtra("age"));
-        date = intent.getStringExtra("age");
+        //datePick.setText(intent.getStringExtra("age"));
+        //date = intent.getStringExtra("age");
 
-        String[] bdata = (intent.getStringExtra("age")).split(Pattern.quote("-"));
-        Calendar calendar = Calendar.getInstance();
-        myDay=Integer.parseInt(bdata[0]);
-        myMonth=Integer.parseInt(bdata[1])-1;
-        myYear=Integer.parseInt(bdata[2]);
-        americanDate = (myMonth+1)+"-"+myDay+"-"+myYear;
+        //String[] bdata = (intent.getStringExtra("age")).split(Pattern.quote("-"));
+        //Calendar calendar = Calendar.getInstance();
+//        myDay=Integer.parseInt(bdata[0]);
+//        myMonth=Integer.parseInt(bdata[1])-1;
+//        myYear=Integer.parseInt(bdata[2]);
+//        americanDate = (myMonth+1)+"-"+myDay+"-"+myYear;
 
         Button bdate = (Button)findViewById(R.id.date);
         bdate.setOnClickListener(new View.OnClickListener() {

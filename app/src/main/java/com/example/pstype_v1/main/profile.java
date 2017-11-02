@@ -63,17 +63,7 @@ public class profile extends AppCompatActivity {
                         TextView sex = (TextView)findViewById(R.id.textView8);
 
                         Age=jsonResponse.getString("age");
-                        Age=Age.substring(0,10);
-                        dateAge=parseAge(Age);
-                        try{
-                        Age=AgeProfile(Age)+"";
-                        }
-                        catch(Exception e){
 
-                        }
-                        finally {
-
-                        }
                         String buf="Возраст: "+Age;
                         age.setText(buf);
 
