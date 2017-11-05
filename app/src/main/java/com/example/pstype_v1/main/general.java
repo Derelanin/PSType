@@ -120,8 +120,7 @@ public class general extends AppCompatActivity {
         }
         else if (tokenSaver.getURL(general.this).equals("VK"))
         {
-            File file = new File(Environment.
-                    getExternalStorageDirectory(),"myBitmap.jpg");
+            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "Android/data/com.example.pstype_v1","myBitmap.jpg");
             Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
             CircleImageView ava = (CircleImageView) findViewById(R.id.avatar);
             ava.setImageBitmap(bitmap);
@@ -246,7 +245,8 @@ public class general extends AppCompatActivity {
 
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 bimage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-                File file = new File(Environment.getExternalStorageDirectory()+ File.separator + "myBitmap.jpg");
+                //File file = new File(Environment.getExternalStorageDirectory()+ File.separator + "myBitmap.jpg");
+                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "Android/data/com.example.pstype_v1"+ File.separator + "myBitmap.jpg");
                 file.createNewFile();
                 FileOutputStream fileOutputStream = new FileOutputStream(file);
                 fileOutputStream.write(bytes.toByteArray());

@@ -82,8 +82,7 @@ public class profile extends AppCompatActivity {
                         actionBar.show();
                         CircleImageView photo = (CircleImageView)findViewById(R.id.avatar);
                         if (tokenSaver.getURL(profile.this).equals("VK")) {
-                            File file = new File(Environment.
-                                    getExternalStorageDirectory()+ File.separator,"myBitmap.jpg");
+                            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "Android/data/com.example.pstype_v1"+ File.separator,"myBitmap.jpg");
                             Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
                             CircleImageView ava = (CircleImageView) findViewById(R.id.avatar);
                             ava.setImageBitmap(bitmap);
