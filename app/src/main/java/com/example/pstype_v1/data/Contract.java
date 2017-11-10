@@ -15,7 +15,6 @@ public class Contract {
 
         public final static String COLUMN_ID = "id";
         public final static String COLUMN_DATE = "date";
-        public final static String COLUMN_TIME = "time";
         public final static String COLUMN_SPEED = "speed";
         public final static String COLUMN_LAT = "latitude";
         public final static String COLUMN_LON = "longitude";

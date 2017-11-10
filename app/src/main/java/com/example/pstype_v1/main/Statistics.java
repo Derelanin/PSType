@@ -48,7 +48,6 @@ public class Statistics extends AppCompatActivity {
         List<String> list= new ArrayList<String>();
         String[] projection = {
                 track.COLUMN_DATE,
-                track.COLUMN_TIME,
                 track.COLUMN_SPEED,
                 track.COLUMN_LAT,
                 track.COLUMN_LON};
@@ -57,7 +56,6 @@ public class Statistics extends AppCompatActivity {
 
         try {
             int dateColumnIndex = cursor.getColumnIndex(track.COLUMN_DATE);
-            int timeColumnIndex = cursor.getColumnIndex(track.COLUMN_TIME);
             int speedColumnIndex = cursor.getColumnIndex(track.COLUMN_SPEED);
             int latColumnIndex = cursor.getColumnIndex(track.COLUMN_LAT);
             int lonColumnIndex = cursor.getColumnIndex(track.COLUMN_LON);
@@ -66,12 +64,11 @@ public class Statistics extends AppCompatActivity {
             while (cursor.moveToNext()) {
                 // Используем индекс для получения строки или числа
                 String currentDate = cursor.getString(dateColumnIndex);
-                String currentTime = cursor.getString(timeColumnIndex);
                 double currentSpeed = cursor.getDouble(speedColumnIndex);
                 double currentLat = cursor.getDouble(latColumnIndex);
                 double currentLon = cursor.getDouble(lonColumnIndex);
 
-                String str = "Дата: "+currentDate+"\t\tВремя: "+currentTime+"\t\tСкорость(км/ч): "+decimalFormat.format(currentSpeed)+"\t\t\tШирота: "+decimalFormat.format(currentLat)+"\t\t\tДолгота: "+decimalFormat.format(currentLon);
+                String str = "Дата: "+currentDate+"\t\tСкорость(км/ч): "+decimalFormat.format(currentSpeed)+"\t\t\tШирота: "+decimalFormat.format(currentLat)+"\t\t\tДолгота: "+decimalFormat.format(currentLon);
                 list.add(str);
             }
         } finally {

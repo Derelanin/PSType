@@ -4,6 +4,7 @@ import android.animation.ArgbEvaluator;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,6 +25,8 @@ import android.widget.TextView;
 
 import com.example.pstype_v1.R;
 import com.example.pstype_v1.useful.Functions;
+
+import java.io.File;
 
 public class welcome extends AppCompatActivity {
 
@@ -60,6 +63,8 @@ public class welcome extends AppCompatActivity {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black_trans80));
         }
 
+        File sdPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/"+"Android/data/com.example.pstype_v1");
+        boolean wasSuccessful = sdPath.mkdirs();
         setContentView(R.layout.activity_welcome);
 
 

@@ -24,7 +24,6 @@ public class DbHelper extends SQLiteOpenHelper {
         String SQL_CREATE_TRACK_TABLE = "CREATE TABLE " + track.TABLE_NAME + " ("
                 + track.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + track.COLUMN_DATE + " TEXT NOT NULL, "
-                + track.COLUMN_TIME + " TEXT NOT NULL, "
                 + track.COLUMN_SPEED + " DOUBLE NOT NULL, "
                 + track.COLUMN_LAT + " DOUBLE NOT NULL, "
                 + track.COLUMN_LON + " DOUBLE NOT NULL "

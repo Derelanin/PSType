@@ -136,9 +136,10 @@ public class tracking extends Service {
             String year = date.getYear()+"";
             double speed = (location.getSpeed()*3600.0)/1000.0;
 
-            InputData(date.getDate()+"-"+(date.getMonth()+1)+"-"+year.substring(1),
-                    date.getHours()+":"+date.getMinutes()+":"+date.getSeconds(),
-                    (location.getSpeed()*3600.0)/1000.0,location.getLatitude(), location.getLongitude());
+//            InputData(date.getDate()+"-"+(date.getMonth()+1)+"-"+year.substring(1),
+//                    date.getHours()+":"+date.getMinutes()+":"+date.getSeconds(),
+//                    (location.getSpeed()*3600.0)/1000.0,location.getLatitude(), location.getLongitude());
+            InputData(new java.sql.Timestamp(date.getTime())+"",(location.getSpeed()*3600.0)/1000.0,location.getLatitude(), location.getLongitude());
             SetLogMessage("["+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+"] Ш: "+decimalFormat.format(location.getLatitude())+"; Д: "+decimalFormat.format(location.getLongitude())+
                            "; С: "+decimalFormat.format(speed)+"\n");
 
@@ -212,12 +213,11 @@ public class tracking extends Service {
         locationManager.removeUpdates(locationListener);
     }
 
-    public void InputData (String date, String time, double speed, double lat, double lon) {
+    public void InputData (String date, double speed, double lat, double lon) {
         DbHelper mDbHelper = new DbHelper(this);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(track.COLUMN_DATE, date);
-        values.put(track.COLUMN_TIME, time);
         values.put(track.COLUMN_SPEED, speed);
         values.put(track.COLUMN_LAT, lat);
         values.put(track.COLUMN_LON, lon);
@@ -330,6 +330,7 @@ public class tracking extends Service {
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         String[] projection = {
                 Contract.track.COLUMN_ID,
+                track.COLUMN_DATE,
                 Contract.track.COLUMN_SPEED,
                 Contract.track.COLUMN_LAT,
                 Contract.track.COLUMN_LON};
@@ -338,14 +339,17 @@ public class tracking extends Service {
                 projection,
                 Contract.track.COLUMN_ID + "=?", new String[]{String.valueOf(id)}, null, null, null);
         double currentSpeed=0, currentLat=0, currentLon=0;
+        String date="";
         try {
             int speedColumnIndex = cursor.getColumnIndex(Contract.track.COLUMN_SPEED);
             int idCount = cursor.getColumnIndex(Contract.track.COLUMN_ID);
             int latColumnIndex = cursor.getColumnIndex(Contract.track.COLUMN_LAT);
+            int dateColumnIndex = cursor.getColumnIndex(track.COLUMN_DATE);
             int lonColumnIndex = cursor.getColumnIndex(Contract.track.COLUMN_LON);
             while (cursor.moveToNext()) {
                 id = cursor.getInt(idCount);
                 currentSpeed = cursor.getDouble(speedColumnIndex);
+                date = cursor.getString(dateColumnIndex);
                 currentLat = cursor.getDouble(latColumnIndex);
                 currentLon = cursor.getDouble(lonColumnIndex);
             }
@@ -369,8 +373,8 @@ public class tracking extends Service {
                 SetLogMessage("Запись не отправлена\n");
             }
         };
-        String[] headers = {"token", "longitude", "latitude", "speed"};
-        String[] values = {tokenSaver.getToken(com.example.pstype_v1.useful.tracking.this), String.valueOf(currentLon), String.valueOf(currentLat), String.valueOf(currentSpeed)};
+        String[] headers = {"token", "longitude", "latitude", "speed", "date"};
+        String[] values = {tokenSaver.getToken(com.example.pstype_v1.useful.tracking.this), String.valueOf(currentLon), String.valueOf(currentLat), String.valueOf(currentSpeed), date};
         Request maps = new Request(headers,values,getString(R.string.url_pos),responseListener,errorListener);
         RequestQueue queue = Volley.newRequestQueue(com.example.pstype_v1.useful.tracking.this);
         int socketTimeout = 30000;
