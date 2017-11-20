@@ -4,4 +4,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:setTitle="@string/change"
     tools:context=".useful.debugging_log">
+    <item
+        android:id="@+id/gps"
+        android:icon="@drawable/ic_gps_fixed_white_48px"
+        android:title="GPS"
+        android:visible="false"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction">
+    </item>
+    <item
+        android:id="@+id/accel"
+        android:icon="@drawable/ic_screen_rotation_white_48px"
+        android:title="Accelerometr"
+        android:visible="true"
+        app:showAsAction="always">
+    </item>
+    <item
+        android:id="@+id/top"
+        android:icon="@drawable/ic_keyboard_arrow_up_white_48px"
+        android:title="Вверх"
+        android:visible="true"
+        app:showAsAction="always">
+    </item>
+    <item
+        android:id="@+id/bottom"
+        android:icon="@drawable/ic_keyboard_arrow_down_white_48px"
+        android:title="Вниз"
+        android:visible="true"
+        app:showAsAction="always">
+    </item>
 </menu>

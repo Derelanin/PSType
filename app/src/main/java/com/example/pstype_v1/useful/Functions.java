@@ -11,9 +11,8 @@ import android.view.inputmethod.InputMethodManager;
 /**
  * Created by Derelanin on 04.06.2017.
  */
-
 /**
- * Класс, содержащий различные функции, используемы в программе.
+ * Класс, содержащий различные функции, используемые в программе.
  */
 public class Functions {
     /**

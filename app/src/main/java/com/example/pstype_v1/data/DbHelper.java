@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.pstype_v1.data.Contract.track;
+import com.example.pstype_v1.data.Contract.accel;
 
 /**
  * Created by Derelanin on 06.09.2017.
@@ -29,6 +30,14 @@ public class DbHelper extends SQLiteOpenHelper {
                 + track.COLUMN_LON + " DOUBLE NOT NULL "
                  + ");";
         db.execSQL(SQL_CREATE_TRACK_TABLE);
+
+        String SQL_CREATE_ACCEL_TABLE = "CREATE TABLE " + accel.TABLE_NAME + " ("
+                + accel.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + accel.COLUMN_X + " DOUBLE NOT NULL, "
+                + accel.COLUMN_Y + " DOUBLE NOT NULL, "
+                + accel.COLUMN_Z + " DOUBLE NOT NULL "
+                + ");";
+        db.execSQL(SQL_CREATE_ACCEL_TABLE);
     }
 
     @Override

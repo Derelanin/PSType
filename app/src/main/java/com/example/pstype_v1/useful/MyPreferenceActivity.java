@@ -13,6 +13,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
@@ -93,6 +94,26 @@ public class MyPreferenceActivity extends PreferenceActivity {
             }
         });
 
+        final CheckBoxPreference screenOn = (CheckBoxPreference)findPreference("screenOn");
+        screenOn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                String SHARED_PREF_NAME = "SHARED_PREF_NAME";
+                SharedPreferences sPref = getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sPref.edit();
+                if (screenOn.isChecked())
+                {
+                    editor.putBoolean("SCREEN", true);
+                }
+                else
+                {
+                    editor.putBoolean("SCREEN", false);
+                }
+                editor.apply();
+                return false;
+            }
+        });
+
         Preference about = findPreference(getString(R.string.about));
         about.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -116,28 +137,40 @@ public class MyPreferenceActivity extends PreferenceActivity {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 String FILENAME = "PSType-log";
+                String FILENAME2 = "PSType-LatLng";
 
                 String DIR_SD = "PSType";
                 String FILENAME_SD = "PSType-log(2)";
+                String FILENAME_SD2 = "PSType-LtdLng";
 
                 if (!Environment.getExternalStorageState().equals(
                         Environment.MEDIA_MOUNTED)) {
                     Toast.makeText(getApplicationContext(), "Нет доступа к SD", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    // получаем путь к SD
                     File sdPath = Environment.getExternalStorageDirectory();
-                    // добавляем свой каталог к пути
                     sdPath = new File(sdPath.getAbsolutePath() + "/" + DIR_SD);
-                    // создаем каталог
                     sdPath.mkdirs();
-                    // формируем объект File, который содержит путь к файлу
                     File sdFile = new File(sdPath, FILENAME_SD);
 
                     try {
                         BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
-                        // открываем поток для чтения
                         BufferedReader br = new BufferedReader(new InputStreamReader(openFileInput(FILENAME)));
+                        String str = "";
+                        while ((str = br.readLine()) != null) {
+                            bw.append(str);
+                            bw.append("\n");
+                        }
+                        bw.close();
+                        //Toast.makeText(getApplicationContext(), "Вроде успешно", Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    sdFile = new File(sdPath, FILENAME_SD2);
+                    try {
+                        BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
+                        BufferedReader br = new BufferedReader(new InputStreamReader(openFileInput(FILENAME2)));
                         String str = "";
                         while ((str = br.readLine()) != null) {
                             bw.append(str);
@@ -170,6 +203,12 @@ public class MyPreferenceActivity extends PreferenceActivity {
                                                         int id) {
                                         try {
                                             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(openFileOutput("PSType-log", MODE_PRIVATE)));
+                                            bw.write(" ");
+                                            bw.close();
+                                            bw = new BufferedWriter(new OutputStreamWriter(openFileOutput("PSType-LatLng", MODE_PRIVATE)));
+                                            bw.write(" ");
+                                            bw.close();
+                                            bw = new BufferedWriter(new OutputStreamWriter(openFileOutput("PSType-Accel", MODE_PRIVATE)));
                                             bw.write(" ");
                                             bw.close();
                                         } catch (IOException e) {

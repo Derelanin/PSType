@@ -6,10 +6,15 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.AppBarLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -32,21 +37,38 @@ import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class profile extends AppCompatActivity {
+public class profile extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
 
     String Age, Sex, dateAge;
+    private AppBarLayout mAppBarLayout;
+    private Toolbar mToolbar;
+    private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR  = 0.9f;
+    private static final float PERCENTAGE_TO_HIDE_TITLE_DETAILS     = 0.3f;
+    private static final int ALPHA_ANIMATIONS_DURATION              = 200;
+    private boolean mIsTheTitleVisible          = false;
+    private boolean mIsTheTitleContainerVisible = true;
+    private TextView mTitle;
+    String Name;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_profile2);
+
+        mToolbar = (Toolbar)findViewById(R.id.toolbar4);
+        mAppBarLayout = (AppBarLayout)findViewById(R.id.appbar);
+        mTitle = (TextView)findViewById(R.id.textView6);
         final ActionBar actionBar = getSupportActionBar();
+        actionBar.setElevation(0);
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Профиль");
+        actionBar.setTitle(" ");
         actionBar.hide();
-        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar4);
-        final ConstraintLayout layout = (ConstraintLayout)findViewById(R.id.all);
-
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar3);
+        final AppBarLayout layout1 = (AppBarLayout) findViewById(R.id.appbar);
+        final NestedScrollView layout2 = (NestedScrollView)findViewById(R.id.nsv);
+        mAppBarLayout.addOnOffsetChangedListener(this);
+        //startAlphaAnimation(mTitle, 0, View.INVISIBLE);
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
@@ -59,24 +81,25 @@ public class profile extends AppCompatActivity {
                         TextView name = (TextView)findViewById(R.id.textView6);
                         //name.setText(tokenSaver.getName(profile.this));
                         name.setText(jsonResponse.getString("username"));
+                        Name = (String) name.getText();
                         TextView age = (TextView)findViewById(R.id.textView7);
                         TextView sex = (TextView)findViewById(R.id.textView8);
 
                         Age=jsonResponse.getString("age");
 
-                        String buf="Возраст: "+Age;
-                        age.setText(buf);
+                        //String buf="Возраст: "+Age;
+                        age.setText(Age);
 
                         Sex=jsonResponse.getString("sex");
                         switch (Integer.parseInt(Sex)){
                             case 1:
-                                sex.setText("Пол: мужской");;
+                                sex.setText("мужской");;
                                 break;
                             case 2:
-                                sex.setText("Пол: женский");
+                                sex.setText("женский");
                                 break;
                             case 0:
-                                sex.setText("Пол: не указан");
+                                sex.setText("не указан");
                                 break;
                         }
                         actionBar.show();
@@ -89,10 +112,11 @@ public class profile extends AppCompatActivity {
                         }
 
                         TextView ps = (TextView)findViewById(R.id.textView9);
-                        buf="Психотип: "+jsonResponse.getString("type");
-                        ps.setText(buf);
+                       // buf="Психотип: "+jsonResponse.getString("type");
+                        ps.setText(jsonResponse.getString("type"));
                         progressBar.setVisibility(ProgressBar.INVISIBLE);
-                        layout.setVisibility(ConstraintLayout.VISIBLE);
+                        layout1.setVisibility(ConstraintLayout.VISIBLE);
+                        layout2.setVisibility(ConstraintLayout.VISIBLE);
                     }
 
                 } catch (JSONException e) {
@@ -123,6 +147,60 @@ public class profile extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.profile, menu);
         return true;
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int offset) {
+        int maxScroll = appBarLayout.getTotalScrollRange();
+        float percentage = (float) Math.abs(offset) / (float) maxScroll;
+
+        handleAlphaOnTitle(percentage);
+        handleToolbarTitleVisibility(percentage);
+    }
+
+    private void handleToolbarTitleVisibility(float percentage) {
+        if (percentage >= PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR) {
+
+            if(!mIsTheTitleVisible) {
+                startAlphaAnimation(mTitle, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
+                ActionBar actionBar = getSupportActionBar();
+                actionBar.setTitle(Name);
+                mIsTheTitleVisible = true;
+            }
+
+        } else {
+
+            if (mIsTheTitleVisible) {
+                startAlphaAnimation(mTitle, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
+                ActionBar actionBar = getSupportActionBar();
+                actionBar.setTitle("");
+                mIsTheTitleVisible = false;
+            }
+        }
+    }
+    public static void startAlphaAnimation (View v, long duration, int visibility) {
+        AlphaAnimation alphaAnimation = (visibility == View.VISIBLE)
+                ? new AlphaAnimation(0f, 1f)
+                : new AlphaAnimation(1f, 0f);
+
+        alphaAnimation.setDuration(duration);
+        alphaAnimation.setFillAfter(true);
+        v.startAnimation(alphaAnimation);
+    }
+    private void handleAlphaOnTitle(float percentage) {
+        if (percentage >= PERCENTAGE_TO_HIDE_TITLE_DETAILS) {
+            if(mIsTheTitleContainerVisible) {
+                startAlphaAnimation(mTitle, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
+                mIsTheTitleContainerVisible = false;
+            }
+
+        } else {
+
+            if (!mIsTheTitleContainerVisible) {
+                startAlphaAnimation(mTitle, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
+                mIsTheTitleContainerVisible = true;
+            }
+        }
     }
 
     @Override
