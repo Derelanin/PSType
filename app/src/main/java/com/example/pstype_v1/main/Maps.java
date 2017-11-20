@@ -10,6 +10,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.example.pstype_v1.R;
+import com.example.pstype_v1.useful.MyPreferenceActivity;
 import com.example.pstype_v1.useful.tracking;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -46,7 +48,7 @@ public class Maps extends AppCompatActivity {
     PolylineOptions polylineOptions;
     com.example.pstype_v1.useful.Notification not;
     final String SHARED_PREF_NAME = "SHARED_PREF_NAME";
-    static SharedPreferences sPref;
+    static SharedPreferences sPref, sp;
     Timer timer;
     TimerTask task;
 
@@ -66,9 +68,9 @@ public class Maps extends AppCompatActivity {
 
         final FloatingActionButton start = (FloatingActionButton)findViewById(R.id.start);
         final FloatingActionButton stop = (FloatingActionButton)findViewById(R.id.stop);
-        final FloatingActionButton pause = (FloatingActionButton)findViewById(R.id.pause);
 
         sPref = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
         if (sPref.getBoolean("Screen", false))
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -78,7 +80,6 @@ public class Maps extends AppCompatActivity {
         if (showButton) {
             start.setVisibility(View.INVISIBLE);
             stop.setVisibility(View.VISIBLE);
-            pause.setVisibility(View.VISIBLE);
             timer.schedule(task, 0, 10000);
         }
         start.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +90,7 @@ public class Maps extends AppCompatActivity {
                 polylineOptions = null;
                 addTrack();
 
+                MyPreferenceActivity.LogDelete(Maps.this);
                 SharedPreferences.Editor editor = sPref.edit();
                 editor.putBoolean("MAP", true);
                 editor.apply();
@@ -100,6 +102,9 @@ public class Maps extends AppCompatActivity {
                 editor.putInt("FLAG", 1);
                 editor.putInt("TIME", 1000);
                 editor.apply();
+                editor = sp.edit();
+                editor.putBoolean("look", true);
+                editor.apply();
                 startService(new Intent(Maps.this, tracking.class));
 
                 SetTimer();
@@ -107,7 +112,6 @@ public class Maps extends AppCompatActivity {
 
                 start.setVisibility(View.INVISIBLE);
                 stop.setVisibility(View.VISIBLE);
-                pause.setVisibility(View.VISIBLE);
             }
         });
 
@@ -125,6 +129,9 @@ public class Maps extends AppCompatActivity {
                 editor.putInt("FLAG", 0);
                 editor.putInt("TIME", 120000);
                 editor.apply();
+                editor = sp.edit();
+                editor.putBoolean("look", false);
+                editor.apply();
                 stopService(new Intent(Maps.this, tracking.class));
                 tracking.SendTracking sendTracking = new tracking.SendTracking(Maps.this);
                 sendTracking.execute();
@@ -132,7 +139,6 @@ public class Maps extends AppCompatActivity {
 
                 start.setVisibility(View.VISIBLE);
                 stop.setVisibility(View.INVISIBLE);
-                pause.setVisibility(View.INVISIBLE);
             }
         });
     }

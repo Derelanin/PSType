@@ -201,19 +201,7 @@ public class MyPreferenceActivity extends PreferenceActivity {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int id) {
-                                        try {
-                                            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(openFileOutput("PSType-log", MODE_PRIVATE)));
-                                            bw.write(" ");
-                                            bw.close();
-                                            bw = new BufferedWriter(new OutputStreamWriter(openFileOutput("PSType-LatLng", MODE_PRIVATE)));
-                                            bw.write(" ");
-                                            bw.close();
-                                            bw = new BufferedWriter(new OutputStreamWriter(openFileOutput("PSType-Accel", MODE_PRIVATE)));
-                                            bw.write(" ");
-                                            bw.close();
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
+                                       LogDelete(MyPreferenceActivity.this);
                                         Toast.makeText(getApplicationContext(), "Логи очищены", Toast.LENGTH_SHORT).show();
                                     }
                                 })
@@ -239,6 +227,21 @@ public class MyPreferenceActivity extends PreferenceActivity {
         });
     }
 
+    public static void LogDelete(Context c){
+        try {
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(c.openFileOutput("PSType-log", MODE_PRIVATE)));
+            bw.write(" ");
+            bw.close();
+            bw = new BufferedWriter(new OutputStreamWriter(c.openFileOutput("PSType-LatLng", MODE_PRIVATE)));
+            bw.write(" ");
+            bw.close();
+            bw = new BufferedWriter(new OutputStreamWriter(c.openFileOutput("PSType-Accel", MODE_PRIVATE)));
+            bw.write(" ");
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     void delfun (){
         DbHelper mDbHelper= new DbHelper(this);
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
@@ -286,13 +289,19 @@ public class MyPreferenceActivity extends PreferenceActivity {
         notification.flags = notification.flags | Notification.FLAG_INSISTENT;
         NotificationManager notificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
+
+        SharedPreferences sPref = this.getSharedPreferences("SHARED_PREF_NAME", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sPref.edit();
         if (!setting) {
             startService(new Intent(this, tracking.class));
             notificationManager.notify(NOTIFY_ID, notification);
+            editor.putBoolean("MAP", true);
         }
         else {
             stopService(new Intent(this, tracking.class));
             notificationManager.cancel(NOTIFY_ID);
+            editor.putBoolean("MAP", false);
         }
+        editor.apply();
     }
 }
