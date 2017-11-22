@@ -1,13 +1,9 @@
 package com.example.pstype_v1.useful;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -27,7 +23,6 @@ import android.widget.Toast;
 
 import com.example.pstype_v1.R;
 import com.example.pstype_v1.data.DbHelper;
-import com.example.pstype_v1.main.general;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -36,8 +31,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-
-import static android.app.PendingIntent.getActivity;
 
 /**
  * Created by Derelanin on 06.09.2017.
@@ -266,40 +259,20 @@ public class MyPreferenceActivity extends PreferenceActivity {
         SharedPreferences sp;
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         Boolean setting = sp.getBoolean("look", false);
-        Context context = getApplicationContext();
-        Intent notificationIntent = new Intent(context, general.class);
-        PendingIntent contentIntent = getActivity(context,
-                0, notificationIntent,
-                PendingIntent.FLAG_CANCEL_CURRENT);
-        Resources res = context.getResources();
-        Notification.Builder builder = new Notification.Builder(context);
-        builder.setContentIntent(contentIntent)
-                //.setTicker(res.getString(R.string.warning)) // текст в строке состояния
-                .setTicker("Кажется, что за вами следят")
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setWhen(System.currentTimeMillis())
-                .setAutoCancel(false)
-                //.setContentTitle(res.getString(R.string.notifytitle)) // Заголовок уведомления
-                .setContentTitle("Слежка")
-                //.setContentText(res.getString(R.string.notifytext))
-                .setContentText("Включено отслеживание местоположения"); // Текст уведомления
-
-        // Notification notification = builder.getNotification(); // до API 16
-        Notification notification = builder.build();
-        notification.flags = notification.flags | Notification.FLAG_INSISTENT;
-        NotificationManager notificationManager = (NotificationManager) context
-                .getSystemService(Context.NOTIFICATION_SERVICE);
+        com.example.pstype_v1.useful.Notification not;
 
         SharedPreferences sPref = this.getSharedPreferences("SHARED_PREF_NAME", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sPref.edit();
         if (!setting) {
             startService(new Intent(this, tracking.class));
-            notificationManager.notify(NOTIFY_ID, notification);
+            not=new com.example.pstype_v1.useful.Notification(MyPreferenceActivity.this);
+            not.Show();
             editor.putBoolean("MAP", true);
         }
         else {
             stopService(new Intent(this, tracking.class));
-            notificationManager.cancel(NOTIFY_ID);
+            not=new com.example.pstype_v1.useful.Notification(MyPreferenceActivity.this);
+            not.NotShow();
             editor.putBoolean("MAP", false);
         }
         editor.apply();

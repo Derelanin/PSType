@@ -146,12 +146,11 @@ public class sign extends AppCompatActivity {
 
                 findViewById(R.id.progressBar).setVisibility(ProgressBar.VISIBLE);
                 if (VKSdk.wakeUpSession()) {
-                    //VKSdk.authorize(vkScope, true, false);
                     startLoading();
                     auth_vk.setText("Войти через вк");
                 } else {
                     VKSdk.authorize(vkScope, true, false);
-                    //startLoading();
+                    progressBar.setVisibility(View.INVISIBLE);
                     auth_vk.setText("Войти через вк");
                 }
             }

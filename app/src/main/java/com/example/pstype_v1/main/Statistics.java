@@ -74,6 +74,7 @@ public class Statistics extends AppCompatActivity {
         } finally {
             // Всегда закрываем курсор после чтения
             cursor.close();
+            db.close();
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
@@ -96,6 +97,7 @@ public class Statistics extends AppCompatActivity {
             }
         } finally {
             cursor.close();
+            db.close();
         }
         return count;
     }

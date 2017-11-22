@@ -51,6 +51,7 @@ public class Maps extends AppCompatActivity {
     static SharedPreferences sPref, sp;
     Timer timer;
     TimerTask task;
+    LatLng loc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +72,7 @@ public class Maps extends AppCompatActivity {
 
         sPref = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         sp = PreferenceManager.getDefaultSharedPreferences(this);
-        if (sPref.getBoolean("Screen", false))
+        if (sPref.getBoolean("SCREEN", false))
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         SetTimer();
@@ -80,15 +81,18 @@ public class Maps extends AppCompatActivity {
         if (showButton) {
             start.setVisibility(View.INVISIBLE);
             stop.setVisibility(View.VISIBLE);
-            timer.schedule(task, 0, 10000);
+            timer.schedule(task, 0, 5000);
         }
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 gps.callOnClick();
                 googleMap.clear();
-                polylineOptions = null;
-                addTrack();
+                polylineOptions = new PolylineOptions()
+                        .add(loc)
+                        .color(Color.RED).width(3);
+                //googleMap.addPolyline(polylineOptions);
+                //addTrack();
 
                 MyPreferenceActivity.LogDelete(Maps.this);
                 SharedPreferences.Editor editor = sPref.edit();
@@ -108,7 +112,7 @@ public class Maps extends AppCompatActivity {
                 startService(new Intent(Maps.this, tracking.class));
 
                 SetTimer();
-                timer.schedule(task, 9000, 10000);
+                timer.schedule(task, 2000, 5000);
 
                 start.setVisibility(View.INVISIBLE);
                 stop.setVisibility(View.VISIBLE);
@@ -218,7 +222,7 @@ public class Maps extends AppCompatActivity {
             longitude=37.6198181;
         }
 
-
+        loc = new LatLng(latitude,longitude);
         cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(latitude, longitude))
                 .zoom(15)

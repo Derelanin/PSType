@@ -103,7 +103,7 @@ public class tracking extends Service {
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, time, 0, locationListener);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, time, 0, locationListener);
         Accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        sensorManager.registerListener(listener, Accelerometer, time*1000);
+        sensorManager.registerListener(listener, Accelerometer,  SensorManager.SENSOR_DELAY_NORMAL);
 
         //Таймер для того, чтобы раз в 10 секунд запихивать в файлик последнюю точку.
         timer = new Timer();
@@ -123,7 +123,7 @@ public class tracking extends Service {
                 });
             }
         };
-        timer.schedule(task, 0, 10000);
+        timer.schedule(task, 0, 5000);
 
         return Service.START_STICKY;
     }
@@ -134,7 +134,7 @@ public class tracking extends Service {
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, time, 0, locationListener);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, time, 0, locationListener);
-        sensorManager.registerListener(listener, Accelerometer, time*1000);
+        sensorManager.registerListener(listener, Accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     private LocationListener locationListener = new LocationListener() {
@@ -238,7 +238,7 @@ public class tracking extends Service {
                 }
                 //Если скорость меньше 10 км/ч, флаг 2 и прошло 10 минут, то запуск слежки раз в 10 минут.
                 else if (speed < 10 && flag == 2 && (date.getTime() - trackStart) > 600000) {
-                    SetLogMessage("-------Остановка. Включено отслеживание раз в 2 минуты\\n");
+                    SetLogMessage("-------Остановка. Включено отслеживание раз в 2 минуты\n");
                     flag = 0;
                     time = 120000;
                     SharedPreferences.Editor editor = sPref.edit();
@@ -270,6 +270,7 @@ public class tracking extends Service {
         values.put(track.COLUMN_LAT, lat);
         values.put(track.COLUMN_LON, lon);
         long newRowId = db.insert(track.TABLE_NAME, null, values);
+        db.close();
         if (newRowId == -1) {
 
         }
@@ -282,6 +283,7 @@ public class tracking extends Service {
         values.put(Contract.accel.COLUMN_Y, y);
         values.put(Contract.accel.COLUMN_Z, z);
         long newRowId = db.insert(Contract.accel.TABLE_NAME, null, values);
+        db.close();
         if (newRowId == -1) {
 
         }
@@ -385,22 +387,16 @@ public class tracking extends Service {
             }
         } finally {
             cursor.close();
+            db.close();
         }
-        db.close();
         if (id!=0) return true;
         else return false;
     }
     static void deleteTrack(String _id, Context context){
-        try {
-            DbHelper mDbHelper = new DbHelper(context);
-            SQLiteDatabase db = mDbHelper.getReadableDatabase();
-            db.delete(Contract.track.TABLE_NAME, "ID = ?", new String[]{_id});
-            db.close();
-        }
-        catch (Exception e)
-        {
-
-        }
+        DbHelper mDbHelper = new DbHelper(context);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        db.delete(Contract.track.TABLE_NAME, "ID = ?", new String[]{_id});
+        db.close();
     }
     void sendSleep()
     {
@@ -443,8 +439,8 @@ public class tracking extends Service {
             }
         } finally {
             cursor.close();
+            db.close();
         }
-        db.close();
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override

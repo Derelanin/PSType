@@ -24,18 +24,20 @@
     <string name="empty"> </string>
 
     <!-- profile -->
-    <string name="pr_name">Имя </string>
-    <string name="pr_age">возраст</string>
-    <string name="pr_sex">пол</string>
-    <string name="pr_type">психотип</string>
+    <string name="pr_name">  </string>
+    <string name="pr_age"> </string>
+    <string name="pr_sex"> </string>
+    <string name="pr_type"> </string>
     <string name="pr1">Возраст:</string>
     <string name="pr2">Пол:</string>
     <string name="pr3">Психотип:</string>
     <string name="pr4">Средняя скорость:</string>
     <string name="pr5">Максимальная скорость:</string>
     <string name="pr6">Пройденный путь:</string>
+    <string name="pr10">Средний путь:</string>
     <string name="pr7">Максимальный путь:</string>
     <string name="pr8">Среднее время в пути:</string>
+    <string name="pr9">Максимальное время в пути:</string>
     <string name="pr">---</string>
 
     <!-- profile change -->

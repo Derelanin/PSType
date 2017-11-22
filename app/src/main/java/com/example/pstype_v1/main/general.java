@@ -120,7 +120,10 @@ public class general extends AppCompatActivity {
         }
         else if (tokenSaver.getURL(general.this).equals("VK"))
         {
-            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "Android/data/com.example.pstype_v1","myBitmap.jpg");
+            File sdPath = Environment.getExternalStorageDirectory();
+            sdPath = new File(sdPath.getAbsolutePath() + "/" + "Android/data/com.example.pstype_v1");
+            boolean wasSuccessful = sdPath.mkdirs();
+            File file = new File(sdPath,"myBitmap.jpg");
             Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
             CircleImageView ava = (CircleImageView) findViewById(R.id.avatar);
             ava.setImageBitmap(bitmap);
