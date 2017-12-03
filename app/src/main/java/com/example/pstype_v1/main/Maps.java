@@ -151,7 +151,6 @@ public class Maps extends AppCompatActivity {
                 RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
                 signReq.setRetryPolicy(policy);
                 queue.add(signReq);
-                MyPreferenceActivity.LogDelete(Maps.this);
 
                 MyPreferenceActivity.LogDelete(Maps.this);
                 SharedPreferences.Editor editor = sPref.edit();

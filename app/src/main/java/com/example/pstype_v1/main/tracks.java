@@ -88,7 +88,7 @@ public class tracks extends AppCompatActivity {
                         boolean flag = false;
 
                         jsonResponse = new JSONObject(dates[0]);
-                        if (!jsonResponse.getString("StopTime").equals("undefine")) {
+                        if (!jsonResponse.getString("StopTime").equals("undefined")) {
                             if (!jsonResponse.getString("dateTrack").equals(date)) {
                                 if (flag) {
                                     childData.add(childDataItem);
