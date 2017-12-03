@@ -59,8 +59,13 @@
         <activity
             android:name=".main.profile_change"
             android:theme="@style/AppTheme" />
-        <activity android:name=".useful.debugging_log"
-            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".useful.debugging_log"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".main.tracks"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".main.addSignup"></activity>
     </application>
 
 </manifest>

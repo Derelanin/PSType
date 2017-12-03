@@ -60,7 +60,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintHorizontal_bias="0.0"
-        android:tint="@color/colorLightGray"
+        android:tint="@color/colorDarkBlue"
         app:layout_constraintLeft_toLeftOf="@+id/guideline2"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -109,7 +109,7 @@
         app:layout_constraintRight_toLeftOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="@+id/guideline3"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/statistics"
+        app:srcCompat="@drawable/ic_directions_car_black_48px"
         tools:ignore="ContentDescription,VectorDrawableCompat" />
 
     <ImageView
@@ -170,6 +170,7 @@
         android:layout_marginBottom="-17dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:textColor="@color/colorDarkBlue"
         android:text="@string/PSYCHO"
         app:layout_constraintBottom_toBottomOf="@+id/imageView6"
         app:layout_constraintLeft_toLeftOf="@+id/imageView6"
@@ -226,7 +227,6 @@
         android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
         android:background="@android:color/transparent"
-        android:onClick="unbutton"
         android:text="@string/empty"
         app:layout_constraintBottom_toBottomOf="@+id/textView3"
         app:layout_constraintLeft_toLeftOf="@+id/imageView6"

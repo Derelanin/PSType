@@ -39,7 +39,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class profile extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
 
-    String Age, Sex, dateAge;
+    String Age, Sex, dateAge, dateAgeD;
     private AppBarLayout mAppBarLayout;
     private Toolbar mToolbar;
     private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR  = 0.9f;
@@ -80,15 +80,36 @@ public class profile extends AppCompatActivity implements AppBarLayout.OnOffsetC
                     if (success.equals("ok")) {
                         TextView name = (TextView)findViewById(R.id.textView6);
                         //name.setText(tokenSaver.getName(profile.this));
-                        name.setText(jsonResponse.getString("username"));
+                        name.setText(jsonResponse.getString("name"));
                         Name = (String) name.getText();
                         TextView age = (TextView)findViewById(R.id.textView7);
                         TextView sex = (TextView)findViewById(R.id.textView8);
+
+
+                        TextView country = (TextView)findViewById(R.id.textView28);
+                        TextView city = (TextView)findViewById(R.id.textView30);
+                        TextView exp = (TextView)findViewById(R.id.textView32);
+                        try {
+                            city.setText(jsonResponse.getString("city"));
+                        }
+                        catch (Exception e){
+                        }
+                        try {
+                            country.setText(jsonResponse.getString("country"));
+                        }
+                        catch (Exception e){
+                        }
+                        try {
+                            exp.setText(jsonResponse.getString("experience"));
+                        }
+                        catch (Exception e){
+                        }
 
                         Age=jsonResponse.getString("age");
 
                         //String buf="Возраст: "+Age;
                         age.setText(Age);
+                        dateAgeD = jsonResponse.getString("age2");
 
                         Sex=jsonResponse.getString("sex");
                         switch (Integer.parseInt(Sex)){
@@ -213,7 +234,7 @@ public class profile extends AppCompatActivity implements AppBarLayout.OnOffsetC
             case R.id.item2:
                 //startActivity(new Intent(this, profile_change.class));
                 Intent intent = new Intent(this, profile_change.class);
-                intent.putExtra("age", dateAge);
+                intent.putExtra("age", dateAgeD);
                 intent.putExtra("sex", Sex);
                 startActivity(intent);
                 return true;

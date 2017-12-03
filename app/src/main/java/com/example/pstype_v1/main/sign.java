@@ -1,7 +1,12 @@
 package com.example.pstype_v1.main;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.HideReturnsTransformationMethod;
@@ -85,17 +90,24 @@ public class sign extends AppCompatActivity {
         }
     };
     private VKRequest currentRequest, currentRequest2;
+
+    String VkCountry, VkCity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign);
         VKUIHelper.onCreate(sign.this);
-        //VKSdk.getAccessToken()
         VKSdk.initialize(sdkListener, appId, VKAccessToken.tokenFromSharedPreferences(sign.this, vkTokenKey));
         final Functions fun = new Functions(this);
         tokenSaver.clearToken(this);
         String[] fingerprints = VKUtil.getCertificateFingerprint(this, this.getPackageName());
-        //VKSdk.logout();
+
+
+        requestMultiplePermissions();
+
+
+
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         final EditText etUsername = (EditText) findViewById(R.id.editText);
         final EditText etPassword = (EditText) findViewById(R.id.editText2);
@@ -161,22 +173,22 @@ public class sign extends AppCompatActivity {
             public void onClick(View v) {
                 final String username = etUsername.getText().toString();
                 final String password = etPassword.getText().toString();
-                            Response.Listener<String> responseListener = new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    try {
-                            JSONObject jsonResponse = new JSONObject(response);
-                            String success = jsonResponse.getString("status");
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        String success = jsonResponse.getString("status");
 
-                            if (success.equals("ok")) {
-                                String token = jsonResponse.getString("token");
-                                tokenSaver.setToken(sign.this,token);
-                                tokenSaver.setName(sign.this,username);
-                                Intent intent = new Intent(sign.this, general.class);
-                                progressBar.setVisibility(ProgressBar.INVISIBLE);
-                                sign.this.startActivity(intent);
-                                finish();
-                            }
+                    if (success.equals("ok")) {
+                        String token = jsonResponse.getString("token");
+                        tokenSaver.setToken(sign.this,token);
+                        tokenSaver.setName(sign.this,username);
+                        Intent intent = new Intent(sign.this, general.class);
+                        progressBar.setVisibility(ProgressBar.INVISIBLE);
+                        sign.this.startActivity(intent);
+                        finish();
+                    }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -271,7 +283,7 @@ public class sign extends AppCompatActivity {
 //        if ((currentRequest == null)&&(flag<3) ) {
 //            return;
 //        }
-        currentRequest = VKApi.users().get(VKParameters.from(VKApiConst.FIELDS, "sex,bdate,first_name,last_name,photo_200,id"));
+        currentRequest = VKApi.users().get(VKParameters.from(VKApiConst.FIELDS, "sex,bdate,first_name,last_name,photo_200,id, city, country"));
         currentRequest.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
@@ -286,16 +298,25 @@ public class sign extends AppCompatActivity {
                     res=res.substring(1,res.length());
                     JSONObject jsonVK=new JSONObject(res);
                     bdate = jsonVK.getString("bdate");
+                    sex1=jsonVK.getInt("sex");
+                    if (sex1==1) sex1=2;
+                    else if (sex1==2) sex1=1;
+                    VkCity = jsonVK.getString("city");
+                    VkCountry = jsonVK.getString("country");
+                    jsonVK=new JSONObject(VkCity);
+                    VkCity = jsonVK.getString("title");
+                    jsonVK=new JSONObject(VkCountry);
+                    VkCountry = jsonVK.getString("title");
                     sex1 = Integer.parseInt(jsonVK.getString("sex"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
                 final String username= user.first_name +" "+ user.last_name;
-                String id="id"+user.id;
+                final String id="id"+user.id;
                 final String photo=user.photo_200;
 
-                String americanDate;
+                String americanDate = "";
                 int age;
                 if (bdate.length()<6){
                     age=0;
@@ -305,9 +326,9 @@ public class sign extends AppCompatActivity {
                     Calendar calendar = Calendar.getInstance();
                     int byear=Integer.parseInt(bdata[2]);
                     int year=calendar.get(Calendar.YEAR);
-                    age=year-byear;
                     int month= calendar.get(Calendar.MONTH);
                     int bmonth=Integer.parseInt(bdata[1])+1;
+                    age=year-byear;
                     if (bmonth>month)
                         age--;
                     if (bmonth==month){
@@ -316,10 +337,11 @@ public class sign extends AppCompatActivity {
                         if (bday>day)
                             age--;
                     }
+                    if (age<14 || age>100) age=0;
+                    americanDate = bdata[0]+"-"+bdata[1]+"-"+bdata[2];
                 }
-                String[] bdata = bdate.split(Pattern.quote("."));
-                americanDate = bdata[0]+"-"+bdata[1]+"-"+bdata[2];
 
+                final int Age = age;
                 Response.Listener<String> responseListener2 = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -327,8 +349,25 @@ public class sign extends AppCompatActivity {
                         try {
                             jsonResponse = new JSONObject(response);
                             String success = jsonResponse.getString("status");
+                            final String token = jsonResponse.getString("token");
                             if (success.equals("ok")) {
                                 Toast.makeText(getApplicationContext(), "Пользователь добавлен", Toast.LENGTH_SHORT).show();
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(sign.this);
+                                builder.setMessage("Для завершения регистрации необходимо дополнить информацию о себе")
+                                        .setNegativeButton("ОК",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog,
+                                                                        int id) {
+                                                        tokenSaver.clearToken(sign.this);
+                                                        Intent intent = new Intent(sign.this, addSignup.class);
+                                                        intent.putExtra("age", Age);
+                                                        intent.putExtra("token", token);
+                                                        sign.this.startActivity(intent);
+                                                    }
+                                                })
+                                        .create()
+                                        .show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -347,65 +386,74 @@ public class sign extends AppCompatActivity {
                                     .create()
                                     .show();
                         }
+                        Response.Listener<String> responseListener3 = new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    JSONObject jsonResponse = new JSONObject(response);
+                                    String success = jsonResponse.getString("status");
+                                    if (success.equals("ok")) {
+                                        tokenSaver.setName(sign.this, username);
+                                        tokenSaver.setURL(sign.this, photo);
+                                        tokenSaver.setToken(sign.this,jsonResponse.getString("token"));
+
+
+                                        Intent genIntent = new Intent(sign.this, general.class);
+                                        sign.this.startActivity(genIntent);
+                                        findViewById(R.id.progressBar).setVisibility(ProgressBar.INVISIBLE);
+                                        finish();
+                                    }
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        };
+                        Response.ErrorListener errorListener3= new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                NetworkResponse response = error.networkResponse;
+                                findViewById(R.id.progressBar).setVisibility(ProgressBar.INVISIBLE);
+                                if(response==null){
+                                    AlertDialog.Builder builder3 = new AlertDialog.Builder(sign.this);
+                                    builder3.setMessage("Отсутствует подключение к интернету")
+                                            .setNegativeButton("Повторить", null)
+                                            .create()
+                                            .show();
+                                }
+                            }
+                        };
+
+                        String[] headers2 = {"username", "password"};
+                        String[] values2 = {id, id};
+                        Request vksignReq = new Request(headers2,values2,getString(R.string.url_signin),responseListener3,errorListener3);
+                        RequestQueue queue3 = Volley.newRequestQueue(sign.this);
+                        int socketTimeout = 30000;//30 seconds - change to what you want
+                        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+                        vksignReq.setRetryPolicy(policy);
+                        queue3.add(vksignReq);
                     }
                 };
 
                 bdate.replace(Pattern.quote("."), "-");
-                String[] headers = {"usernamevk","idvk","sex", "age"};
-                String[] values = {username, id, String.valueOf(sex1), americanDate};
-                Request VKregReq = new Request(headers,values,getString(R.string.url_vksignup),responseListener2,errorListener2);
+                String[] headers, values;
+                if (Age==0) {
+                    headers = new String[]{"username", "password", "sex", "country", "city", "name"};
+                    values = new String[] {id, id, String.valueOf(sex1), VkCountry, VkCity, username};
+                }
+                else
+                {
+                    headers =  new String[]{"username", "password", "sex", "age", "country", "city", "name"};
+                    values =  new String[]{id, id, String.valueOf(sex1), americanDate, VkCountry, VkCity, username};
+                }
+                Request VKregReq = new Request(headers,values,getString(R.string.url_signup),responseListener2,errorListener2);
                 RequestQueue queue2 = Volley.newRequestQueue(sign.this);
                 int socketTimeout = 30000;//30 seconds - change to what you want
                 RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
                 VKregReq.setRetryPolicy(policy);
                 queue2.add(VKregReq);
 
-                Response.Listener<String> responseListener3 = new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject jsonResponse = new JSONObject(response);
-                            String success = jsonResponse.getString("status");
-                            if (success.equals("ok")) {
-                                tokenSaver.setName(sign.this, username);
-                                tokenSaver.setURL(sign.this, photo);
-                                tokenSaver.setToken(sign.this,jsonResponse.getString("token"));
 
-
-                                Intent genIntent = new Intent(sign.this, general.class);
-                                sign.this.startActivity(genIntent);
-                                findViewById(R.id.progressBar).setVisibility(ProgressBar.INVISIBLE);
-                                finish();
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                };
-                Response.ErrorListener errorListener3= new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        NetworkResponse response = error.networkResponse;
-                        findViewById(R.id.progressBar).setVisibility(ProgressBar.INVISIBLE);
-                        if(response==null){
-                            AlertDialog.Builder builder3 = new AlertDialog.Builder(sign.this);
-                            builder3.setMessage("Отсутствует подключение к интернету")
-                                    .setNegativeButton("Повторить", null)
-                                    .create()
-                                    .show();
-                        }
-                    }
-                };
-
-                String[] headers2 = {"idvk"};
-                String[] values2 = {id};
-                Request vksignReq = new Request(headers2,values2,getString(R.string.url_vksignin),responseListener3,errorListener3);
-                RequestQueue queue3 = Volley.newRequestQueue(sign.this);
-                //int socketTimeout = 30000;//30 seconds - change to what you want
-                //RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-                vksignReq.setRetryPolicy(policy);
-                queue3.add(vksignReq);
             }
 
             @Override
@@ -436,5 +484,28 @@ public class sign extends AppCompatActivity {
             }
         });
 
+    }
+    public void requestMultiplePermissions() {
+        ActivityCompat.requestPermissions(this,
+                new String[] {
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.INTERNET,
+                        Manifest.permission.ACCESS_NETWORK_STATE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                },
+                10001);
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        if (requestCode == 10001) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            } else {
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 }

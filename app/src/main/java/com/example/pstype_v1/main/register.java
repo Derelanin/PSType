@@ -6,14 +6,19 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
@@ -25,6 +30,14 @@ import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.R;
 import com.example.pstype_v1.useful.Functions;
 import com.example.pstype_v1.useful.Request;
+import com.vk.sdk.VKAccessToken;
+import com.vk.sdk.VKSdk;
+import com.vk.sdk.VKUIHelper;
+import com.vk.sdk.api.VKError;
+import com.vk.sdk.api.VKParameters;
+import com.vk.sdk.api.VKRequest;
+import com.vk.sdk.api.VKResponse;
+import com.vk.sdk.dialogs.VKCaptchaDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,11 +54,58 @@ public class register extends AppCompatActivity {
     String date = myDay+"-"+(myMonth+1)+"-"+myYear;
     String americanDate;
     EditText datePick;
+    int[] dbId;
+    String[] dbName;
+    int[] dbId2;
+    String[] dbName2;
+    ArrayAdapter<String> adapter, adapter2;
+    String[] exp = { "Отсутствует", "Менее 6 месяцев", "От 6 месяцев до 1 года", "1-3 года",
+            "3-5 лет", "5-10 лет", "10-15 лет", "15-20 лет", "Более 20 лет" };
+
+    private String appId = "6102430";
+    private static String[] vkScope = new String[]{ };
+    public static String vkTokenKey = "VK_ACCESS_TOKEN";
+    private final VKSdkListener sdkListener = new VKSdkListener() {
+        @Override
+        public void onAcceptUserToken(VKAccessToken token) {
+            Log.d("VkDemoApp", "onAcceptUserToken " + token);
+            //startLoading();
+        }
+        @Override
+        public void onReceiveNewToken(VKAccessToken newToken) {
+            Log.d("VkDemoApp", "onReceiveNewToken " + newToken);
+            newToken.saveTokenToSharedPreferences(getApplicationContext(), vkTokenKey);
+        }
+        @Override
+        public void onRenewAccessToken(VKAccessToken token) {
+            Log.d("VkDemoApp", "onRenewAccessToken " + token);
+            //startLoading();
+        }
+        @Override
+        public void onCaptchaError(VKError captchaError) {
+            Log.d("VkDemoApp", "onCaptchaError " + captchaError);
+            new VKCaptchaDialog(captchaError).show();
+        }
+        @Override
+        public void onTokenExpired(VKAccessToken expiredToken) {
+            Log.d("VkDemoApp", "onTokenExpired " + expiredToken);
+            VKSdk.authorize(vkScope, true, false);
+        }
+        @Override
+        public void onAccessDenied(VKError authorizationError) {
+            Log.d("VkDemoApp", "onAccessDenied " + authorizationError);
+        }
+    };
+    private VKRequest currentRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        VKUIHelper.onCreate(register.this);
+        VKSdk.initialize(sdkListener, appId, VKAccessToken.tokenFromSharedPreferences(register.this, vkTokenKey));
+
         final Functions func = new Functions(register.this);
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar2);
         final EditText etusername=(EditText)findViewById(R.id.editText3);
@@ -54,6 +114,114 @@ public class register extends AppCompatActivity {
         final Button buttonReg = (Button) findViewById(R.id.button4);
         final RadioGroup buttonSex = (RadioGroup)findViewById(R.id.RadioGroup);
         final int[] sex = {0};
+        final Spinner driverExp = (Spinner)findViewById(R.id.spinner);
+        final EditText drExp = (EditText)findViewById(R.id.editText6);
+        final EditText country = (EditText)findViewById(R.id.editText8);
+        final EditText city = (EditText)findViewById(R.id.editText9);
+        final TextInputLayout hideCity = (TextInputLayout)findViewById(R.id.textInputLayout8);
+        final Spinner database = (Spinner)findViewById(R.id.databases);
+
+        ArrayAdapter<String> adapterExp = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, exp);
+        adapterExp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        driverExp.setAdapter(adapterExp);
+        driverExp.setSelection(1);
+        drExp.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (drExp.isFocused()){
+                    driverExp.performClick();
+                    driverExp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            drExp.setText(driverExp.getSelectedItem().toString());
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                        }
+                    });
+                    if (driverExp.getSelectedItemPosition()==0)
+                        drExp.setText(driverExp.getSelectedItem().toString());
+                    drExp.clearFocus();
+                }
+            }
+        });
+
+
+        datePick = (EditText)findViewById(R.id.editText5);
+        datePick.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (datePick.isFocused()){
+                    showDialog(dialog_date);
+                    datePick.clearFocus();
+                }
+            }
+        });
+
+        getDB();
+        country.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (country.isFocused()){
+                    database.setAdapter(adapter);
+                    //flCity=false;
+                    database.performClick();
+                    country.setText("");
+                    //database.callOnClick();
+                    //database.clearFocus();
+                    database.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                            if (flCity){
+                                //country.setText(database.getSelectedItem().toString());
+                                getCities(dbId[position]);
+                                city.setText("");
+                                country.setText(database.getSelectedItem().toString());
+                                hideCity.setVisibility(View.VISIBLE);
+                                //flCity=false;
+//                            }
+//                            else
+//                                flCity=true;
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                            country.setText("");
+                        }
+                    });
+                    country.clearFocus();
+                }
+            }
+        });
+        city.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (city.isFocused()){
+                    database.setAdapter(adapter2);
+//                    flCity=false;
+                    database.performClick();
+                    database.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                            if (flCity){
+                                city.setText(database.getSelectedItem().toString());
+//                                flCity=false;
+//                            }
+//                            else
+//                                flCity=true;
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                            city.setText("");
+                        }
+                    });
+                    city.clearFocus();
+                }
+            }
+        });
+
 
         etpassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -80,14 +248,6 @@ public class register extends AppCompatActivity {
                 }
             }
         });
-        datePick = (EditText)findViewById(R.id.editText5);
-        Button bdate = (Button)findViewById(R.id.date);
-        bdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDialog(dialog_date);
-            }
-        });
 
         buttonReg.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -105,7 +265,6 @@ public class register extends AppCompatActivity {
                             .show();
                     return;
                 }
-                String age = datePick.getText().toString();
                 if (Age()<14) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(register.this);
                     builder.setMessage("Возраст должен быть больше либо равен 14")
@@ -168,8 +327,8 @@ public class register extends AppCompatActivity {
                     }
                 };
                 progressBar.setVisibility(ProgressBar.VISIBLE);
-                String[] headers = {"username", "password", "age", "sex"};
-                String[] values = {username, password, americanDate, String.valueOf(sex[0])};
+                String[] headers = {"username", "password", "age", "sex", "name", "country", "city", "experience"};
+                String[] values = {username, password, americanDate, String.valueOf(sex[0]), username, country.getText().toString(), city.getText().toString(), drExp.getText().toString()};
                 Request regReq = new Request(headers,values,getString(R.string.url_signup),responseListener,errorListener);
                 RequestQueue queue = Volley.newRequestQueue(register.this);
                 int socketTimeout = 30000;//30 seconds - change to what you want
@@ -244,5 +403,119 @@ public class register extends AppCompatActivity {
                     age--;
             }
             return age;
+    }
+
+    private abstract class VKSdkListener extends com.vk.sdk.VKSdkListener {
+        public abstract void onCaptchaError(VKError captchaError);
+
+        public abstract void onTokenExpired(VKAccessToken expiredToken);
+
+        public abstract void onAccessDenied(VKError authorizationError);
+
+        public abstract void onReceiveNewToken(VKAccessToken newToken);
+    }
+    private void getDB(){
+        if (currentRequest != null) {
+            currentRequest.cancel();
+        }
+        currentRequest = new VKRequest("database.getCountries", VKParameters.from("need_all", "1","count","1000"));
+        currentRequest.executeWithListener(new VKRequest.VKRequestListener() {
+            @Override
+            public void onComplete(VKResponse response) {
+                super.onComplete(response);
+                Log.d("VkDemoApp", "onComplete " + response);
+                JSONObject jsonResponse=response.json;
+                try {
+                    String res = jsonResponse.getString("response");
+                    res="{"+res.substring(1,res.length())+"}";
+                    JSONObject jsonVK=new JSONObject(res);
+                    int count = jsonVK.getInt("count");
+                    dbId=new int[count];
+                    dbName=new String[count];
+                    res=jsonVK.getString("items");
+                    res=res.substring(1,res.length());
+                    String[] items = res.split("\\},");
+                    for (int i=0; i<count; i++){
+                        jsonVK=new JSONObject(items[i]+"}");
+                        dbId[i]=jsonVK.getInt("id");
+                        dbName[i]=jsonVK.getString("title");
+                    }
+                    adapter = new ArrayAdapter<String>(register.this, android.R.layout.simple_spinner_item, dbName);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void attemptFailed(VKRequest request, int attemptNumber, int totalAttempts) {
+                super.attemptFailed(request, attemptNumber, totalAttempts);
+                Log.d("VkDemoApp", "attemptFailed " + request + " " + attemptNumber + " " + totalAttempts);
+            }
+
+            @Override
+            public void onError(VKError error) {
+                super.onError(error);
+            }
+
+            @Override
+            public void onProgress(VKRequest.VKProgressType progressType, long bytesLoaded, long bytesTotal) {
+                super.onProgress(progressType, bytesLoaded, bytesTotal);
+                Log.d("VkDemoApp", "onProgress " + progressType + " " + bytesLoaded + " " + bytesTotal);
+            }
+        });
+    }
+
+    private void getCities(int cityId){
+        if (currentRequest != null) {
+            currentRequest.cancel();
+        }
+        currentRequest = new VKRequest("database.getCities", VKParameters.from("need_all", "0","count","1000","country_id", String.valueOf(cityId)));
+        currentRequest.executeWithListener(new VKRequest.VKRequestListener() {
+            @Override
+            public void onComplete(VKResponse response) {
+                super.onComplete(response);
+                Log.d("VkDemoApp", "onComplete " + response);
+                JSONObject jsonResponse=response.json;
+                try {
+                    String res = jsonResponse.getString("response");
+                    res="{"+res.substring(1,res.length())+"}";
+                    JSONObject jsonVK=new JSONObject(res);
+                    int count = jsonVK.getInt("count");
+                    dbId2=new int[count];
+                    dbName2=new String[count];
+                    res=jsonVK.getString("items");
+                    res=res.substring(1,res.length());
+                    String[] items = res.split("\\},");
+                    for (int i=0; i<count; i++){
+                        jsonVK=new JSONObject(items[i]+"}");
+                        dbId2[i]=jsonVK.getInt("id");
+                        dbName2[i]=jsonVK.getString("title");
+                    }
+                    adapter2 = new ArrayAdapter<String>(register.this, android.R.layout.simple_spinner_dropdown_item, dbName2);
+                    adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    adapter2.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void attemptFailed(VKRequest request, int attemptNumber, int totalAttempts) {
+                super.attemptFailed(request, attemptNumber, totalAttempts);
+                Log.d("VkDemoApp", "attemptFailed " + request + " " + attemptNumber + " " + totalAttempts);
+            }
+
+            @Override
+            public void onError(VKError error) {
+                super.onError(error);
+            }
+
+            @Override
+            public void onProgress(VKRequest.VKProgressType progressType, long bytesLoaded, long bytesTotal) {
+                super.onProgress(progressType, bytesLoaded, bytesTotal);
+                Log.d("VkDemoApp", "onProgress " + progressType + " " + bytesLoaded + " " + bytesTotal);
+            }
+        });
     }
 }

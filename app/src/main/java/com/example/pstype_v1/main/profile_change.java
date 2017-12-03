@@ -59,20 +59,20 @@ public class profile_change extends AppCompatActivity {
         final RadioButton male = (RadioButton)findViewById(R.id.radioButton);
         final RadioButton female = (RadioButton)findViewById(R.id.radioButton2);
         final RadioButton not = (RadioButton)findViewById(R.id.radioButton3);
-        //final EditText age = (EditText)findViewById(R.id.age);
+        final EditText age = (EditText)findViewById(R.id.age);
         final int[] sex = {0};
 
         datePick = (EditText)findViewById(R.id.age);
         Intent intent = getIntent();
-        //datePick.setText(intent.getStringExtra("age"));
-        //date = intent.getStringExtra("age");
 
-        //String[] bdata = (intent.getStringExtra("age")).split(Pattern.quote("-"));
-        //Calendar calendar = Calendar.getInstance();
-//        myDay=Integer.parseInt(bdata[0]);
-//        myMonth=Integer.parseInt(bdata[1])-1;
-//        myYear=Integer.parseInt(bdata[2]);
-//        americanDate = (myMonth+1)+"-"+myDay+"-"+myYear;
+        String[] bdata = (intent.getStringExtra("age")).split(Pattern.quote("-"));
+        Calendar calendar = Calendar.getInstance();
+        myDay=Integer.parseInt(bdata[0]);
+        myMonth=Integer.parseInt(bdata[1])-1;
+        myYear=Integer.parseInt(bdata[2].substring(0,2));
+        americanDate = bdata[0]+"-"+bdata[1]+"-"+bdata[2].substring(0,2);
+        date = bdata[2].substring(0,2)+"-"+bdata[1]+"-"+bdata[0];
+        datePick.setText(bdata[2].substring(0,2)+"-"+bdata[1]+"-"+bdata[0]);
 
         Button bdate = (Button)findViewById(R.id.date);
         bdate.setOnClickListener(new View.OnClickListener() {

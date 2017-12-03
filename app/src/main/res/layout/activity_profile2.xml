@@ -133,7 +133,7 @@
             android:visibility="visible">
 
             <android.support.constraint.ConstraintLayout
-                android:id="@+id/pr1"
+                android:id="@+id/pr111"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -143,7 +143,7 @@
                 android:layout_marginTop="24dp">
 
                 <ImageView
-                    android:id="@+id/imageView11"
+                    android:id="@+id/imageView111"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginLeft="16dp"
@@ -156,16 +156,42 @@
                     tools:ignore="ContentDescription" />
 
                 <TextView
-                    android:id="@+id/textView17"
+                    android:id="@+id/textView171"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/pr111"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="@+id/imageView111"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/pr1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/pr111"
+                android:layout_marginTop="24dp"
+                android:layout_marginLeft="40dp">
+
+                <TextView
+                    android:id="@+id/textView17"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="32dp"
                     android:layout_marginStart="8dp"
                     android:text="@string/pr1"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="@+id/imageView11"
+                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -195,32 +221,20 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pr1">
-
-                <ImageView
-                    android:id="@+id/imageView13"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:tint="@color/colorDarkBlue"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/psycho"
-                    tools:ignore="ContentDescription" />
+                app:layout_constraintTop_toBottomOf="@+id/pr1"
+                android:layout_marginLeft="40dp">
 
                 <TextView
                     android:id="@+id/textView18"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginLeft="32dp"
                     android:layout_marginStart="8dp"
                     android:text="@string/pr2"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="@+id/imageView13"
+                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -250,32 +264,20 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pr2">
-
-                <ImageView
-                    android:id="@+id/imageView14"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:tint="@color/colorDarkBlue"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/psycho"
-                    tools:ignore="ContentDescription" />
+                app:layout_constraintTop_toBottomOf="@+id/pr2"
+                android:layout_marginLeft="40dp">
 
                 <TextView
                     android:id="@+id/textView19"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginLeft="32dp"
                     android:layout_marginStart="8dp"
                     android:text="@string/pr3"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="@+id/imageView14"
+                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -297,17 +299,143 @@
             </android.support.constraint.ConstraintLayout>
 
             <android.support.constraint.ConstraintLayout
-                android:id="@+id/pr4"
+                android:id="@+id/pr11"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="0dp"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pr3">
+                app:layout_constraintTop_toBottomOf="@+id/pr3"
+                android:layout_marginLeft="40dp">
+
+                <TextView
+                    android:id="@+id/textView27"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/pr11"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView28"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/pr"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintLeft_toRightOf="@+id/textView27"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/pr12"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/pr11"
+                android:layout_marginLeft="40dp">
+
+                <TextView
+                    android:id="@+id/textView29"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/pr12"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView30"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/pr"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintLeft_toRightOf="@+id/textView29"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/pr13"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/pr12"
+                android:layout_marginLeft="40dp">
+
+                <TextView
+                    android:id="@+id/textView31"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/pr13"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView32"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/pr"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintLeft_toRightOf="@+id/textView31"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/pr112"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/pr13"
+                android:layout_marginTop="32dp">
 
                 <ImageView
-                    android:id="@+id/imageView15"
+                    android:id="@+id/imageView112"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginLeft="16dp"
@@ -320,16 +448,42 @@
                     tools:ignore="ContentDescription" />
 
                 <TextView
+                    android:id="@+id/textView172"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/pr112"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="@+id/imageView112"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/pr4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/pr112"
+                android:layout_marginLeft="40dp">
+
+                <TextView
                     android:id="@+id/textView20"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginLeft="32dp"
                     android:layout_marginStart="8dp"
                     android:text="@string/pr4"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="@+id/imageView15"
+                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -359,32 +513,20 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pr4">
-
-                <ImageView
-                    android:id="@+id/imageView16"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:tint="@color/colorDarkBlue"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/statistics"
-                    tools:ignore="ContentDescription" />
+                app:layout_constraintTop_toBottomOf="@+id/pr4"
+                android:layout_marginLeft="40dp">
 
                 <TextView
                     android:id="@+id/textView21"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginLeft="32dp"
                     android:layout_marginStart="8dp"
                     android:text="@string/pr5"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="@+id/imageView16"
+                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -413,32 +555,20 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pr5">
-
-                <ImageView
-                    android:id="@+id/imageView17"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:tint="@color/colorDarkBlue"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/statistics"
-                    tools:ignore="ContentDescription" />
+                app:layout_constraintTop_toBottomOf="@+id/pr5"
+                android:layout_marginLeft="40dp">
 
                 <TextView
                     android:id="@+id/textView22"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginLeft="32dp"
                     android:layout_marginStart="8dp"
                     android:text="@string/pr6"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="@+id/imageView17"
+                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -468,32 +598,19 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pr10">
-
-                <ImageView
-                    android:id="@+id/imageView18"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:tint="@color/colorDarkBlue"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/statistics"
-                    tools:ignore="ContentDescription" />
-
+                app:layout_constraintTop_toBottomOf="@+id/pr10"
+                android:layout_marginLeft="40dp">
                 <TextView
                     android:id="@+id/textView23"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginLeft="32dp"
                     android:layout_marginStart="8dp"
                     android:text="@string/pr7"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="@+id/imageView18"
+                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -522,32 +639,20 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pr7">
-
-                <ImageView
-                    android:id="@+id/imageView19"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:tint="@color/colorDarkBlue"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/statistics"
-                    tools:ignore="ContentDescription" />
+                app:layout_constraintTop_toBottomOf="@+id/pr7"
+                android:layout_marginLeft="40dp">
 
                 <TextView
                     android:id="@+id/textView24"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginLeft="32dp"
                     android:layout_marginStart="8dp"
                     android:text="@string/pr8"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="@+id/imageView19"
+                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -576,32 +681,20 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pr8">
-
-                <ImageView
-                    android:id="@+id/imageView20"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:tint="@color/colorDarkBlue"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/statistics"
-                    tools:ignore="ContentDescription" />
+                app:layout_constraintTop_toBottomOf="@+id/pr8"
+                android:layout_marginLeft="40dp">
 
                 <TextView
                     android:id="@+id/textView25"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginLeft="32dp"
                     android:layout_marginStart="8dp"
                     android:text="@string/pr9"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="@+id/imageView20"
+                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -630,32 +723,20 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pr6">
-
-                <ImageView
-                    android:id="@+id/imageView21"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:tint="@color/colorDarkBlue"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/statistics"
-                    tools:ignore="ContentDescription" />
+                app:layout_constraintTop_toBottomOf="@+id/pr6"
+                android:layout_marginLeft="40dp">
 
                 <TextView
                     android:id="@+id/textView26"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginLeft="32dp"
                     android:layout_marginStart="8dp"
                     android:text="@string/pr10"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="@+id/imageView21"
+                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView

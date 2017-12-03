@@ -21,8 +21,16 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.R;
 import com.example.pstype_v1.useful.MyPreferenceActivity;
+import com.example.pstype_v1.useful.Request;
+import com.example.pstype_v1.useful.tokenSaver;
 import com.example.pstype_v1.useful.tracking;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,13 +38,18 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
@@ -52,13 +65,13 @@ public class Maps extends AppCompatActivity {
     Timer timer;
     TimerTask task;
     LatLng loc;
+    CameraPosition cameraPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        createMapView();
-
+        //stopService(new Intent(Maps.this, FastTracking.class));
         final FloatingActionButton gps = (FloatingActionButton)findViewById(R.id.gps);
         gps.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +88,18 @@ public class Maps extends AppCompatActivity {
         if (sPref.getBoolean("SCREEN", false))
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        if (sPref.getBoolean("POINTS", false)) {
+            start.setVisibility(View.INVISIBLE);
+            gps.setVisibility(View.INVISIBLE);
+            SharedPreferences.Editor editor = sPref.edit();
+            editor.putBoolean("POINTS", false);
+            editor.apply();
+            DrawPoints();
+        }
+        else
+            createMapView();
+
+
         SetTimer();
 
         boolean showButton = sPref.getBoolean("MAP", false);
@@ -90,9 +115,43 @@ public class Maps extends AppCompatActivity {
                 googleMap.clear();
                 polylineOptions = new PolylineOptions()
                         .add(loc)
-                        .color(Color.RED).width(3);
+                        .color(Color.RED).width(5);
                 //googleMap.addPolyline(polylineOptions);
                 //addTrack();
+
+                Date date = new Date();
+                String dd = new java.sql.Timestamp(date.getTime()) + "";
+                String dateTrack = dd.substring(0,10);
+                String StartTime = dd.substring(11,19);
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            String success = jsonResponse.getString("status");
+                            if (success.equals("ok")) {
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                Response.ErrorListener errorListener= new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        int k=0;
+                    }
+                };
+                String[] headers = {"token","dateTrack", "StartTime"};
+                String[] values = {tokenSaver.getToken(Maps.this),dateTrack, StartTime};
+                Request signReq = new Request(headers,values,getString(R.string.url_startPos),responseListener,errorListener);
+                RequestQueue queue = Volley.newRequestQueue(Maps.this);
+                int socketTimeout = 30000;//30 seconds - change to what you want
+                RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+                signReq.setRetryPolicy(policy);
+                queue.add(signReq);
+                MyPreferenceActivity.LogDelete(Maps.this);
 
                 MyPreferenceActivity.LogDelete(Maps.this);
                 SharedPreferences.Editor editor = sPref.edit();
@@ -128,6 +187,7 @@ public class Maps extends AppCompatActivity {
                 not=new com.example.pstype_v1.useful.Notification(Maps.this);
                 not.NotShow();
 
+                stopService(new Intent(Maps.this, tracking.class));
                 sPref = getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
                 editor = sPref.edit();
                 editor.putInt("FLAG", 0);
@@ -136,7 +196,7 @@ public class Maps extends AppCompatActivity {
                 editor = sp.edit();
                 editor.putBoolean("look", false);
                 editor.apply();
-                stopService(new Intent(Maps.this, tracking.class));
+                sendObr();
                 tracking.SendTracking sendTracking = new tracking.SendTracking(Maps.this);
                 sendTracking.execute();
                 timer.cancel();
@@ -160,11 +220,66 @@ public class Maps extends AppCompatActivity {
             point = new LatLng(Double.parseDouble(sep[0]),Double.parseDouble(sep[1]));
             polylineOptions
                     .add(point)
-                    .color(Color.RED).width(3);
+                    .color(Color.RED).width(5);
             googleMap.addPolyline(polylineOptions);
+
+            cameraPosition = new CameraPosition.Builder()
+                    .target(point)
+                    .zoom(15)
+                    .bearing(0)
+                    .tilt(0)
+                    .build();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    void sendObr(){
+        String FILENAME = "PSType-LatLng";
+        String points = "[";
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(openFileInput(FILENAME)));
+            String str = " ", latlng="";
+            while ((str = br.readLine()) != null) {
+                latlng=str;
+                String[] sep = latlng.split(Pattern.quote("|"));
+                points+="{lat: \""+Double.parseDouble(sep[0])+"\", lon: \""+Double.parseDouble(sep[1])+"\"};";
+            }
+
+            points = points.substring(0,points.length()-1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (Exception e){
+
+        }
+        points+="]";
+
+
+        Date date = new Date();
+        String dd = new java.sql.Timestamp(date.getTime()) + "";
+        String StopTime = dd.substring(11,19);
+
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+            }
+        };
+        Response.ErrorListener errorListener= new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        };
+        String[] headers = {"token","points", "StopTime"};
+        String[] values = {tokenSaver.getToken(Maps.this),points, StopTime};
+        Request signReq = new Request(headers,values,getString(R.string.url_obr),responseListener,errorListener);
+        RequestQueue queue = Volley.newRequestQueue(Maps.this);
+        int socketTimeout = 30000;//30 seconds - change to what you want
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        signReq.setRetryPolicy(policy);
+        queue.add(signReq);
     }
 
     void SetTimer(){
@@ -201,7 +316,6 @@ public class Maps extends AppCompatActivity {
 
     void getView()
     {
-        CameraPosition cameraPosition;
         CameraUpdate cameraUpdate;
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
@@ -309,9 +423,56 @@ public class Maps extends AppCompatActivity {
             }
             polylineOptions = new PolylineOptions()
                     .addAll(list)
-                    .color(Color.RED).width(3);
+                    .color(Color.RED).width(5);
             googleMap.addPolyline(polylineOptions);
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (Exception e){}
+    }
+
+    void DrawPoints(){
+        Intent intent = getIntent();
+        String point = intent.getStringExtra("points");
+        try {
+            if (null == googleMap) {
+                googleMap = ((MapFragment) getFragmentManager().findFragmentById(
+                        R.id.mapView)).getMap();
+            }
+        } catch (NullPointerException exception){
+            Log.e("mapApp", exception.toString());
+        }
+        point = point.substring(1,point.length()-1);
+        try {
+            String points[] = point.split(Pattern.quote(";"));
+            list=new ArrayList<LatLng>();
+            JSONObject jsonResponse = new JSONObject(points[0]);
+            double maxLon, maxLat, minLon, minLat;
+            LatLng start = new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon"));
+            for (int i=0; i< points.length; i++) {
+                jsonResponse = new JSONObject(points[i]);
+                list.add(new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon")));
+            }
+            polylineOptions = new PolylineOptions()
+                    .addAll(list)
+                    .color(Color.RED).width(5);
+            googleMap.addPolyline(polylineOptions);
+//            cameraPosition = new CameraPosition.Builder()
+//                    .target(start)
+//                    .zoom(15)
+//                    .bearing(0)
+//                    .tilt(0)
+//                    .build();
+
+            LatLngBounds.Builder bounds = new LatLngBounds.Builder();
+            for (LatLng p : list)
+                bounds.include(p);
+            int width = getResources().getDisplayMetrics().widthPixels;
+            int height = getResources().getDisplayMetrics().heightPixels;
+            int padding = (int) (width * 0.12); // offset from edges of the map 12% of screen
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(),  width, height, padding));
+
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }

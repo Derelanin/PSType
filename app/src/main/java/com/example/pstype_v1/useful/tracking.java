@@ -31,15 +31,19 @@ import com.example.pstype_v1.R;
 import com.example.pstype_v1.data.Contract;
 import com.example.pstype_v1.data.Contract.track;
 import com.example.pstype_v1.data.DbHelper;
+import com.example.pstype_v1.main.Maps;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import static com.google.android.gms.internal.zzhl.runOnUiThread;
 
@@ -153,7 +157,7 @@ public class tracking extends Service {
             if (ActivityCompat.checkSelfPermission(tracking.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(tracking.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-            showLocation(locationManager.getLastKnownLocation(provider));
+            //showLocation(locationManager.getLastKnownLocation(provider));
         }
 
         @Override
@@ -244,9 +248,10 @@ public class tracking extends Service {
                     SharedPreferences.Editor editor = sPref.edit();
                     editor.putInt("FLAG", flag);
                     editor.putInt("TIME", time);
+                    editor.putBoolean("MAP", false);
                     editor.apply();
                     run();
-
+                    sendObr();
                     SendTracking sendTracking = new SendTracking(this);
                     sendTracking.execute();
                 }
@@ -259,6 +264,54 @@ public class tracking extends Service {
     public void onDestroy() {
         super.onDestroy();
         locationManager.removeUpdates(locationListener);
+    }
+
+    void sendObr(){
+        String FILENAME = "PSType-LatLng";
+        String points = "[";
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(openFileInput(FILENAME)));
+            String str = " ", latlng="";
+            while ((str = br.readLine()) != null) {
+                latlng=str;
+                String[] sep = latlng.split(Pattern.quote("|"));
+                points+="{lat: \""+Double.parseDouble(sep[0])+"\", lon: \""+Double.parseDouble(sep[1])+"\"};";
+            }
+
+            points = points.substring(0,points.length()-1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (Exception e){
+
+        }
+        points+="]";
+
+
+        Date date = new Date();
+        String dd = new java.sql.Timestamp(date.getTime()) + "";
+        String StopTime = dd.substring(11,19);
+
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+            }
+        };
+        Response.ErrorListener errorListener= new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        };
+        String[] headers = {"token","points", "StopTime"};
+        String[] values = {tokenSaver.getToken(tracking.this),points, StopTime};
+        Request signReq = new Request(headers,values,getString(R.string.url_obr),responseListener,errorListener);
+        RequestQueue queue = Volley.newRequestQueue(tracking.this);
+        int socketTimeout = 30000;//30 seconds - change to what you want
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        signReq.setRetryPolicy(policy);
+        queue.add(signReq);
     }
 
     public void InputData (String date, double speed, double lat, double lon) {

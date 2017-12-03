@@ -17,7 +17,8 @@ public class Request extends StringRequest {
         super(Method.POST, url, listener, errorListener);
         params = new HashMap<>();
         for (int i=0; i<headers.length; i++)
-            params.put(headers[i],values[i]);
+            if (!values[i].equals(""))
+                params.put(headers[i],values[i]);
     }
 
     @Override

@@ -41,6 +41,7 @@ import java.io.InputStream;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class general extends AppCompatActivity {
+    File sdPath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         String flag = tokenSaver.getToken(general.this);
@@ -57,14 +58,19 @@ public class general extends AppCompatActivity {
             general.this.startActivity(intent);
         }
 
-        requestMultiplePermissions();
+        //requestMultiplePermissions();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general);
+
+        sdPath = Environment.getExternalStorageDirectory();
+        sdPath = new File(sdPath.getAbsolutePath() + "/" + "Android/data/com.example.pstype_v1");
+        boolean wasSuccessful = sdPath.mkdirs();
         //Button exit = (Button)findViewById(R.id.button3);
         ImageView exit = (ImageView) findViewById(R.id.exit);
         Button map = (Button)findViewById(R.id.button5);
         Button set = (Button)findViewById(R.id.settings);
         Button stat = (Button)findViewById(R.id.stat);
+        Button psycho = (Button)findViewById(R.id.psycho);
         //String[] fingerprints = VKUtil.getCertificateFingerprint(this, this.getPackageName());
         final Toolbar bar = (Toolbar) findViewById(R.id.toolbar2);
         bar.setTitle(tokenSaver.getName(general.this));
@@ -77,7 +83,7 @@ public class general extends AppCompatActivity {
                     String success = jsonResponse.getString("status");
 
                     if (success.equals("ok")) {
-                        bar.setTitle(jsonResponse.getString("username"));
+                        bar.setTitle(jsonResponse.getString("name"));
                     }
 
                 } catch (JSONException e) {
@@ -88,18 +94,10 @@ public class general extends AppCompatActivity {
         Response.ErrorListener errorListener= new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-//                tokenSaver.clearToken(general.this);
-//                Intent intent = new Intent(general.this, sign.class);
-//                general.this.startActivity(intent);
-//                finish();
-//                NetworkResponse response = error.networkResponse;
-//                String json = new String(response.data);
-//                json = trimMessage(json, "message", general.this);
-//                AlertDialog.Builder builder = new AlertDialog.Builder(general.this);
-//                builder.setMessage(json+"")
-//                        .setNegativeButton("Повторить", null)
-//                        .create()
-//                        .show();
+                tokenSaver.clearToken(general.this);
+                Intent intent = new Intent(general.this, sign.class);
+                general.this.startActivity(intent);
+                finish();
             }
         };
         String[] headers = {"token"};
@@ -120,9 +118,6 @@ public class general extends AppCompatActivity {
         }
         else if (tokenSaver.getURL(general.this).equals("VK"))
         {
-            File sdPath = Environment.getExternalStorageDirectory();
-            sdPath = new File(sdPath.getAbsolutePath() + "/" + "Android/data/com.example.pstype_v1");
-            boolean wasSuccessful = sdPath.mkdirs();
             File file = new File(sdPath,"myBitmap.jpg");
             Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
             CircleImageView ava = (CircleImageView) findViewById(R.id.avatar);
@@ -137,6 +132,13 @@ public class general extends AppCompatActivity {
             }
         });
 
+        psycho.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(general.this, profile.class);
+                general.this.startActivity(intent);
+            }
+        });
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -184,7 +186,7 @@ public class general extends AppCompatActivity {
         stat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(general.this, Statistics.class);
+                Intent intent = new Intent(general.this, tracks.class);
                 general.this.startActivity(intent);
             }
         });
@@ -249,8 +251,11 @@ public class general extends AppCompatActivity {
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 bimage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
                 //File file = new File(Environment.getExternalStorageDirectory()+ File.separator + "myBitmap.jpg");
-                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "Android/data/com.example.pstype_v1"+ File.separator + "myBitmap.jpg");
-                file.createNewFile();
+                sdPath = Environment.getExternalStorageDirectory();
+                sdPath = new File(sdPath.getAbsolutePath() + "/" + "Android/data/com.example.pstype_v1");
+                boolean wasSuccessful = sdPath.mkdirs();
+                File file = new File(sdPath+ File.separator + "myBitmap.jpg");
+                boolean s = file.createNewFile();
                 FileOutputStream fileOutputStream = new FileOutputStream(file);
                 fileOutputStream.write(bytes.toByteArray());
                 fileOutputStream.close();
