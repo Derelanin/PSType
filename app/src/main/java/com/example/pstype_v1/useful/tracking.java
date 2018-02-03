@@ -215,6 +215,7 @@ public class tracking extends Service {
                 if (speed > 10 && flag == 0) {
                     SetLogMessage("-------Обнаружено движение. Включено отслеживание раз в 1 секунду\n");
                     time = 1000;
+                    TODO: удаление текстовых данных, запись трека для отрисовки
                     run();
                     flag = 1;
                     SharedPreferences.Editor editor = sPref.edit();
