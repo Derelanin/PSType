@@ -173,6 +173,16 @@ public class sign extends AppCompatActivity {
             public void onClick(View v) {
                 final String username = etUsername.getText().toString();
                 final String password = etPassword.getText().toString();
+
+                if (username.matches("id\\d+"))
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(sign.this);
+                    builder.setMessage("Пользователь с таким именем не найден")
+                            .setNegativeButton("Повторить", null)
+                            .create()
+                            .show();
+                    return;
+                }
                 Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -425,7 +435,7 @@ public class sign extends AppCompatActivity {
                         };
 
                         String[] headers2 = {"username", "password"};
-                        String[] values2 = {id, id};
+                        String[] values2 = {id, id+"vk"};
                         Request vksignReq = new Request(headers2,values2,getString(R.string.url_signin),responseListener3,errorListener3);
                         RequestQueue queue3 = Volley.newRequestQueue(sign.this);
                         int socketTimeout = 30000;//30 seconds - change to what you want
@@ -439,12 +449,12 @@ public class sign extends AppCompatActivity {
                 String[] headers, values;
                 if (Age==0) {
                     headers = new String[]{"username", "password", "sex", "country", "city", "name"};
-                    values = new String[] {id, id, String.valueOf(sex1), VkCountry, VkCity, username};
+                    values = new String[] {id, id+"vk", String.valueOf(sex1), VkCountry, VkCity, username};
                 }
                 else
                 {
                     headers =  new String[]{"username", "password", "sex", "age", "country", "city", "name"};
-                    values =  new String[]{id, id, String.valueOf(sex1), americanDate, VkCountry, VkCity, username};
+                    values =  new String[]{id, id+"vk", String.valueOf(sex1), americanDate, VkCountry, VkCity, username};
                 }
                 Request VKregReq = new Request(headers,values,getString(R.string.url_signup),responseListener2,errorListener2);
                 RequestQueue queue2 = Volley.newRequestQueue(sign.this);

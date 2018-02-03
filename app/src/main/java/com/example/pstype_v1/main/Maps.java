@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
@@ -36,11 +37,13 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.ui.IconGenerator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -448,27 +451,38 @@ public class Maps extends AppCompatActivity {
             JSONObject jsonResponse = new JSONObject(points[0]);
             double maxLon, maxLat, minLon, minLat;
             LatLng start = new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon"));
+            LatLng stop = new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon"));
             for (int i=0; i< points.length; i++) {
                 jsonResponse = new JSONObject(points[i]);
                 list.add(new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon")));
+                stop = new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon"));
             }
             polylineOptions = new PolylineOptions()
                     .addAll(list)
                     .color(Color.RED).width(5);
             googleMap.addPolyline(polylineOptions);
-//            cameraPosition = new CameraPosition.Builder()
-//                    .target(start)
-//                    .zoom(15)
-//                    .bearing(0)
-//                    .tilt(0)
-//                    .build();
+
+            IconGenerator factory = new IconGenerator(this);
+            Bitmap icon = factory.makeIcon("A");
+            googleMap.addMarker(new MarkerOptions()
+                    .position(start)
+                    .draggable(false)
+                    .icon(BitmapDescriptorFactory.fromBitmap(icon))
+            );
+            icon = factory.makeIcon("B");
+            googleMap.addMarker(new MarkerOptions()
+                    .position(stop)
+                    .draggable(false)
+                    .icon(BitmapDescriptorFactory.fromBitmap(icon))
+            );
+
 
             LatLngBounds.Builder bounds = new LatLngBounds.Builder();
             for (LatLng p : list)
                 bounds.include(p);
             int width = getResources().getDisplayMetrics().widthPixels;
             int height = getResources().getDisplayMetrics().heightPixels;
-            int padding = (int) (width * 0.12); // offset from edges of the map 12% of screen
+            int padding = (int) (width * 0.12);
             googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(),  width, height, padding));
 
         } catch (JSONException e) {

@@ -256,6 +256,25 @@ public class register extends AppCompatActivity {
                 String password = etpassword.getText().toString();
                 String password2=etpassword2.getText().toString();
 
+                if (username.matches("id\\d+"))
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(register.this);
+                    builder.setMessage("Пользователь с таким именем уже существует")
+                            .setNegativeButton("Повторить", null)
+                            .create()
+                            .show();
+                    return;
+                }
+                if (drExp.getText().toString().equals(""))
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(register.this);
+                    builder.setMessage("Необходимо выбрать стаж вождения")
+                            .setNegativeButton("Повторить", null)
+                            .create()
+                            .show();
+                    return;
+                }
+
                 if (!password.equals(password2))
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(register.this);

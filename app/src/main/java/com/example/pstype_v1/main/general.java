@@ -94,10 +94,10 @@ public class general extends AppCompatActivity {
         Response.ErrorListener errorListener= new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                tokenSaver.clearToken(general.this);
-                Intent intent = new Intent(general.this, sign.class);
-                general.this.startActivity(intent);
-                finish();
+//                tokenSaver.clearToken(general.this);
+//                Intent intent = new Intent(general.this, sign.class);
+//                general.this.startActivity(intent);
+//                finish();
             }
         };
         String[] headers = {"token"};

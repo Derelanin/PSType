@@ -63,8 +63,8 @@
     <string name="not">Скрыть</string>
     <string name="drExp">Стаж вождения</string>
     <string name="ok_but">Подтвердить</string>
-    <string name="country">Страна</string>
-    <string name="city">Город</string>
+    <string name="country">Страна (необязательно)</string>
+    <string name="city">Город (необязательно)</string>
     <string name="att">Для завершения регистрации заполните данные</string>
 
     <!--Стаж вождения-->
