@@ -31,7 +31,6 @@ import com.example.pstype_v1.R;
 import com.example.pstype_v1.data.Contract;
 import com.example.pstype_v1.data.Contract.track;
 import com.example.pstype_v1.data.DbHelper;
-import com.example.pstype_v1.main.Maps;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.BufferedReader;
@@ -215,7 +214,7 @@ public class tracking extends Service {
                 if (speed > 10 && flag == 0) {
                     SetLogMessage("-------Обнаружено движение. Включено отслеживание раз в 1 секунду\n");
                     time = 1000;
-                    TODO: удаление текстовых данных, запись трека для отрисовки
+                    //TODO: удаление текстовых данных, запись трека для отрисовки
                     run();
                     flag = 1;
                     SharedPreferences.Editor editor = sPref.edit();
