@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -44,6 +45,14 @@ public class general extends AppCompatActivity {
     File sdPath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Проверка на нового пользователя
+        if (tokenSaver.getFIRST(general.this).isEmpty()) {
+            Intent intent = new Intent(general.this, welcome.class);
+            tokenSaver.setFIRST(general.this);
+            general.this.startActivity(intent);
+        }
+
+        //ПРоверка авторизации
         String flag = tokenSaver.getToken(general.this);
         if (flag.isEmpty())
         {
@@ -52,13 +61,6 @@ public class general extends AppCompatActivity {
             finish();
         }
 
-        if (tokenSaver.getFIRST(general.this).isEmpty()) {
-            Intent intent = new Intent(general.this, welcome.class);
-            tokenSaver.setFIRST(general.this);
-            general.this.startActivity(intent);
-        }
-
-        //requestMultiplePermissions();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general);
 
@@ -94,10 +96,24 @@ public class general extends AppCompatActivity {
         Response.ErrorListener errorListener= new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-//                tokenSaver.clearToken(general.this);
-//                Intent intent = new Intent(general.this, sign.class);
-//                general.this.startActivity(intent);
-//                finish();
+                NetworkResponse response = error.networkResponse;
+                AlertDialog.Builder builder = new AlertDialog.Builder(general.this);
+                if(response != null && response.data != null){
+                    switch(response.statusCode){
+                        case 500:
+                            tokenSaver.clearToken(general.this);
+                            Intent intent = new Intent(general.this, sign.class);
+                            general.this.startActivity(intent);
+                            finish();
+                            break;
+                    }
+                }
+                if(response==null){
+                    builder.setMessage("Отсутствует подключение к интернету")
+                            .setNegativeButton("Повторить", null)
+                            .create()
+                            .show();
+                }
             }
         };
         String[] headers = {"token"};

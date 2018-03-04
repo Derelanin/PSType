@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
@@ -43,7 +42,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.maps.android.ui.IconGenerator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -462,18 +460,15 @@ public class Maps extends AppCompatActivity {
                     .color(Color.RED).width(5);
             googleMap.addPolyline(polylineOptions);
 
-            IconGenerator factory = new IconGenerator(this);
-            Bitmap icon = factory.makeIcon("A");
             googleMap.addMarker(new MarkerOptions()
                     .position(start)
                     .draggable(false)
-                    .icon(BitmapDescriptorFactory.fromBitmap(icon))
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
             );
-            icon = factory.makeIcon("B");
             googleMap.addMarker(new MarkerOptions()
                     .position(stop)
                     .draggable(false)
-                    .icon(BitmapDescriptorFactory.fromBitmap(icon))
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
             );
 
 

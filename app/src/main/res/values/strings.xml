@@ -25,6 +25,7 @@
     <string name="SETTINGS">НАСТРОЙКИ</string>
     <string name="empty"> </string>
     <string name="track_wait">Идёт загрузка трека</string>
+    <string name="howFast">0 км/ч</string>
 
     <!-- profile -->
     <string name="pr_name">  </string>
