@@ -40,16 +40,12 @@ import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-
-import static com.google.android.gms.internal.zzhl.runOnUiThread;
 
 public class tracking extends Service {
     static int flag = 0;
     long trackStart;
-    boolean sleepFlag = false, send;
+    boolean sleepFlag = false, send, accel;
     static int time = 120000;
     final String FILENAME = "PSType-log";
     final String FILENAMEL = "PSType-LatLng";
@@ -98,6 +94,13 @@ public class tracking extends Service {
             SendTracking sendTracking = new SendTracking(this);
             sendTracking.execute();
         }
+        accel = sPref.getBoolean("ACCEL", false);
+        if (accel)
+        {
+            Accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+            sensorManager.registerListener(listener, Accelerometer,  SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
 
         decimalFormat = new DecimalFormat(pattern);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -105,28 +108,26 @@ public class tracking extends Service {
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, time, 0, locationListener);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, time, 0, locationListener);
-        Accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        sensorManager.registerListener(listener, Accelerometer,  SensorManager.SENSOR_DELAY_NORMAL);
 
         //Таймер для того, чтобы раз в 10 секунд запихивать в файлик последнюю точку.
-        timer = new Timer();
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            SetLatLng();
-                        }
-                        catch (Exception e){
-
-                        }
-                    }
-                });
-            }
-        };
-        timer.schedule(task, 0, 5000);
+//        timer = new Timer();
+//        TimerTask task = new TimerTask() {
+//            @Override
+//            public void run() {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        try {
+//                            SetLatLng();
+//                        }
+//                        catch (Exception e){
+//
+//                        }
+//                    }
+//                });
+//            }
+//        };
+//        timer.schedule(task, 0, 5000);
 
         return Service.START_STICKY;
     }
@@ -137,7 +138,6 @@ public class tracking extends Service {
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, time, 0, locationListener);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, time, 0, locationListener);
-        sensorManager.registerListener(listener, Accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     private LocationListener locationListener = new LocationListener() {
@@ -168,10 +168,19 @@ public class tracking extends Service {
     private SensorEventListener listener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
-            InputDataAccel(event.values[0], event.values[1], event.values[2]);
-            SetLogAccel(new java.sql.Timestamp(new Date().getTime())+" X:"+  decimalFormat.format(event.values[0])
-                    +" Y:"+ decimalFormat.format(event.values[1])
-                    +" Z:"+ decimalFormat.format(event.values[2])+"\n");
+            double x, y, z;
+            x = event.values[0];
+            y = event.values[1];
+            z = event.values[2];
+            //InputDataAccel(event.values[0], event.values[1], event.values[2]);
+            if (z>2){
+                LatLng point = GPSPoint;
+                SetLogAccel(new java.sql.Timestamp(new Date().getTime())+" X:"+  decimalFormat.format(x)
+                        +" Y:"+ decimalFormat.format(y)
+                        +" Z:"+ decimalFormat.format(z)
+                        +" Lat:"+ point.latitude
+                        +" Lon:"+ point.longitude+"\n");
+            }
         }
 
         @Override
@@ -202,6 +211,7 @@ public class tracking extends Service {
                 SetLogMessage("[" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + "] Ш: " + decimalFormat.format(location.getLatitude()) + "; Д: " + decimalFormat.format(location.getLongitude()) +
                         "; С: " + decimalFormat.format(speed) + "\n");
                 GPSPoint = new LatLng(location.getLatitude(),location.getLongitude());
+                SetLatLng();
 
                 //Надеюсь, что это работает.
                 /*
@@ -450,17 +460,6 @@ public class tracking extends Service {
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         db.delete(Contract.track.TABLE_NAME, "ID = ?", new String[]{_id});
         db.close();
-    }
-    void sendSleep()
-    {
-        //Здесь поток спит, чтобы успел обработаться запрос и не возникало чёртовых циклов, убивающих всё.
-        if (sleepFlag)
-            try {
-                TimeUnit.SECONDS.sleep(30);
-                sleepFlag=false;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
     }
     static void send(final Context context){
         DbHelper mDbHelper= new DbHelper(context);

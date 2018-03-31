@@ -60,6 +60,27 @@ public class general extends AppCompatActivity {
             general.this.startActivity(intent);
             finish();
         }
+        else{
+            Response.Listener<String> responseListener = new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                }
+            };
+            Response.ErrorListener errorListener= new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    tokenSaver.clearToken(general.this);
+                    Intent intent = new Intent(general.this, sign.class);
+                    general.this.startActivity(intent);
+                    finish();
+                }
+            };
+            String[] headers = {"token"};
+            String[] values = {tokenSaver.getToken(general.this)};
+            Request info = new Request(headers,values,getString(R.string.url_data),responseListener,errorListener);
+            RequestQueue queue = Volley.newRequestQueue(general.this);
+            queue.add(info);
+        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general);
@@ -98,16 +119,6 @@ public class general extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 NetworkResponse response = error.networkResponse;
                 AlertDialog.Builder builder = new AlertDialog.Builder(general.this);
-                if(response != null && response.data != null){
-                    switch(response.statusCode){
-                        case 500:
-                            tokenSaver.clearToken(general.this);
-                            Intent intent = new Intent(general.this, sign.class);
-                            general.this.startActivity(intent);
-                            finish();
-                            break;
-                    }
-                }
                 if(response==null){
                     builder.setMessage("Отсутствует подключение к интернету")
                             .setNegativeButton("Повторить", null)

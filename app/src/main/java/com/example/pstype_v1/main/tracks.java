@@ -208,7 +208,7 @@ public class tracks extends AppCompatActivity {
         Request signReq = new Request(headers,values,getString(R.string.url_getDate),responseListener,errorListener);
         RequestQueue queue = Volley.newRequestQueue(tracks.this);
         int socketTimeout = 30000;//30 seconds - change to what you want
-        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         signReq.setRetryPolicy(policy);
         queue.add(signReq);
 

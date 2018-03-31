@@ -112,6 +112,7 @@ public class Maps extends AppCompatActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Карта центруется на пользователе, очищается, начинает прокладку маршрута
                 gps.callOnClick();
                 googleMap.clear();
                 polylineOptions = new PolylineOptions()
@@ -120,6 +121,7 @@ public class Maps extends AppCompatActivity {
                 //googleMap.addPolyline(polylineOptions);
                 //addTrack();
 
+                //Отправление на сервер данных о начале поездки
                 Date date = new Date();
                 String dd = new java.sql.Timestamp(date.getTime()) + "";
                 String dateTrack = dd.substring(0,10);
@@ -149,27 +151,36 @@ public class Maps extends AppCompatActivity {
                 Request signReq = new Request(headers,values,getString(R.string.url_startPos),responseListener,errorListener);
                 RequestQueue queue = Volley.newRequestQueue(Maps.this);
                 int socketTimeout = 30000;//30 seconds - change to what you want
-                RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+                RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, 10, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
                 signReq.setRetryPolicy(policy);
                 queue.add(signReq);
 
+                //Удаление лога старой поездки
                 MyPreferenceActivity.LogDelete(Maps.this);
+
+                //Установка флага карты (зачем?)
                 SharedPreferences.Editor editor = sPref.edit();
                 editor.putBoolean("MAP", true);
                 editor.apply();
 
+                //Уведомление
                 not=new com.example.pstype_v1.useful.Notification(Maps.this);
                 not.Show();
                 sPref = getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
                 editor = sPref.edit();
+                //Время и режим отслеживания
                 editor.putInt("FLAG", 1);
                 editor.putInt("TIME", 1000);
+                editor.putBoolean("ACCEL", true);
                 editor.apply();
                 editor = sp.edit();
+                //Включение отслеживания в настройках, если не включено
                 editor.putBoolean("look", true);
                 editor.apply();
+                //Запуск отслеживания
                 startService(new Intent(Maps.this, tracking.class));
 
+                //Таймер для отрисовки на карте
                 SetTimer();
                 timer.schedule(task, 2000, 5000);
 
@@ -192,6 +203,7 @@ public class Maps extends AppCompatActivity {
                 editor = sPref.edit();
                 editor.putInt("FLAG", 0);
                 editor.putInt("TIME", 120000);
+                editor.putBoolean("ACCEL", false);
                 editor.apply();
                 editor = sp.edit();
                 editor.putBoolean("look", false);
@@ -277,7 +289,7 @@ public class Maps extends AppCompatActivity {
         Request signReq = new Request(headers,values,getString(R.string.url_obr),responseListener,errorListener);
         RequestQueue queue = Volley.newRequestQueue(Maps.this);
         int socketTimeout = 30000;//30 seconds - change to what you want
-        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, 10, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         signReq.setRetryPolicy(policy);
         queue.add(signReq);
     }
