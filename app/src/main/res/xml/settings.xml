@@ -44,6 +44,9 @@
         <Preference android:title="Очистить тектовый лог"
             android:key="@string/log_clear">
         </Preference>
+        <Preference android:title="Открыть акселерометр"
+            android:key="@string/show_accel">
+        </Preference>
     </PreferenceCategory>
 
     <PreferenceCategory

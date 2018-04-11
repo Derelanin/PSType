@@ -24,6 +24,7 @@
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash</item>
+        <item name="colorAccent">@color/colorOrange</item>
     </style>
 
     <style name="CircularProgress" parent="Theme.AppCompat.Light">

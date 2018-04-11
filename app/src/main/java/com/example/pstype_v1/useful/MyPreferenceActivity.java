@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.pstype_v1.R;
 import com.example.pstype_v1.data.DbHelper;
+import com.example.pstype_v1.testing.accel_test;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -121,6 +122,15 @@ public class MyPreferenceActivity extends PreferenceActivity {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 readLog();
+                return true;
+            }
+        });
+
+        Preference show_accel = findPreference(getString(R.string.show_accel));
+        show_accel.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                showAccel();
                 return true;
             }
         });
@@ -252,6 +262,11 @@ public class MyPreferenceActivity extends PreferenceActivity {
 
     void readLog(){
         Intent intent = new Intent(this,debugging_log.class);
+        startActivity(intent);
+    }
+
+    void showAccel(){
+        Intent intent = new Intent(this, accel_test.class);
         startActivity(intent);
     }
 

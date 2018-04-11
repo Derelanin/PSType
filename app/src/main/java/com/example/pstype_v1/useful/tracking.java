@@ -86,7 +86,6 @@ public class tracking extends Service {
             SetLogMessage("-------Включено отслеживание раз в 2 минуты\n");
         else if (time == 1000)
             SetLogMessage("-------Включено отслеживание раз в 1 секунду\n");
-
         flag = sPref.getInt("FLAG", 0);
         if (flag == 2) trackStart = sPref.getLong("TRACKSTART", 0);
         send = sPref.getBoolean("SEND", false);
@@ -172,29 +171,32 @@ public class tracking extends Service {
             x = event.values[0];
             y = event.values[1];
             z = event.values[2];
+            //TODO: Добавлять в БД координаты + дата и время (?) [x,y,z,lon,lat,time,date]
             //InputDataAccel(event.values[0], event.values[1], event.values[2]);
             if (z>2){
+                if (GPSPoint==null) return;
                 LatLng point = GPSPoint;
-                SetLogAccel(new java.sql.Timestamp(new Date().getTime())+" X:"+  decimalFormat.format(x)
-                        +" Y:"+ decimalFormat.format(y)
-                        +" Z:"+ decimalFormat.format(z)
-                        +" Lat:"+ point.latitude
-                        +" Lon:"+ point.longitude+"\n");
+                //time|x|y|z|lat|lon
+                SetLogAccel(new java.sql.Timestamp(new Date().getTime())+"|"+  decimalFormat.format(x)
+                        +"|"+ decimalFormat.format(y)
+                        +"|"+ decimalFormat.format(z)
+                        +"|"+ point.latitude
+                        +"|"+ point.longitude+"\n");
             }
         }
 
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
-            String par ="";
-            if (accuracy==1)
-                par="Низкая точность, необходима калибровка";
-            else if (accuracy==2)
-                par="Средняя точность";
-            else if (accuracy==3)
-                par="Максимально возможная точность";
-            else
-                par="Данные, предоставляемые датчиком, недостоверны. Совсем всё плохо";
-            SetLogAccel("\n\n"+par+"\n");
+//            String par ="";
+//            if (accuracy==1)
+//                par="Низкая точность, необходима калибровка";
+//            else if (accuracy==2)
+//                par="Средняя точность";
+//            else if (accuracy==3)
+//                par="Максимально возможная точность";
+//            else
+//                par="Данные, предоставляемые датчиком, недостоверны. Совсем всё плохо";
+//            SetLogAccel("\n\n"+par+"\n");
         }
     };
 
@@ -224,7 +226,7 @@ public class tracking extends Service {
                 if (speed > 10 && flag == 0) {
                     SetLogMessage("-------Обнаружено движение. Включено отслеживание раз в 1 секунду\n");
                     time = 1000;
-                    //TODO: удаление текстовых данных, запись трека для отрисовки
+                    //TODO: Удаление текстовых данных, запись трека для отрисовки
                     run();
                     flag = 1;
                     SharedPreferences.Editor editor = sPref.edit();
@@ -262,6 +264,7 @@ public class tracking extends Service {
                     editor.apply();
                     run();
                     sendObr();
+                    //TODO: Сделать оправку отдельных данных акселерометра на сервер
                     SendTracking sendTracking = new SendTracking(this);
                     sendTracking.execute();
                 }

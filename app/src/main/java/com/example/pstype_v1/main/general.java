@@ -27,6 +27,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.R;
+import com.example.pstype_v1.testing.accel_test;
 import com.example.pstype_v1.useful.MyPreferenceActivity;
 import com.example.pstype_v1.useful.Request;
 import com.example.pstype_v1.useful.tokenSaver;
@@ -52,36 +53,6 @@ public class general extends AppCompatActivity {
             general.this.startActivity(intent);
         }
 
-        //ПРоверка авторизации
-        String flag = tokenSaver.getToken(general.this);
-        if (flag.isEmpty())
-        {
-            Intent intent = new Intent(general.this, sign.class);
-            general.this.startActivity(intent);
-            finish();
-        }
-        else{
-            Response.Listener<String> responseListener = new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                }
-            };
-            Response.ErrorListener errorListener= new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    tokenSaver.clearToken(general.this);
-                    Intent intent = new Intent(general.this, sign.class);
-                    general.this.startActivity(intent);
-                    finish();
-                }
-            };
-            String[] headers = {"token"};
-            String[] values = {tokenSaver.getToken(general.this)};
-            Request info = new Request(headers,values,getString(R.string.url_data),responseListener,errorListener);
-            RequestQueue queue = Volley.newRequestQueue(general.this);
-            queue.add(info);
-        }
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general);
 
@@ -94,6 +65,7 @@ public class general extends AppCompatActivity {
         Button set = (Button)findViewById(R.id.settings);
         Button stat = (Button)findViewById(R.id.stat);
         Button psycho = (Button)findViewById(R.id.psycho);
+
         //String[] fingerprints = VKUtil.getCertificateFingerprint(this, this.getPackageName());
         final Toolbar bar = (Toolbar) findViewById(R.id.toolbar2);
         bar.setTitle(tokenSaver.getName(general.this));

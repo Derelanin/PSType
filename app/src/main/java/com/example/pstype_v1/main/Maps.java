@@ -100,7 +100,7 @@ public class Maps extends AppCompatActivity {
         else
             createMapView();
 
-
+        //Не знаю почему, но если его убрать, то всё к чёрту крашится
         SetTimer();
 
         boolean showButton = sPref.getBoolean("MAP", false);
@@ -247,7 +247,14 @@ public class Maps extends AppCompatActivity {
     }
 
     void sendObr(){
+        //Получается длинная-длинная строка вида:
+        //[{lat:"", lon:""};{lat:"", lon:""};{lat:"", lon:""};{lat:"", lon:""};[{lat:"", lon:""};{lat:"", lon:""};{lat:"", lon:""}]]
+        //Здесь сначала идут точки отрисовки маршрута
+        //А во вторых кавычках - точки опасных участков
+        //[точки маршрута;[опасные участки]]
+
         String FILENAME = "PSType-LatLng";
+        String FILENAMEACCEL = "PSType-Accel";
         String points = "[";
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(openFileInput(FILENAME)));
@@ -258,6 +265,16 @@ public class Maps extends AppCompatActivity {
                 points+="{lat: \""+Double.parseDouble(sep[0])+"\", lon: \""+Double.parseDouble(sep[1])+"\"};";
             }
 
+            points+="[";
+            br = new BufferedReader(new InputStreamReader(openFileInput(FILENAMEACCEL)));
+            str = " ";
+            latlng="";
+            while ((str = br.readLine()) != null) {
+                latlng=str;
+                String[] sep = latlng.split(Pattern.quote("|"));
+                points+="{lat: \""+Double.parseDouble(sep[4])+"\", lon: \""+Double.parseDouble(sep[5])+"\"}>";
+            }
+
             points = points.substring(0,points.length()-1);
         } catch (IOException e) {
             e.printStackTrace();
@@ -265,7 +282,7 @@ public class Maps extends AppCompatActivity {
         catch (Exception e){
 
         }
-        points+="]";
+        points+="]]";
 
 
         Date date = new Date();
@@ -459,10 +476,9 @@ public class Maps extends AppCompatActivity {
             String points[] = point.split(Pattern.quote(";"));
             list=new ArrayList<LatLng>();
             JSONObject jsonResponse = new JSONObject(points[0]);
-            double maxLon, maxLat, minLon, minLat;
             LatLng start = new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon"));
             LatLng stop = new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon"));
-            for (int i=0; i< points.length; i++) {
+            for (int i=0; i< points.length-1; i++) {
                 jsonResponse = new JSONObject(points[i]);
                 list.add(new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon")));
                 stop = new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon"));
@@ -471,6 +487,23 @@ public class Maps extends AppCompatActivity {
                     .addAll(list)
                     .color(Color.RED).width(5);
             googleMap.addPolyline(polylineOptions);
+
+            //Обёрнуто для согласования со старыми данными
+            try{
+                points[points.length-1] = points[points.length-1].substring(1,points[points.length-1].length()-1);
+                String warning[] = points[points.length-1].split(Pattern.quote(">"));
+                for (int i=0; i< warning.length; i++) {
+                    jsonResponse = new JSONObject(warning[i]);
+                    //list.add(new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon")));
+                    //stop = new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon"));
+                    googleMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon")))
+                            .draggable(false)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                    );
+                }
+            }
+            catch (Exception exp) {}
 
             googleMap.addMarker(new MarkerOptions()
                     .position(start)

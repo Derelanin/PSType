@@ -1,6 +1,7 @@
 package com.example.pstype_v1.main;
 
 import android.animation.ArgbEvaluator;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 
 import com.example.pstype_v1.R;
 import com.example.pstype_v1.useful.Functions;
+import com.example.pstype_v1.useful.Splash;
 
 import java.io.File;
 
@@ -151,7 +153,8 @@ public class welcome extends AppCompatActivity {
         mSkipBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(welcome.this, Splash.class);
+                welcome.this.startActivity(intent);
                 finish();
             }
         });
@@ -159,8 +162,9 @@ public class welcome extends AppCompatActivity {
         mFinishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(welcome.this, Splash.class);
+                welcome.this.startActivity(intent);
                 finish();
-
             }
         });
 

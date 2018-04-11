@@ -45,6 +45,8 @@ public class profile_change extends AppCompatActivity {
     String americanDate;
     EditText datePick;
 
+    //TODO: Исправить и дополнить редактирование профиля
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

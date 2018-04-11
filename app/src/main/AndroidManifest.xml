@@ -65,7 +65,8 @@
         <activity
             android:name=".main.tracks"
             android:theme="@style/AppTheme" />
-        <activity android:name=".main.addSignup"></activity>
+        <activity android:name=".main.addSignup" />
+        <activity android:name=".testing.accel_test"></activity>
     </application>
 
 </manifest>
