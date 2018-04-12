@@ -108,6 +108,26 @@ public class MyPreferenceActivity extends PreferenceActivity {
             }
         });
 
+        final CheckBoxPreference accelOn = (CheckBoxPreference)findPreference("accelOn");
+        screenOn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                String SHARED_PREF_NAME = "SHARED_PREF_NAME";
+                SharedPreferences sPref = getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sPref.edit();
+                if (screenOn.isChecked())
+                {
+                    editor.putBoolean("ACCEL", true);
+                }
+                else
+                {
+                    editor.putBoolean("ACCEL", false);
+                }
+                editor.apply();
+                return false;
+            }
+        });
+
         Preference about = findPreference(getString(R.string.about));
         about.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override

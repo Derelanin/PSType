@@ -12,6 +12,7 @@
     <string name="log_copy">log_copy</string>
     <string name="log_clear">log_clear</string>
     <string name="show_accel">show_accel</string>
+    <string name="refresh">refresh</string>
     <string name="debug">Отладочные данные</string>
 
     <string name="item">Изменить</string>

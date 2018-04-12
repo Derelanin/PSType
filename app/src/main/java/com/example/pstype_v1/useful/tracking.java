@@ -19,6 +19,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -31,6 +32,7 @@ import com.example.pstype_v1.R;
 import com.example.pstype_v1.data.Contract;
 import com.example.pstype_v1.data.Contract.track;
 import com.example.pstype_v1.data.DbHelper;
+import com.example.pstype_v1.main.Maps;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.BufferedReader;
@@ -60,6 +62,7 @@ public class tracking extends Service {
     static SharedPreferences sPref;
     private SensorManager sensorManager;
     Sensor Accelerometer;
+    int boundaryZ;
 
     public tracking() {
     }
@@ -80,6 +83,8 @@ public class tracking extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boundaryZ = Integer.parseInt(prefs.getString(getString(R.string.refresh), "2"));
         sPref = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         time = sPref.getInt("TIME", 120000);
         if (time == 120000)
@@ -173,7 +178,7 @@ public class tracking extends Service {
             z = event.values[2];
             //TODO: Добавлять в БД координаты + дата и время (?) [x,y,z,lon,lat,time,date]
             //InputDataAccel(event.values[0], event.values[1], event.values[2]);
-            if (z>2){
+            if (z>boundaryZ){
                 if (GPSPoint==null) return;
                 LatLng point = GPSPoint;
                 //time|x|y|z|lat|lon
@@ -226,7 +231,10 @@ public class tracking extends Service {
                 if (speed > 10 && flag == 0) {
                     SetLogMessage("-------Обнаружено движение. Включено отслеживание раз в 1 секунду\n");
                     time = 1000;
-                    //TODO: Удаление текстовых данных, запись трека для отрисовки
+                    //Удаление текстовых данных, запись трека для отрисовки
+                    MyPreferenceActivity.LogDelete(tracking.this);
+                    //Отправка начала отслеживания на сервер
+                    Maps.trackBegin(tracking.this, getString(R.string.url_startPos));
                     run();
                     flag = 1;
                     SharedPreferences.Editor editor = sPref.edit();
@@ -263,7 +271,7 @@ public class tracking extends Service {
                     editor.putBoolean("MAP", false);
                     editor.apply();
                     run();
-                    sendObr();
+                    sendTrackEnd();
                     //TODO: Сделать оправку отдельных данных акселерометра на сервер
                     SendTracking sendTracking = new SendTracking(this);
                     sendTracking.execute();
@@ -277,54 +285,6 @@ public class tracking extends Service {
     public void onDestroy() {
         super.onDestroy();
         locationManager.removeUpdates(locationListener);
-    }
-
-    void sendObr(){
-        String FILENAME = "PSType-LatLng";
-        String points = "[";
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(openFileInput(FILENAME)));
-            String str = " ", latlng="";
-            while ((str = br.readLine()) != null) {
-                latlng=str;
-                String[] sep = latlng.split(Pattern.quote("|"));
-                points+="{lat: \""+Double.parseDouble(sep[0])+"\", lon: \""+Double.parseDouble(sep[1])+"\"};";
-            }
-
-            points = points.substring(0,points.length()-1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        catch (Exception e){
-
-        }
-        points+="]";
-
-
-        Date date = new Date();
-        String dd = new java.sql.Timestamp(date.getTime()) + "";
-        String StopTime = dd.substring(11,19);
-
-        Response.Listener<String> responseListener = new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-
-            }
-        };
-        Response.ErrorListener errorListener= new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        };
-        String[] headers = {"token","points", "StopTime"};
-        String[] values = {tokenSaver.getToken(tracking.this),points, StopTime};
-        Request signReq = new Request(headers,values,getString(R.string.url_obr),responseListener,errorListener);
-        RequestQueue queue = Volley.newRequestQueue(tracking.this);
-        int socketTimeout = 30000;//30 seconds - change to what you want
-        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        signReq.setRetryPolicy(policy);
-        queue.add(signReq);
     }
 
     public void InputData (String date, double speed, double lat, double lon) {
@@ -389,6 +349,76 @@ public class tracking extends Service {
             e.printStackTrace();
         }
     }
+
+    void sendTrackEnd(){
+        //Получается длинная-длинная строка вида:
+        //[{lat:"", lon:""};{lat:"", lon:""};{lat:"", lon:""};{lat:"", lon:""};[{lat:"", lon:""};{lat:"", lon:""};{lat:"", lon:""}]]
+        //Здесь сначала идут точки отрисовки маршрута
+        //А во вторых кавычках - точки опасных участков
+        //[точки маршрута;[опасные участки]]
+
+        String FILENAME = "PSType-LatLng";
+        String FILENAMEACCEL = "PSType-Accel";
+        String points = "[";
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(openFileInput(FILENAME)));
+            String str = " ", latlng="";
+            while ((str = br.readLine()) != null) {
+                latlng=str;
+                String[] sep = latlng.split(Pattern.quote("|"));
+                points+="{lat: \""+Double.parseDouble(sep[0])+"\", lon: \""+Double.parseDouble(sep[1])+"\"};";
+            }
+
+            if (sPref.getBoolean("ACCEL", false)) {
+
+                points += "[";
+                br = new BufferedReader(new InputStreamReader(openFileInput(FILENAMEACCEL)));
+                str = " ";
+                latlng = "";
+                while ((str = br.readLine()) != null) {
+                    latlng = str;
+                    String[] sep = latlng.split(Pattern.quote("|"));
+                    points += "{lat: \"" + Double.parseDouble(sep[4]) + "\", lon: \"" + Double.parseDouble(sep[5]) + "\"}>";
+                }
+            }
+
+            points = points.substring(0,points.length()-1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (Exception e){
+
+        }
+        if (sPref.getBoolean("ACCEL", false)) points+="]]";
+        else points+="]";
+
+
+        Date date = new Date();
+        String dd = new java.sql.Timestamp(date.getTime()) + "";
+        String StopTime = dd.substring(11,19);
+
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+            }
+        };
+        Response.ErrorListener errorListener= new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        };
+        String[] headers = {"token","points", "StopTime"};
+        String[] values = {tokenSaver.getToken(tracking.this),points, StopTime};
+        Request signReq = new Request(headers,values,getString(R.string.url_obr),responseListener,errorListener);
+        RequestQueue queue = Volley.newRequestQueue(tracking.this);
+        int socketTimeout = 30000;//30 seconds - change to what you want
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, 10, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        signReq.setRetryPolicy(policy);
+        queue.add(signReq);
+    }
+
 
 
     public static class SendTracking extends AsyncTask<Void, Void, Void> {

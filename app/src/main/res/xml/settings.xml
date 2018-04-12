@@ -25,12 +25,12 @@
     <PreferenceCategory
         android:title="Отладка">
         <EditTextPreference
-            android:key="refresh"
-            android:title="Обновление данных"
-            android:enabled="false"
-            android:summary="Устанавливает минимальное время (в секундах) между получением данных"
-            android:defaultValue="10"
-            android:dialogTitle="Введите время (в секундах)" />
+            android:key="@string/refresh"
+            android:title="Граничное Z"
+            android:enabled="true"
+            android:summary="Устанавливает отклонение по оси Z, которое будет считаться опасным (изменения устанавливаются до начала поездки)"
+            android:defaultValue="2"
+            android:dialogTitle="Введите отклонение (целое)" />
 
         <Preference android:title="Очистить записи"
             android:key="@string/del">

@@ -122,38 +122,7 @@ public class Maps extends AppCompatActivity {
                 //addTrack();
 
                 //Отправление на сервер данных о начале поездки
-                Date date = new Date();
-                String dd = new java.sql.Timestamp(date.getTime()) + "";
-                String dateTrack = dd.substring(0,10);
-                String StartTime = dd.substring(11,19);
-                Response.Listener<String> responseListener = new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject jsonResponse = new JSONObject(response);
-                            String success = jsonResponse.getString("status");
-                            if (success.equals("ok")) {
-
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                };
-                Response.ErrorListener errorListener= new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        int k=0;
-                    }
-                };
-                String[] headers = {"token","dateTrack", "StartTime"};
-                String[] values = {tokenSaver.getToken(Maps.this),dateTrack, StartTime};
-                Request signReq = new Request(headers,values,getString(R.string.url_startPos),responseListener,errorListener);
-                RequestQueue queue = Volley.newRequestQueue(Maps.this);
-                int socketTimeout = 30000;//30 seconds - change to what you want
-                RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, 10, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-                signReq.setRetryPolicy(policy);
-                queue.add(signReq);
+                trackBegin(Maps.this, getString(R.string.url_startPos));
 
                 //Удаление лога старой поездки
                 MyPreferenceActivity.LogDelete(Maps.this);
@@ -171,7 +140,7 @@ public class Maps extends AppCompatActivity {
                 //Время и режим отслеживания
                 editor.putInt("FLAG", 1);
                 editor.putInt("TIME", 1000);
-                editor.putBoolean("ACCEL", true);
+                //editor.putBoolean("ACCEL", true);
                 editor.apply();
                 editor = sp.edit();
                 //Включение отслеживания в настройках, если не включено
@@ -203,7 +172,7 @@ public class Maps extends AppCompatActivity {
                 editor = sPref.edit();
                 editor.putInt("FLAG", 0);
                 editor.putInt("TIME", 120000);
-                editor.putBoolean("ACCEL", false);
+                //editor.putBoolean("ACCEL", false);
                 editor.apply();
                 editor = sp.edit();
                 editor.putBoolean("look", false);
@@ -217,6 +186,41 @@ public class Maps extends AppCompatActivity {
                 stop.setVisibility(View.INVISIBLE);
             }
         });
+    }
+
+    public static void trackBegin(Context c, String url){
+        Date date = new Date();
+        String dd = new java.sql.Timestamp(date.getTime()) + "";
+        String dateTrack = dd.substring(0,10);
+        String StartTime = dd.substring(11,19);
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    String success = jsonResponse.getString("status");
+                    if (success.equals("ok")) {
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        Response.ErrorListener errorListener= new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                int k=0;
+            }
+        };
+        String[] headers = {"token","dateTrack", "StartTime"};
+        String[] values = {tokenSaver.getToken(c),dateTrack, StartTime};
+        Request signReq = new Request(headers,values,url,responseListener,errorListener);
+        RequestQueue queue = Volley.newRequestQueue(c);
+        int socketTimeout = 30000;//30 seconds - change to what you want
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, 10, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        signReq.setRetryPolicy(policy);
+        queue.add(signReq);
     }
 
     void DrawTrack(){
@@ -265,14 +269,17 @@ public class Maps extends AppCompatActivity {
                 points+="{lat: \""+Double.parseDouble(sep[0])+"\", lon: \""+Double.parseDouble(sep[1])+"\"};";
             }
 
-            points+="[";
-            br = new BufferedReader(new InputStreamReader(openFileInput(FILENAMEACCEL)));
-            str = " ";
-            latlng="";
-            while ((str = br.readLine()) != null) {
-                latlng=str;
-                String[] sep = latlng.split(Pattern.quote("|"));
-                points+="{lat: \""+Double.parseDouble(sep[4])+"\", lon: \""+Double.parseDouble(sep[5])+"\"}>";
+            if (sPref.getBoolean("ACCEL", false)) {
+
+                points += "[";
+                br = new BufferedReader(new InputStreamReader(openFileInput(FILENAMEACCEL)));
+                str = " ";
+                latlng = "";
+                while ((str = br.readLine()) != null) {
+                    latlng = str;
+                    String[] sep = latlng.split(Pattern.quote("|"));
+                    points += "{lat: \"" + Double.parseDouble(sep[4]) + "\", lon: \"" + Double.parseDouble(sep[5]) + "\"}>";
+                }
             }
 
             points = points.substring(0,points.length()-1);
@@ -282,7 +289,8 @@ public class Maps extends AppCompatActivity {
         catch (Exception e){
 
         }
-        points+="]]";
+        if (sPref.getBoolean("ACCEL", false)) points+="]]";
+        else points+="]";
 
 
         Date date = new Date();
