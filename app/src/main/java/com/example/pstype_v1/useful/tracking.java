@@ -178,7 +178,7 @@ public class tracking extends Service {
             z = event.values[2];
             //TODO: Добавлять в БД координаты + дата и время (?) [x,y,z,lon,lat,time,date]
             //InputDataAccel(event.values[0], event.values[1], event.values[2]);
-            if (z>boundaryZ){
+            if (Math.abs(z)>boundaryZ){
                 if (GPSPoint==null) return;
                 LatLng point = GPSPoint;
                 //time|x|y|z|lat|lon
