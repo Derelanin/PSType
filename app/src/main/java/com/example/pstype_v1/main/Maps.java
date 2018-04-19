@@ -252,7 +252,7 @@ public class Maps extends AppCompatActivity {
 
     void sendObr(){
         //Получается длинная-длинная строка вида:
-        //[{lat:"", lon:""};{lat:"", lon:""};{lat:"", lon:""};{lat:"", lon:""};[{lat:"", lon:""};{lat:"", lon:""};{lat:"", lon:""}]]
+        //[{lat:"", lon:""};{lat:"", lon:""};{lat:"", lon:""};{lat:"", lon:""};[{lat:"", lon:"", type""}>{lat:"", lon:"", type""}]]
         //Здесь сначала идут точки отрисовки маршрута
         //А во вторых кавычках - точки опасных участков
         //[точки маршрута;[опасные участки]]
@@ -273,12 +273,10 @@ public class Maps extends AppCompatActivity {
 
                 points += "[";
                 br = new BufferedReader(new InputStreamReader(openFileInput(FILENAMEACCEL)));
-                str = " ";
-                latlng = "";
                 while ((str = br.readLine()) != null) {
                     latlng = str;
                     String[] sep = latlng.split(Pattern.quote("|"));
-                    points += "{lat: \"" + Double.parseDouble(sep[4]) + "\", lon: \"" + Double.parseDouble(sep[5]) + "\"}>";
+                    points += "{lat: \"" + Double.parseDouble(sep[4]) + "\", lon: \"" + Double.parseDouble(sep[5]) + "\", type: \"" + Double.parseDouble(sep[6]) + "\"}>";
                 }
             }
 
@@ -508,6 +506,7 @@ public class Maps extends AppCompatActivity {
                             .position(new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon")))
                             .draggable(false)
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                            .title(jsonResponse.getString("type"))
                     );
                 }
             }

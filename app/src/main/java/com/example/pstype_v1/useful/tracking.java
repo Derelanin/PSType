@@ -63,6 +63,8 @@ public class tracking extends Service {
     private SensorManager sensorManager;
     Sensor Accelerometer;
     int boundaryZ;
+    double[] accelNow = new double[3];
+
 
     public tracking() {
     }
@@ -172,21 +174,60 @@ public class tracking extends Service {
     private SensorEventListener listener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
-            double x, y, z;
-            x = event.values[0];
-            y = event.values[1];
-            z = event.values[2];
+//            double x, y, z;
+            double[] accelOld, accelNew;
+            accelOld = accelNow;
+            accelNow[0]=event.values[0];
+            accelNow[1]=event.values[1];
+            accelNow[2]=event.values[2];
+            accelNew=accelNow;
+//            x = event.values[0];
+//            y = event.values[1];
+//            z = event.values[2];
             //TODO: Добавлять в БД координаты + дата и время (?) [x,y,z,lon,lat,time,date]
             //InputDataAccel(event.values[0], event.values[1], event.values[2]);
-            if (Math.abs(z)>boundaryZ){
+
+            //Если по всем координатам какая-то ерунда - то это ошибка
+            if (Math.abs(accelOld[2]-accelNew[2])>boundaryZ && Math.abs(accelOld[1]-accelNew[1])>boundaryZ && Math.abs(accelOld[0]-accelNew[0])>boundaryZ) return;
+            //Если по Z разница больше 2 - то это резкий поворот влево, если меньше -2 - резкий поворот вправо
+            if (accelOld[2]-accelNew[2]>boundaryZ){
                 if (GPSPoint==null) return;
                 LatLng point = GPSPoint;
-                //time|x|y|z|lat|lon
-                SetLogAccel(new java.sql.Timestamp(new Date().getTime())+"|"+  decimalFormat.format(x)
-                        +"|"+ decimalFormat.format(y)
-                        +"|"+ decimalFormat.format(z)
+                SetLogAccel(new java.sql.Timestamp(new Date().getTime())+"|"+  decimalFormat.format(accelNew[0])
+                        +"|"+ decimalFormat.format(accelNew[1])
+                        +"|"+ decimalFormat.format(accelNew[2])
                         +"|"+ point.latitude
-                        +"|"+ point.longitude+"\n");
+                        +"|"+ point.longitude
+                        +"|"+ "Резкий поворот влево"+"\n");
+            } else if (accelOld[2]-accelNew[2]<(-boundaryZ)){
+                if (GPSPoint==null) return;
+                LatLng point = GPSPoint;
+                SetLogAccel(new java.sql.Timestamp(new Date().getTime())+"|"+  decimalFormat.format(accelNew[0])
+                        +"|"+ decimalFormat.format(accelNew[1])
+                        +"|"+ decimalFormat.format(accelNew[2])
+                        +"|"+ point.latitude
+                        +"|"+ point.longitude
+                        +"|"+ "Резкий поворот вправо"+"\n");
+            }
+            //Если по Y разница больше 2 - то это резкое торможение, если меньше -2 - резкое ускорение
+            if (accelOld[1]-accelNew[1]>boundaryZ){
+                if (GPSPoint==null) return;
+                LatLng point = GPSPoint;
+                SetLogAccel(new java.sql.Timestamp(new Date().getTime())+"|"+  decimalFormat.format(accelNew[0])
+                        +"|"+ decimalFormat.format(accelNew[1])
+                        +"|"+ decimalFormat.format(accelNew[2])
+                        +"|"+ point.latitude
+                        +"|"+ point.longitude
+                        +"|"+ "Резкое торможение"+"\n");
+            } else if (accelOld[1]-accelNew[1]<(-boundaryZ)){
+                if (GPSPoint==null) return;
+                LatLng point = GPSPoint;
+                SetLogAccel(new java.sql.Timestamp(new Date().getTime())+"|"+  decimalFormat.format(accelNew[0])
+                        +"|"+ decimalFormat.format(accelNew[1])
+                        +"|"+ decimalFormat.format(accelNew[2])
+                        +"|"+ point.latitude
+                        +"|"+ point.longitude
+                        +"|"+ "Резкое ускорение"+"\n");
             }
         }
 
