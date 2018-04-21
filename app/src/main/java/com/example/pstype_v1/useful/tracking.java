@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -16,7 +15,6 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -47,7 +45,7 @@ import java.util.regex.Pattern;
 public class tracking extends Service {
     static int flag = 0;
     long trackStart;
-    boolean sleepFlag = false, send, accel;
+    boolean sleepFlag = false, send, accel, sendA;
     static int time = 120000;
     final String FILENAME = "PSType-log";
     final String FILENAMEL = "PSType-LatLng";
@@ -55,7 +53,6 @@ public class tracking extends Service {
     FileOutputStream outputStream;
     LatLng GPSPoint;
     Timer timer;
-    static int id;
     String pattern = "##0.0000";
     DecimalFormat decimalFormat;
     final String SHARED_PREF_NAME = "SHARED_PREF_NAME";
@@ -99,6 +96,11 @@ public class tracking extends Service {
         if (send) {
             SendTracking sendTracking = new SendTracking(this);
             sendTracking.execute();
+        }
+        sendA = sPref.getBoolean("SENDA", false);
+        if (sendA) {
+            SendAccel sendAccel = new SendAccel(this);
+            sendAccel.execute();
         }
         accel = sPref.getBoolean("ACCEL", false);
         if (accel)
@@ -174,60 +176,39 @@ public class tracking extends Service {
     private SensorEventListener listener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
-//            double x, y, z;
-            double[] accelOld, accelNew;
-            accelOld = accelNow;
-            accelNow[0]=event.values[0];
-            accelNow[1]=event.values[1];
-            accelNow[2]=event.values[2];
-            accelNew=accelNow;
-//            x = event.values[0];
-//            y = event.values[1];
-//            z = event.values[2];
+            double x, y, z;
+//            double[] accelOld, accelNew;
+//            accelOld = accelNow;
+//            accelNow[0]=event.values[0];
+//            accelNow[1]=event.values[1];
+//            accelNow[2]=event.values[2];
+//           accelNew=accelNow;
+            x = event.values[0];
+            y = event.values[1];
+            z = event.values[2];
             //TODO: Добавлять в БД координаты + дата и время (?) [x,y,z,lon,lat,time,date]
             //InputDataAccel(event.values[0], event.values[1], event.values[2]);
 
             //Если по всем координатам какая-то ерунда - то это ошибка
-            if (Math.abs(accelOld[2]-accelNew[2])>boundaryZ && Math.abs(accelOld[1]-accelNew[1])>boundaryZ && Math.abs(accelOld[0]-accelNew[0])>boundaryZ) return;
+//            if (Math.abs(accelOld[2]-accelNew[2])>boundaryZ && Math.abs(accelOld[1]-accelNew[1])>boundaryZ && Math.abs(accelOld[0]-accelNew[0])>boundaryZ) return;
+
             //Если по Z разница больше 2 - то это резкий поворот влево, если меньше -2 - резкий поворот вправо
-            if (accelOld[2]-accelNew[2]>boundaryZ){
+            if (z>boundaryZ || z<(-boundaryZ)){
                 if (GPSPoint==null) return;
                 LatLng point = GPSPoint;
-                SetLogAccel(new java.sql.Timestamp(new Date().getTime())+"|"+  decimalFormat.format(accelNew[0])
-                        +"|"+ decimalFormat.format(accelNew[1])
-                        +"|"+ decimalFormat.format(accelNew[2])
+                SetLogAccel(new java.sql.Timestamp(new Date().getTime())+"|"+  x
+                        +"|"+ y +"|"+ z
                         +"|"+ point.latitude
-                        +"|"+ point.longitude
-                        +"|"+ "Резкий поворот влево"+"\n");
-            } else if (accelOld[2]-accelNew[2]<(-boundaryZ)){
-                if (GPSPoint==null) return;
-                LatLng point = GPSPoint;
-                SetLogAccel(new java.sql.Timestamp(new Date().getTime())+"|"+  decimalFormat.format(accelNew[0])
-                        +"|"+ decimalFormat.format(accelNew[1])
-                        +"|"+ decimalFormat.format(accelNew[2])
-                        +"|"+ point.latitude
-                        +"|"+ point.longitude
-                        +"|"+ "Резкий поворот вправо"+"\n");
+                        +"|"+ point.longitude+"\n");
             }
             //Если по Y разница больше 2 - то это резкое торможение, если меньше -2 - резкое ускорение
-            if (accelOld[1]-accelNew[1]>boundaryZ){
+            if (y>boundaryZ || y<(-boundaryZ)){
                 if (GPSPoint==null) return;
                 LatLng point = GPSPoint;
-                SetLogAccel(new java.sql.Timestamp(new Date().getTime())+"|"+  decimalFormat.format(accelNew[0])
-                        +"|"+ decimalFormat.format(accelNew[1])
-                        +"|"+ decimalFormat.format(accelNew[2])
+                SetLogAccel(new java.sql.Timestamp(new Date().getTime())+"|"+  x
+                        +"|"+ y +"|"+ z
                         +"|"+ point.latitude
-                        +"|"+ point.longitude
-                        +"|"+ "Резкое торможение"+"\n");
-            } else if (accelOld[1]-accelNew[1]<(-boundaryZ)){
-                if (GPSPoint==null) return;
-                LatLng point = GPSPoint;
-                SetLogAccel(new java.sql.Timestamp(new Date().getTime())+"|"+  decimalFormat.format(accelNew[0])
-                        +"|"+ decimalFormat.format(accelNew[1])
-                        +"|"+ decimalFormat.format(accelNew[2])
-                        +"|"+ point.latitude
-                        +"|"+ point.longitude
-                        +"|"+ "Резкое ускорение"+"\n");
+                        +"|"+ point.longitude+"\n");
             }
         }
 
@@ -342,13 +323,19 @@ public class tracking extends Service {
 
         }
     }
-    public void InputDataAccel (double x, double y, double z) {
-        DbHelper mDbHelper = new DbHelper(this);
+    public static void InputDataAccel (double x, double y, double z, double lat, double lon, String date, String type, Context c) {
+        DbHelper mDbHelper = new DbHelper(c);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(Contract.accel.COLUMN_X, x);
         values.put(Contract.accel.COLUMN_Y, y);
         values.put(Contract.accel.COLUMN_Z, z);
+        values.put(Contract.accel.COLUMN_LAT, lat);
+        values.put(Contract.accel.COLUMN_LON, lon);
+        values.put(Contract.accel.COLUMN_TYPE, type);
+        if (date.substring(0,1).equals(" ")) date=date.substring(1);
+        values.put(Contract.accel.COLUMN_DATE, date.substring(0,10));
+        values.put(Contract.accel.COLUMN_TIME, date.substring(11,23));
         long newRowId = db.insert(Contract.accel.TABLE_NAME, null, values);
         db.close();
         if (newRowId == -1) {
@@ -462,133 +449,5 @@ public class tracking extends Service {
 
 
 
-    public static class SendTracking extends AsyncTask<Void, Void, Void> {
 
-        Context context;
-        public SendTracking(Context context)
-        {
-            this.context=context;
-        }
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                SharedPreferences.Editor editor = sPref.edit();
-                editor.putBoolean("SEND", true);
-                editor.apply();
-                Sending(context);
-            }
-            catch (Exception e){
-
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-        }
-    }
-
-    static void Sending(Context context)
-    {
-        if (test(context))
-        {
-            send(context);
-        }
-        else {
-            SharedPreferences.Editor editor = sPref.edit();
-            editor.putBoolean("SEND", false);
-            editor.apply();
-        }
-    }
-
-    static boolean test(Context context) {
-        id=0;
-        DbHelper mDbHelper= new DbHelper(context);
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        String[] projection = {
-                Contract.track.COLUMN_ID};
-        Cursor cursor = db.query(
-                Contract.track.TABLE_NAME,
-                projection,
-                null, null, null, null, Contract.track.COLUMN_ID, "1");
-        try {
-            int idCount = cursor.getColumnIndex(Contract.track.COLUMN_ID);
-            while (cursor.moveToNext()) {
-                id = cursor.getInt(idCount);
-            }
-        } finally {
-            cursor.close();
-            db.close();
-        }
-        if (id!=0) return true;
-        else return false;
-    }
-    static void deleteTrack(String _id, Context context){
-        DbHelper mDbHelper = new DbHelper(context);
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        db.delete(Contract.track.TABLE_NAME, "ID = ?", new String[]{_id});
-        db.close();
-    }
-    static void send(final Context context){
-        DbHelper mDbHelper= new DbHelper(context);
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        String[] projection = {
-                Contract.track.COLUMN_ID,
-                track.COLUMN_DATE,
-                Contract.track.COLUMN_SPEED,
-                Contract.track.COLUMN_LAT,
-                Contract.track.COLUMN_LON};
-        Cursor cursor = db.query(
-                Contract.track.TABLE_NAME,
-                projection,
-                Contract.track.COLUMN_ID + "=?", new String[]{String.valueOf(id)}, null, null, null);
-        double currentSpeed=0, currentLat=0, currentLon=0;
-        String date="";
-        try {
-            int speedColumnIndex = cursor.getColumnIndex(Contract.track.COLUMN_SPEED);
-            int idCount = cursor.getColumnIndex(Contract.track.COLUMN_ID);
-            int latColumnIndex = cursor.getColumnIndex(Contract.track.COLUMN_LAT);
-            int dateColumnIndex = cursor.getColumnIndex(track.COLUMN_DATE);
-            int lonColumnIndex = cursor.getColumnIndex(Contract.track.COLUMN_LON);
-            while (cursor.moveToNext()) {
-                id = cursor.getInt(idCount);
-                currentSpeed = cursor.getDouble(speedColumnIndex);
-                date = cursor.getString(dateColumnIndex);
-                currentLat = cursor.getDouble(latColumnIndex);
-                currentLon = cursor.getDouble(lonColumnIndex);
-            }
-        } finally {
-            cursor.close();
-            db.close();
-        }
-
-        Response.Listener<String> responseListener = new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                //Если отправлено, то удаляем запись из БД.
-                deleteTrack(String.valueOf(id), context);
-                Sending(context);
-            }
-        };
-        Response.ErrorListener errorListener= new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //При ошибке - ничего не делаем. Запись остаеётся в БД.
-            }
-        };
-        String[] headers = {"token", "longitude", "latitude", "speed", "date"};
-        String[] values = {tokenSaver.getToken(context), String.valueOf(currentLon), String.valueOf(currentLat), String.valueOf(currentSpeed), date};
-        Request maps = new Request(headers,values,context.getString(R.string.url_pos),responseListener,errorListener);
-        RequestQueue queue = Volley.newRequestQueue(context);
-        int socketTimeout = 30000;
-        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        maps.setRetryPolicy(policy);
-        queue.add(maps);
-    }
 }

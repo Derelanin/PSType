@@ -30,6 +30,8 @@ import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.R;
 import com.example.pstype_v1.useful.MyPreferenceActivity;
 import com.example.pstype_v1.useful.Request;
+import com.example.pstype_v1.useful.SendAccel;
+import com.example.pstype_v1.useful.SendTracking;
 import com.example.pstype_v1.useful.tokenSaver;
 import com.example.pstype_v1.useful.tracking;
 import com.google.android.gms.maps.CameraUpdate;
@@ -67,6 +69,7 @@ public class Maps extends AppCompatActivity {
     TimerTask task;
     LatLng loc;
     CameraPosition cameraPosition;
+    int boundaryZ = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,7 +181,7 @@ public class Maps extends AppCompatActivity {
                 editor.putBoolean("look", false);
                 editor.apply();
                 sendObr();
-                tracking.SendTracking sendTracking = new tracking.SendTracking(Maps.this);
+                SendTracking sendTracking = new SendTracking(Maps.this);
                 sendTracking.execute();
                 timer.cancel();
 
@@ -270,16 +273,26 @@ public class Maps extends AppCompatActivity {
             }
 
             if (sPref.getBoolean("ACCEL", false)) {
-
+                double tempZ = 0;
                 points += "[";
                 br = new BufferedReader(new InputStreamReader(openFileInput(FILENAMEACCEL)));
                 while ((str = br.readLine()) != null) {
-                    latlng = str;
-                    String[] sep = latlng.split(Pattern.quote("|"));
-                    points += "{lat: \"" + Double.parseDouble(sep[4]) + "\", lon: \"" + Double.parseDouble(sep[5]) + "\", type: \"" + Double.parseDouble(sep[6]) + "\"}>";
+                    String[] sep = str.split(Pattern.quote("|"));
+                    if (Double.parseDouble(sep[3])!=tempZ){
+                        tempZ = Double.parseDouble(sep[3]);
+                        String type = "";
+                        if (Double.parseDouble(sep[2])>boundaryZ) type = "Резкое торможение. ";
+                        else if (Double.parseDouble(sep[2])<(-boundaryZ)) type = "Резкое ускорение. ";
+                        if (Double.parseDouble(sep[3])>boundaryZ) type += "Резкий поворот влево. ";
+                        else if (Double.parseDouble(sep[3])<(-boundaryZ)) type += "Резкий поворот вправо. ";
+                        if (!type.equals("")) {
+                            points += "{lat: \"" + Double.parseDouble(sep[4]) + "\", lon: \"" + Double.parseDouble(sep[5]) + "\", type: \"" + type + "\"}>";
+                            tracking.InputDataAccel(Double.parseDouble(sep[1]), Double.parseDouble(sep[2]), Double.parseDouble(sep[3]),
+                                    Double.parseDouble(sep[4]), Double.parseDouble(sep[5]), sep[0], type, this);
+                        }
+                    }
                 }
             }
-
             points = points.substring(0,points.length()-1);
         } catch (IOException e) {
             e.printStackTrace();
@@ -315,6 +328,11 @@ public class Maps extends AppCompatActivity {
         RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, 10, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         signReq.setRetryPolicy(policy);
         queue.add(signReq);
+
+        SendAccel sendAccel = new SendAccel(this);
+        sendAccel.execute();
+        SendTracking sendTracking = new SendTracking(this);
+        sendTracking.execute();
     }
 
     void SetTimer(){
