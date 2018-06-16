@@ -259,36 +259,51 @@ public class Maps extends AppCompatActivity {
 
         String FILENAME = "PSType-LatLng";
         String FILENAMEACCEL = "PSType-Accel";
+        JSONObject pointsObj = new JSONObject();
         String points = "[";
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(openFileInput(FILENAME)));
-            String str = " ", latlng="";
+            JSONObject tracksObj = new JSONObject();
+            String str = " ";
+            int trackNum=0;
             while ((str = br.readLine()) != null) {
-                latlng=str;
-                String[] sep = latlng.split(Pattern.quote("|"));
-                points+="{lat: \""+Double.parseDouble(sep[0])+"\", lon: \""+Double.parseDouble(sep[1])+"\"};";
+                String[] sep = str.split(Pattern.quote("|"));
+                JSONObject tempJson = new JSONObject();
+                tempJson.put("lat", Double.parseDouble(sep[0]));
+                tempJson.put("lon", Double.parseDouble(sep[1]));
+                tracksObj.put("p"+trackNum, tempJson);
+//                points+="{lat: \""+Double.parseDouble(sep[0])+"\", lon: \""+Double.parseDouble(sep[1])+"\"};";
+                trackNum++;
             }
+            pointsObj.put("track", tracksObj);
 
             if (sPref.getBoolean("ACCEL", false)) {
 
-                points += "[";
+//                points += "[";
                 br = new BufferedReader(new InputStreamReader(openFileInput(FILENAMEACCEL)));
+                JSONObject accelObj;
+                trackNum=0;
                 while ((str = br.readLine()) != null) {
-                    latlng = str;
-                    String[] sep = latlng.split(Pattern.quote("|"));
-                    points += "{lat: \"" + Double.parseDouble(sep[4]) + "\", lon: \"" + Double.parseDouble(sep[5]) + "\", type: \"" + Double.parseDouble(sep[6]) + "\"}>";
+                    String[] sep = str.split(Pattern.quote("|"));
+                    JSONObject tempJson = new JSONObject();
+                    tempJson.put("lat", Double.parseDouble(sep[4]));
+                    tempJson.put("lon", Double.parseDouble(sep[5]));
+                    tempJson.put("type", Double.parseDouble(sep[6]));
+                    tracksObj.put("a"+trackNum, tempJson);
+                    trackNum++;
+//                    points += "{lat: \"" + Double.parseDouble(sep[4]) + "\", lon: \"" + Double.parseDouble(sep[5]) + "\", type: \"" + Double.parseDouble(sep[6]) + "\"}>";
                 }
             }
 
-            points = points.substring(0,points.length()-1);
+//            points = points.substring(0,points.length()-1);
         } catch (IOException e) {
             e.printStackTrace();
         }
         catch (Exception e){
 
         }
-        if (sPref.getBoolean("ACCEL", false)) points+="]]";
-        else points+="]";
+//        if (sPref.getBoolean("ACCEL", false)) points+="]]";
+//        else points+="]";
 
 
         Date date = new Date();
