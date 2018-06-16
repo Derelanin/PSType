@@ -27,9 +27,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.R;
-import com.example.pstype_v1.testing.accel_test;
 import com.example.pstype_v1.useful.MyPreferenceActivity;
 import com.example.pstype_v1.useful.Request;
+import com.example.pstype_v1.useful.SendAccel;
+import com.example.pstype_v1.useful.SendTracking;
 import com.example.pstype_v1.useful.tokenSaver;
 
 import org.json.JSONException;
@@ -55,6 +56,11 @@ public class general extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general);
+
+        SendAccel sendAccel = new SendAccel(this);
+        sendAccel.execute();
+        SendTracking sendTracking = new SendTracking(this);
+        sendTracking.execute();
 
         sdPath = Environment.getExternalStorageDirectory();
         sdPath = new File(sdPath.getAbsolutePath() + "/" + "Android/data/com.example.pstype_v1");

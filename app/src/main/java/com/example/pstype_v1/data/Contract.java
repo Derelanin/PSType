@@ -26,5 +26,10 @@ public class Contract {
         public final static String COLUMN_X = "x";
         public final static String COLUMN_Y = "y";
         public final static String COLUMN_Z = "z";
+        public final static String COLUMN_DATE = "date";
+        public final static String COLUMN_TIME = "time";
+        public final static String COLUMN_LAT = "latitude";
+        public final static String COLUMN_LON = "longitude";
+        public final static String COLUMN_TYPE = "type";
     }
 }

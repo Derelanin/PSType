@@ -35,7 +35,12 @@ public class DbHelper extends SQLiteOpenHelper {
                 + accel.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + accel.COLUMN_X + " DOUBLE NOT NULL, "
                 + accel.COLUMN_Y + " DOUBLE NOT NULL, "
-                + accel.COLUMN_Z + " DOUBLE NOT NULL "
+                + accel.COLUMN_Z + " DOUBLE NOT NULL, "
+                + accel.COLUMN_DATE + " TEXT NOT NULL, "
+                + accel.COLUMN_TIME + " TEXT NOT NULL, "
+                + accel.COLUMN_LAT + " DOUBLE NOT NULL, "
+                + accel.COLUMN_LON + " DOUBLE NOT NULL, "
+                + accel.COLUMN_TYPE + " TEXT NOT NULL "
                 + ");";
         db.execSQL(SQL_CREATE_ACCEL_TABLE);
     }
