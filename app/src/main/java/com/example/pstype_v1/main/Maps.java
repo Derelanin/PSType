@@ -30,6 +30,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.R;
 import com.example.pstype_v1.useful.MyPreferenceActivity;
 import com.example.pstype_v1.useful.Request;
+import com.example.pstype_v1.useful.SendTracking;
 import com.example.pstype_v1.useful.tokenSaver;
 import com.example.pstype_v1.useful.tracking;
 import com.google.android.gms.maps.CameraUpdate;
@@ -178,7 +179,7 @@ public class Maps extends AppCompatActivity {
                 editor.putBoolean("look", false);
                 editor.apply();
                 sendObr();
-                tracking.SendTracking sendTracking = new tracking.SendTracking(Maps.this);
+                SendTracking sendTracking = new SendTracking(Maps.this);
                 sendTracking.execute();
                 timer.cancel();
 
