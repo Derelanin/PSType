@@ -109,13 +109,13 @@ public class MyPreferenceActivity extends PreferenceActivity {
         });
 
         final CheckBoxPreference accelOn = (CheckBoxPreference)findPreference("accelOn");
-        screenOn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        accelOn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 String SHARED_PREF_NAME = "SHARED_PREF_NAME";
                 SharedPreferences sPref = getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sPref.edit();
-                if (screenOn.isChecked())
+                if (accelOn.isChecked())
                 {
                     editor.putBoolean("ACCEL", true);
                 }

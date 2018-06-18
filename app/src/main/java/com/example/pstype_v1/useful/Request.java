@@ -25,9 +25,10 @@ public class Request extends StringRequest {
     public Request (String[] headers, String[] values, JSONObject value, String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
         super(Method.POST, url, listener, errorListener);
         params = new HashMap<>();
-        for (int i=0; i<headers.length; i++)
+        for (int i=0; i<headers.length-1; i++)
             if (!values[i].equals(""))
                 params.put(headers[i],values[i]);
+        params.put(headers[headers.length-1],value.toString());
     }
 
     @Override

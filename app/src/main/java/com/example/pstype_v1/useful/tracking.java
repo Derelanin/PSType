@@ -83,7 +83,7 @@ public class tracking extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        boundaryZ = Integer.parseInt(prefs.getString(getString(R.string.refresh), "2"));
+        boundaryZ = Integer.parseInt(prefs.getString(getString(R.string.refresh), "5"));
         sPref = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         time = sPref.getInt("TIME", 120000);
         if (time == 120000)
@@ -192,7 +192,7 @@ public class tracking extends Service {
             //Если по всем координатам какая-то ерунда - то это ошибка
 //            if (Math.abs(accelOld[2]-accelNew[2])>boundaryZ && Math.abs(accelOld[1]-accelNew[1])>boundaryZ && Math.abs(accelOld[0]-accelNew[0])>boundaryZ) return;
 
-            //Если по Z разница больше 2 - то это резкий поворот влево, если меньше -2 - резкий поворот вправо
+            //Z - торможение и ускорение
             if (z>boundaryZ || z<(-boundaryZ)){
                 if (GPSPoint==null) return;
                 LatLng point = GPSPoint;
@@ -201,8 +201,8 @@ public class tracking extends Service {
                         +"|"+ point.latitude
                         +"|"+ point.longitude+"\n");
             }
-            //Если по Y разница больше 2 - то это резкое торможение, если меньше -2 - резкое ускорение
-            if (y>boundaryZ || y<(-boundaryZ)){
+            //X - повороты
+            if (x>boundaryZ || x<(-boundaryZ)){
                 if (GPSPoint==null) return;
                 LatLng point = GPSPoint;
                 SetLogAccel(new java.sql.Timestamp(new Date().getTime())+"|"+  x
@@ -333,9 +333,9 @@ public class tracking extends Service {
         values.put(Contract.accel.COLUMN_LAT, lat);
         values.put(Contract.accel.COLUMN_LON, lon);
         values.put(Contract.accel.COLUMN_TYPE, type);
-        if (date.substring(0,1).equals(" ")) date=date.substring(1);
-        values.put(Contract.accel.COLUMN_DATE, date.substring(0,10));
-        values.put(Contract.accel.COLUMN_TIME, date.substring(11,23));
+        if (date.substring(0, 1).equals(" ")) date = date.substring(1);
+        values.put(Contract.accel.COLUMN_DATE, date.substring(0, 10));
+        values.put(Contract.accel.COLUMN_TIME, date.substring(11, date.length()-1));
         long newRowId = db.insert(Contract.accel.TABLE_NAME, null, values);
         db.close();
         if (newRowId == -1) {

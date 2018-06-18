@@ -29,7 +29,7 @@
             android:title="Граничное Z"
             android:enabled="true"
             android:summary="Устанавливает отклонение по оси Z, которое будет считаться опасным (изменения устанавливаются до начала поездки)"
-            android:defaultValue="2"
+            android:defaultValue="5"
             android:dialogTitle="Введите отклонение (целое)" />
 
         <Preference android:title="Очистить записи"

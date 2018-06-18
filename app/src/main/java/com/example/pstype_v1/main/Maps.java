@@ -21,6 +21,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -30,6 +32,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.pstype_v1.R;
 import com.example.pstype_v1.useful.MyPreferenceActivity;
 import com.example.pstype_v1.useful.Request;
+import com.example.pstype_v1.useful.SendAccel;
 import com.example.pstype_v1.useful.SendTracking;
 import com.example.pstype_v1.useful.tokenSaver;
 import com.example.pstype_v1.useful.tracking;
@@ -37,6 +40,8 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -44,8 +49,10 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -57,7 +64,8 @@ import java.util.TimerTask;
 import java.util.regex.Pattern;
 
 
-public class Maps extends AppCompatActivity {
+public class Maps extends AppCompatActivity  implements OnMapReadyCallback {
+    private GoogleMap gMap;
     GoogleMap googleMap;
     ArrayList<LatLng> list = new ArrayList<LatLng>();
     PolylineOptions polylineOptions;
@@ -74,7 +82,7 @@ public class Maps extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         //stopService(new Intent(Maps.this, FastTracking.class));
-        final FloatingActionButton gps = (FloatingActionButton)findViewById(R.id.gps);
+        final FloatingActionButton gps = (FloatingActionButton) findViewById(R.id.gps);
         gps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,8 +90,8 @@ public class Maps extends AppCompatActivity {
             }
         });
 
-        final FloatingActionButton start = (FloatingActionButton)findViewById(R.id.start);
-        final FloatingActionButton stop = (FloatingActionButton)findViewById(R.id.stop);
+        final FloatingActionButton start = (FloatingActionButton) findViewById(R.id.start);
+        final FloatingActionButton stop = (FloatingActionButton) findViewById(R.id.stop);
 
         sPref = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -97,8 +105,7 @@ public class Maps extends AppCompatActivity {
             editor.putBoolean("POINTS", false);
             editor.apply();
             DrawPoints();
-        }
-        else
+        } else
             createMapView();
 
         //Не знаю почему, но если его убрать, то всё к чёрту крашится
@@ -134,14 +141,13 @@ public class Maps extends AppCompatActivity {
                 editor.apply();
 
                 //Уведомление
-                not=new com.example.pstype_v1.useful.Notification(Maps.this);
+                not = new com.example.pstype_v1.useful.Notification(Maps.this);
                 not.Show();
                 sPref = getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
                 editor = sPref.edit();
                 //Время и режим отслеживания
                 editor.putInt("FLAG", 1);
                 editor.putInt("TIME", 1000);
-                //editor.putBoolean("ACCEL", true);
                 editor.apply();
                 editor = sp.edit();
                 //Включение отслеживания в настройках, если не включено
@@ -165,7 +171,7 @@ public class Maps extends AppCompatActivity {
                 SharedPreferences.Editor editor = sPref.edit();
                 editor.putBoolean("MAP", false);
                 editor.apply();
-                not=new com.example.pstype_v1.useful.Notification(Maps.this);
+                not = new com.example.pstype_v1.useful.Notification(Maps.this);
                 not.NotShow();
 
                 stopService(new Intent(Maps.this, tracking.class));
@@ -189,11 +195,11 @@ public class Maps extends AppCompatActivity {
         });
     }
 
-    public static void trackBegin(Context c, String url){
+    public static void trackBegin(Context c, String url) {
         Date date = new Date();
         String dd = new java.sql.Timestamp(date.getTime()) + "";
-        String dateTrack = dd.substring(0,10);
-        String StartTime = dd.substring(11,19);
+        String dateTrack = dd.substring(0, 10);
+        String StartTime = dd.substring(11, 19);
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -208,15 +214,15 @@ public class Maps extends AppCompatActivity {
                 }
             }
         };
-        Response.ErrorListener errorListener= new Response.ErrorListener() {
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                int k=0;
+                int k = 0;
             }
         };
-        String[] headers = {"token","dateTrack", "StartTime"};
-        String[] values = {tokenSaver.getToken(c),dateTrack, StartTime};
-        Request signReq = new Request(headers,values,url,responseListener,errorListener);
+        String[] headers = {"token", "dateTrack", "StartTime"};
+        String[] values = {tokenSaver.getToken(c), dateTrack, StartTime};
+        Request signReq = new Request(headers, values, url, responseListener, errorListener);
         RequestQueue queue = Volley.newRequestQueue(c);
         int socketTimeout = 30000;//30 seconds - change to what you want
         RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, 10, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
@@ -224,17 +230,17 @@ public class Maps extends AppCompatActivity {
         queue.add(signReq);
     }
 
-    void DrawTrack(){
+    void DrawTrack() {
         String FILENAME = "PSType-LatLng";
         LatLng point;
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(openFileInput(FILENAME)));
-            String str = " ", latlng="";
+            String str = " ", latlng = "";
             while ((str = br.readLine()) != null) {
-                latlng=str;
+                latlng = str;
             }
             String[] sep = latlng.split(Pattern.quote("|"));
-            point = new LatLng(Double.parseDouble(sep[0]),Double.parseDouble(sep[1]));
+            point = new LatLng(Double.parseDouble(sep[0]), Double.parseDouble(sep[1]));
             polylineOptions
                     .add(point)
                     .color(Color.RED).width(5);
@@ -242,66 +248,76 @@ public class Maps extends AppCompatActivity {
 
             cameraPosition = new CameraPosition.Builder()
                     .target(point)
-                    .zoom(15)
                     .bearing(0)
                     .tilt(0)
                     .build();
+            getView();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    void sendObr(){
-        //Получается длинная-длинная строка вида:
-        //[{lat:"", lon:""};{lat:"", lon:""};{lat:"", lon:""};{lat:"", lon:""};[{lat:"", lon:"", type""}>{lat:"", lon:"", type""}]]
-        //Здесь сначала идут точки отрисовки маршрута
-        //А во вторых кавычках - точки опасных участков
-        //[точки маршрута;[опасные участки]]
-
+    void sendObr() {
         String FILENAME = "PSType-LatLng";
         String FILENAMEACCEL = "PSType-Accel";
         JSONObject pointsObj = new JSONObject();
         String points = "[";
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(openFileInput(FILENAME)));
-            JSONObject tracksObj = new JSONObject();
             String str = " ";
-            int trackNum=0;
+            int trackNum = 0;
+            JSONArray tempTrack = new JSONArray();
             while ((str = br.readLine()) != null) {
                 String[] sep = str.split(Pattern.quote("|"));
-                JSONObject tempJson = new JSONObject();
-                tempJson.put("lat", Double.parseDouble(sep[0]));
-                tempJson.put("lon", Double.parseDouble(sep[1]));
-                tracksObj.put("p"+trackNum, tempJson);
-//                points+="{lat: \""+Double.parseDouble(sep[0])+"\", lon: \""+Double.parseDouble(sep[1])+"\"};";
+                JSONObject tracksObj = new JSONObject();
+                tracksObj.put("lat", Double.parseDouble(sep[0]));
+                tracksObj.put("lon", Double.parseDouble(sep[1]));
+                tempTrack.put(trackNum,tracksObj);
                 trackNum++;
             }
-            pointsObj.put("track", tracksObj);
+            pointsObj.put("track", tempTrack);
 
             if (sPref.getBoolean("ACCEL", false)) {
 
 //                points += "[";
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                int boundaryZ = Integer.parseInt(prefs.getString(getString(R.string.refresh), "5"));
+                double tempZ = 0;
                 br = new BufferedReader(new InputStreamReader(openFileInput(FILENAMEACCEL)));
-                JSONObject accelObj;
-                trackNum=0;
+                trackNum = 0;
+                tempTrack = new JSONArray();
                 while ((str = br.readLine()) != null) {
                     String[] sep = str.split(Pattern.quote("|"));
-                    JSONObject tempJson = new JSONObject();
-                    tempJson.put("lat", Double.parseDouble(sep[4]));
-                    tempJson.put("lon", Double.parseDouble(sep[5]));
-                    tempJson.put("type", Double.parseDouble(sep[6]));
-                    tracksObj.put("a"+trackNum, tempJson);
+
+                    String type = "";
+                    if (Double.parseDouble(sep[3]) != tempZ) {
+                        tempZ = Double.parseDouble(sep[3]);
+                        if (Double.parseDouble(sep[1]) > boundaryZ) type = "Резкий поворот влево. ";
+                        else if (Double.parseDouble(sep[1]) < (-boundaryZ))
+                            type = "Резкий поворот вправо. ";
+                        if (Double.parseDouble(sep[3]) > boundaryZ) type += "Резкое торможение. ";
+                        else if (Double.parseDouble(sep[3]) < (-boundaryZ))
+                            type += "Резкое ускорение. ";
+                    }
+                    if (type == "") break;
+                    tracking.InputDataAccel(Double.parseDouble(sep[1]), Double.parseDouble(sep[2]), Double.parseDouble(sep[3]), Double.parseDouble(sep[4]), Double.parseDouble(sep[5]), sep[0], type, this);
+
+                    JSONObject tracksObj = new JSONObject();
+                    tracksObj.put("lat", Double.parseDouble(sep[4]));
+                    tracksObj.put("lon", Double.parseDouble(sep[5]));
+                    tracksObj.put("type", type);
+                    tempTrack.put(trackNum, tracksObj);
                     trackNum++;
 //                    points += "{lat: \"" + Double.parseDouble(sep[4]) + "\", lon: \"" + Double.parseDouble(sep[5]) + "\", type: \"" + Double.parseDouble(sep[6]) + "\"}>";
                 }
+                pointsObj.put("accel", tempTrack);
             }
 
 //            points = points.substring(0,points.length()-1);
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        catch (Exception e){
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 //        if (sPref.getBoolean("ACCEL", false)) points+="]]";
 //        else points+="]";
@@ -309,7 +325,7 @@ public class Maps extends AppCompatActivity {
 
         Date date = new Date();
         String dd = new java.sql.Timestamp(date.getTime()) + "";
-        String StopTime = dd.substring(11,19);
+        String StopTime = dd.substring(11, 19);
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
@@ -317,23 +333,28 @@ public class Maps extends AppCompatActivity {
 
             }
         };
-        Response.ErrorListener errorListener= new Response.ErrorListener() {
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
             }
         };
-        String[] headers = {"token","points", "StopTime"};
-        String[] values = {tokenSaver.getToken(Maps.this),points, StopTime};
-        Request signReq = new Request(headers,values,getString(R.string.url_obr),responseListener,errorListener);
+        String[] headers = {"token", "StopTime", "points"};
+        String[] values = {tokenSaver.getToken(Maps.this), StopTime, points};
+        Request signReq = new Request(headers, values, pointsObj, getString(R.string.url_obr), responseListener, errorListener);
         RequestQueue queue = Volley.newRequestQueue(Maps.this);
         int socketTimeout = 30000;//30 seconds - change to what you want
         RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, 10, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         signReq.setRetryPolicy(policy);
         queue.add(signReq);
+
+        SendAccel sendAccel = new SendAccel(this);
+        sendAccel.execute();
+        SendTracking sendTracking = new SendTracking(this);
+        sendTracking.execute();
     }
 
-    void SetTimer(){
+    void SetTimer() {
         timer = new Timer();
         task = new TimerTask() {
             @Override
@@ -343,8 +364,7 @@ public class Maps extends AppCompatActivity {
                     public void run() {
                         try {
                             DrawTrack();
-                        }
-                        catch (Exception e){
+                        } catch (Exception e) {
 
                         }
                     }
@@ -365,8 +385,7 @@ public class Maps extends AppCompatActivity {
         }
     }
 
-    void getView()
-    {
+    void getView() {
         CameraUpdate cameraUpdate;
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
@@ -376,18 +395,15 @@ public class Maps extends AppCompatActivity {
         double latitude, longitude;
         Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, true));
 
-        if (location!=null)
-        {
-            latitude=location.getLatitude();
-            longitude=location.getLongitude();
-        }
-        else
-        {
-            latitude=55.7531432;
-            longitude=37.6198181;
+        if (location != null) {
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        } else {
+            latitude = 55.7531432;
+            longitude = 37.6198181;
         }
 
-        loc = new LatLng(latitude,longitude);
+        loc = new LatLng(latitude, longitude);
         cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(latitude, longitude))
                 .zoom(15)
@@ -398,17 +414,20 @@ public class Maps extends AppCompatActivity {
         googleMap.animateCamera(cameraUpdate);
 
 
-        if(null == googleMap) {
+        if (null == googleMap) {
             Toast.makeText(getApplicationContext(),
-                    "Ошибка создания карты",Toast.LENGTH_SHORT).show();
+                    "Ошибка создания карты", Toast.LENGTH_SHORT).show();
         }
     }
+
     private void createMapView() {
         try {
             if (null == googleMap) {
-                googleMap = ((MapFragment) getFragmentManager().findFragmentById(
-                        R.id.mapView)).getMap();
+                googleMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.mapView)).getMap();
                 googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
                 googleMap.setMyLocationEnabled(true);
                // googleMap.getUiSettings().setZoomControlsEnabled(true);
 
@@ -419,6 +438,7 @@ public class Maps extends AppCompatActivity {
             Log.e("mapApp", exception.toString());
         }
     }
+
 
 
     @Override
@@ -487,46 +507,46 @@ public class Maps extends AppCompatActivity {
         String point = intent.getStringExtra("points");
         try {
             if (null == googleMap) {
-                googleMap = ((MapFragment) getFragmentManager().findFragmentById(
-                        R.id.mapView)).getMap();
+                googleMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.mapView)).getMap();
             }
         } catch (NullPointerException exception){
             Log.e("mapApp", exception.toString());
         }
-        point = point.substring(1,point.length()-1);
         try {
-            String points[] = point.split(Pattern.quote(";"));
+
             list=new ArrayList<LatLng>();
-            JSONObject jsonResponse = new JSONObject(points[0]);
-            LatLng start = new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon"));
-            LatLng stop = new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon"));
-            for (int i=0; i< points.length-1; i++) {
-                jsonResponse = new JSONObject(points[i]);
-                list.add(new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon")));
-                stop = new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon"));
+            JSONObject pointsJSON = new JSONObject(point);
+            JSONArray tracksJSON = pointsJSON.getJSONArray("points");
+            pointsJSON = new JSONObject(tracksJSON.getString(0));
+            JSONArray trackJSON = pointsJSON.getJSONArray("track");
+
+            LatLng start = null;
+            LatLng stop = null;
+            for (int i = 0; i<trackJSON.length(); i++){
+                JSONObject pointJSON = trackJSON.getJSONObject(i);
+                if (i==0){
+                    start = new LatLng(pointJSON.getDouble("lat"),pointJSON.getDouble("lon"));
+                }
+                list.add(new LatLng(pointJSON.getDouble("lat"),pointJSON.getDouble("lon")));
+                stop = new LatLng(pointJSON.getDouble("lat"),pointJSON.getDouble("lon"));
             }
             polylineOptions = new PolylineOptions()
                     .addAll(list)
                     .color(Color.RED).width(5);
             googleMap.addPolyline(polylineOptions);
 
-            //Обёрнуто для согласования со старыми данными
-            try{
-                points[points.length-1] = points[points.length-1].substring(1,points[points.length-1].length()-1);
-                String warning[] = points[points.length-1].split(Pattern.quote(">"));
-                for (int i=0; i< warning.length; i++) {
-                    jsonResponse = new JSONObject(warning[i]);
-                    //list.add(new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon")));
-                    //stop = new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon"));
+            if (pointsJSON.names().length()==2){
+                JSONArray accelJSON = pointsJSON.getJSONArray("accel");
+                for (int i = 0; i<accelJSON.length(); i++){
+                    JSONObject pointJSON = accelJSON.getJSONObject(i);
                     googleMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(jsonResponse.getDouble("lat"),jsonResponse.getDouble("lon")))
+                            .position(new LatLng(pointJSON.getDouble("lat"),pointJSON.getDouble("lon")))
                             .draggable(false)
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                            .title(jsonResponse.getString("type"))
+                            .title(pointJSON.getString("type"))
                     );
                 }
             }
-            catch (Exception exp) {}
 
             googleMap.addMarker(new MarkerOptions()
                     .position(start)
@@ -551,5 +571,11 @@ public class Maps extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap gMap) {
+        googleMap = gMap;
+        //getView();
     }
 }
