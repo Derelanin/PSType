@@ -11,6 +11,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
@@ -74,14 +76,17 @@ public class Maps extends AppCompatActivity  implements OnMapReadyCallback {
     static SharedPreferences sPref, sp;
     Timer timer;
     TimerTask task;
+    Timer timerSpeed;
+    TimerTask taskSpeed;
     LatLng loc;
     CameraPosition cameraPosition;
+    static String speedMap = "0";
+    TextView speedView = (TextView)findViewById(R.id.textView35);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        //stopService(new Intent(Maps.this, FastTracking.class));
         final FloatingActionButton gps = (FloatingActionButton) findViewById(R.id.gps);
         gps.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,6 +97,7 @@ public class Maps extends AppCompatActivity  implements OnMapReadyCallback {
 
         final FloatingActionButton start = (FloatingActionButton) findViewById(R.id.start);
         final FloatingActionButton stop = (FloatingActionButton) findViewById(R.id.stop);
+        final ConstraintLayout howFast = (ConstraintLayout)findViewById(R.id.howFast);
 
         sPref = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -110,6 +116,7 @@ public class Maps extends AppCompatActivity  implements OnMapReadyCallback {
 
         //Не знаю почему, но если его убрать, то всё к чёрту крашится
         SetTimer();
+        //SetSpeedTimer();
 
         boolean showButton = sPref.getBoolean("MAP", false);
         if (showButton) {
@@ -158,10 +165,13 @@ public class Maps extends AppCompatActivity  implements OnMapReadyCallback {
 
                 //Таймер для отрисовки на карте
                 SetTimer();
+                SetSpeedTimer();
                 timer.schedule(task, 2000, 5000);
+                timerSpeed.schedule(taskSpeed, 0, 500);
 
                 start.setVisibility(View.INVISIBLE);
                 stop.setVisibility(View.VISIBLE);
+                howFast.setVisibility(View.VISIBLE);
             }
         });
 
@@ -188,9 +198,11 @@ public class Maps extends AppCompatActivity  implements OnMapReadyCallback {
                 SendTracking sendTracking = new SendTracking(Maps.this);
                 sendTracking.execute();
                 timer.cancel();
+                timerSpeed.cancel();
 
                 start.setVisibility(View.VISIBLE);
                 stop.setVisibility(View.INVISIBLE);
+                howFast.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -308,19 +320,15 @@ public class Maps extends AppCompatActivity  implements OnMapReadyCallback {
                     tracksObj.put("type", type);
                     tempTrack.put(trackNum, tracksObj);
                     trackNum++;
-//                    points += "{lat: \"" + Double.parseDouble(sep[4]) + "\", lon: \"" + Double.parseDouble(sep[5]) + "\", type: \"" + Double.parseDouble(sep[6]) + "\"}>";
                 }
                 pointsObj.put("accel", tempTrack);
             }
 
-//            points = points.substring(0,points.length()-1);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        if (sPref.getBoolean("ACCEL", false)) points+="]]";
-//        else points+="]";
 
 
         Date date = new Date();
@@ -364,6 +372,25 @@ public class Maps extends AppCompatActivity  implements OnMapReadyCallback {
                     public void run() {
                         try {
                             DrawTrack();
+                        } catch (Exception e) {
+
+                        }
+                    }
+                });
+            }
+        };
+    }
+
+    void SetSpeedTimer() {
+        timerSpeed = new Timer();
+        taskSpeed = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            speedView.setText(speedMap);
                         } catch (Exception e) {
 
                         }
@@ -474,6 +501,10 @@ public class Maps extends AppCompatActivity  implements OnMapReadyCallback {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public static void setSpeed(String speed){
+        speedMap=speed;
     }
 
     void addTrack()

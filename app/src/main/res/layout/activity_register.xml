@@ -55,18 +55,20 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView4"
-        android:id="@+id/scrollView2">
+        app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:descendantFocusability="beforeDescendants"
+            android:focusable="true"
             android:focusableInTouchMode="true"
             android:orientation="vertical">
 
@@ -74,9 +76,9 @@
                 android:id="@+id/textInputLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:descendantFocusability="beforeDescendants"
                 android:layout_marginBottom="0dp"
                 android:layout_marginTop="8dp"
+                android:descendantFocusability="beforeDescendants"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -113,13 +115,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="0dp"
+                android:descendantFocusability="blocksDescendants"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.49"
-                android:descendantFocusability="beforeDescendants"
                 tools:layout_constraintBottom_creator="1"
                 tools:layout_constraintLeft_creator="1"
                 tools:layout_constraintRight_creator="1"
@@ -154,8 +156,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="0dp"
                 android:layout_marginTop="0dp"
+                android:descendantFocusability="blocksDescendants"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:descendantFocusability="beforeDescendants"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -191,9 +193,9 @@
                 android:id="@+id/textInputLayout7"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:descendantFocusability="beforeDescendants"
                 android:layout_marginBottom="0dp"
                 android:layout_marginTop="0dp"
+                android:descendantFocusability="blocksDescendants"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -230,10 +232,10 @@
                 android:id="@+id/textInputLayout8"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"
                 android:layout_marginBottom="0dp"
                 android:layout_marginTop="0dp"
-                android:descendantFocusability="beforeDescendants"
+                android:descendantFocusability="blocksDescendants"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -271,6 +273,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="0dp"
                 android:layout_marginTop="0dp"
+                android:descendantFocusability="beforeDescendants"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -278,7 +281,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.617"
                 tools:layout_constraintLeft_creator="1"
-                android:descendantFocusability="beforeDescendants"
                 tools:layout_constraintRight_creator="1">
 
                 <EditText
@@ -309,9 +311,9 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="0dp"
                 android:layout_marginTop="0dp"
+                android:descendantFocusability="beforeDescendants"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                android:descendantFocusability="beforeDescendants"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -341,7 +343,6 @@
                     app:layout_constraintVertical_bias="0.862" />
 
             </android.support.design.widget.TextInputLayout>
-
 
 
             <RadioGroup
@@ -403,8 +404,6 @@
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
-                android:onClick="clOK"
                 android:text="@string/ok_but"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -419,18 +418,18 @@
 
     <ProgressBar
         android:id="@+id/progressBar2"
-        android:theme="@style/CircularProgress"
-        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="8dp"
+        android:theme="@style/CircularProgress"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintVertical_bias="0.972"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintLeft_creator="1" />
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1" />
 
 </android.support.constraint.ConstraintLayout>

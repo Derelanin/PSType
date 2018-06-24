@@ -38,7 +38,9 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -52,6 +54,8 @@ public class general extends AppCompatActivity {
             Intent intent = new Intent(general.this, welcome.class);
             tokenSaver.setFIRST(general.this);
             general.this.startActivity(intent);
+
+
         }
 
         super.onCreate(savedInstanceState);

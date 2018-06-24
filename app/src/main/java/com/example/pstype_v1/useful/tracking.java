@@ -117,26 +117,6 @@ public class tracking extends Service {
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, time, 0, locationListener);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, time, 0, locationListener);
 
-        //Таймер для того, чтобы раз в 10 секунд запихивать в файлик последнюю точку.
-//        timer = new Timer();
-//        TimerTask task = new TimerTask() {
-//            @Override
-//            public void run() {
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        try {
-//                            SetLatLng();
-//                        }
-//                        catch (Exception e){
-//
-//                        }
-//                    }
-//                });
-//            }
-//        };
-//        timer.schedule(task, 0, 5000);
-
         return Service.START_STICKY;
     }
 
@@ -177,21 +157,9 @@ public class tracking extends Service {
         @Override
         public void onSensorChanged(SensorEvent event) {
             double x, y, z;
-//            double[] accelOld, accelNew;
-//            accelOld = accelNow;
-//            accelNow[0]=event.values[0];
-//            accelNow[1]=event.values[1];
-//            accelNow[2]=event.values[2];
-//           accelNew=accelNow;
             x = event.values[0];
             y = event.values[1];
             z = event.values[2];
-            //TODO: Добавлять в БД координаты + дата и время (?) [x,y,z,lon,lat,time,date]
-            //InputDataAccel(event.values[0], event.values[1], event.values[2]);
-
-            //Если по всем координатам какая-то ерунда - то это ошибка
-//            if (Math.abs(accelOld[2]-accelNew[2])>boundaryZ && Math.abs(accelOld[1]-accelNew[1])>boundaryZ && Math.abs(accelOld[0]-accelNew[0])>boundaryZ) return;
-
             //Z - торможение и ускорение
             if (z>boundaryZ || z<(-boundaryZ)){
                 if (GPSPoint==null) return;
@@ -214,16 +182,6 @@ public class tracking extends Service {
 
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
-//            String par ="";
-//            if (accuracy==1)
-//                par="Низкая точность, необходима калибровка";
-//            else if (accuracy==2)
-//                par="Средняя точность";
-//            else if (accuracy==3)
-//                par="Максимально возможная точность";
-//            else
-//                par="Данные, предоставляемые датчиком, недостоверны. Совсем всё плохо";
-//            SetLogAccel("\n\n"+par+"\n");
         }
     };
 
@@ -232,8 +190,9 @@ public class tracking extends Service {
             return;
         if ((location.getProvider().equals(LocationManager.GPS_PROVIDER)) || (location.getProvider().equals(LocationManager.NETWORK_PROVIDER))) {
 
-            //Условие на точность результата в пределах 30 метров.
-            if (location.getAccuracy()<30) {
+            Maps.setSpeed(location.getSpeed() * 3.6+"");
+            //Условие на точность результата в пределах 15 метров.
+            if (location.getAccuracy()<15) {
                 Date date = new Date(location.getTime());
                 double speed = location.getSpeed() * 3.6;
                 InputData(new java.sql.Timestamp(date.getTime()) + "", speed, location.getLatitude(), location.getLongitude());
@@ -293,8 +252,7 @@ public class tracking extends Service {
                     editor.putBoolean("MAP", false);
                     editor.apply();
                     run();
-                    sendTrackEnd();
-                    //TODO: Сделать оправку отдельных данных акселерометра на сервер
+                    //sendTrackEnd();
                     SendTracking sendTracking = new SendTracking(this);
                     sendTracking.execute();
                 }
@@ -379,12 +337,6 @@ public class tracking extends Service {
     }
 
     void sendTrackEnd(){
-        //Получается длинная-длинная строка вида:
-        //[{lat:"", lon:""};{lat:"", lon:""};{lat:"", lon:""};{lat:"", lon:""};[{lat:"", lon:""};{lat:"", lon:""};{lat:"", lon:""}]]
-        //Здесь сначала идут точки отрисовки маршрута
-        //А во вторых кавычках - точки опасных участков
-        //[точки маршрута;[опасные участки]]
-
         String FILENAME = "PSType-LatLng";
         String FILENAMEACCEL = "PSType-Accel";
         String points = "[";

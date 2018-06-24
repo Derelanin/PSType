@@ -1,16 +1,21 @@
 package com.example.pstype_v1.main;
 
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.IdRes;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -38,11 +43,15 @@ import com.vk.sdk.api.VKParameters;
 import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
 import com.vk.sdk.dialogs.VKCaptchaDialog;
+import com.vk.sdk.util.VKUtil;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class register extends AppCompatActivity {
@@ -104,7 +113,14 @@ public class register extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         VKUIHelper.onCreate(register.this);
-        VKSdk.initialize(sdkListener, appId, VKAccessToken.tokenFromSharedPreferences(register.this, vkTokenKey));
+        HashMap<String, String> why = new HashMap<>();
+        why.put("access_token", "07e1eadf07e1eadf07e1eadff007bcf741007e107e1eadf5ebd0b1a4d40a21f56977d15");
+        why.put("expires_in", "86400");
+        why.put("user_id", ".");
+        why.put("secret", ".");
+        why.put("email", ".");
+        VKSdk.initialize(sdkListener, appId, VKAccessToken.tokenFromParameters(why));
+        VKAccessToken hh = VKSdk.getAccessToken();
 
         final Functions func = new Functions(register.this);
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar2);
@@ -121,113 +137,114 @@ public class register extends AppCompatActivity {
         final TextInputLayout hideCity = (TextInputLayout)findViewById(R.id.textInputLayout8);
         final Spinner database = (Spinner)findViewById(R.id.databases);
 
+        //String[] fingerprints = VKUtil.getCertificateFingerprint(this, this.getPackageName());
+
         ArrayAdapter<String> adapterExp = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, exp);
         adapterExp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         driverExp.setAdapter(adapterExp);
         driverExp.setSelection(1);
-        drExp.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        drExp.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (drExp.isFocused()){
-                    driverExp.performClick();
-                    driverExp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            drExp.setText(driverExp.getSelectedItem().toString());
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-                        }
-                    });
-                    if (driverExp.getSelectedItemPosition()==0)
+            public void onClick(View view) {
+                hideKeyboard(register.this);
+                driverExp.performClick();
+                driverExp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         drExp.setText(driverExp.getSelectedItem().toString());
-                    drExp.clearFocus();
-                }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                    }
+                });
+                if (driverExp.getSelectedItemPosition()==0)
+                    drExp.setText(driverExp.getSelectedItem().toString());
             }
         });
 
+        etusername.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (!etusername.isFocused())
+                    hideKeyboard(register.this);
+            }
+        });
 
         datePick = (EditText)findViewById(R.id.editText5);
-        datePick.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        datePick.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (datePick.isFocused()){
-                    showDialog(dialog_date);
-                    datePick.clearFocus();
-                }
+            public void onClick(View view) {
+                showDialog(dialog_date);
+                datePick.clearFocus();
+                hideKeyboard(register.this);
             }
         });
 
         getDB();
-        country.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        country.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (country.isFocused()){
-                    database.setAdapter(adapter);
-                    //flCity=false;
-                    database.performClick();
-                    country.setText("");
-                    //database.callOnClick();
-                    //database.clearFocus();
-                    database.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                            if (flCity){
-                                //country.setText(database.getSelectedItem().toString());
-                                getCities(dbId[position]);
-                                city.setText("");
-                                country.setText(database.getSelectedItem().toString());
-                                hideCity.setVisibility(View.VISIBLE);
-                                //flCity=false;
-//                            }
-//                            else
-//                                flCity=true;
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-                            country.setText("");
-                        }
-                    });
-                    country.clearFocus();
-                }
-            }
-        });
-        city.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (city.isFocused()){
-                    database.setAdapter(adapter2);
-//                    flCity=false;
-                    database.performClick();
-                    database.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                            if (flCity){
-                                city.setText(database.getSelectedItem().toString());
-//                                flCity=false;
-//                            }
-//                            else
-//                                flCity=true;
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
+            public void onClick(View view) {
+                database.setAdapter(adapter);
+                database.performClick();
+                database.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        if (id!=0) {
+                            getCities(dbId[position]);
                             city.setText("");
+                            country.setText(database.getSelectedItem().toString());
+                            hideCity.setVisibility(View.VISIBLE);
                         }
-                    });
-                    city.clearFocus();
-                }
+                        else{
+                            country.setText("");
+                            hideCity.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        country.setText("");
+                    }
+                });
             }
         });
+        city.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                database.setAdapter(adapter2);
+                database.performClick();
+                database.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        if (id!=0)
+                            city.setText(database.getSelectedItem().toString());
+                        else
+                            city.setText("");
+                    }
 
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        city.setText("");
+                    }
+                });
+                //city.clearFocus();
+            }
+        });
 
         etpassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    func.hideKeyboard(v);
+                if (!etpassword.isFocused()) {
+                    hideKeyboard(register.this);
+                }
+            }
+        });
+        etpassword2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!etpassword.isFocused()) {
+                    hideKeyboard(register.this);
                 }
             }
         });
@@ -424,6 +441,15 @@ public class register extends AppCompatActivity {
             return age;
     }
 
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        View view = activity.getCurrentFocus();
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
     private abstract class VKSdkListener extends com.vk.sdk.VKSdkListener {
         public abstract void onCaptchaError(VKError captchaError);
 
@@ -445,19 +471,16 @@ public class register extends AppCompatActivity {
                 Log.d("VkDemoApp", "onComplete " + response);
                 JSONObject jsonResponse=response.json;
                 try {
-                    String res = jsonResponse.getString("response");
-                    res="{"+res.substring(1,res.length())+"}";
-                    JSONObject jsonVK=new JSONObject(res);
-                    int count = jsonVK.getInt("count");
-                    dbId=new int[count];
-                    dbName=new String[count];
-                    res=jsonVK.getString("items");
-                    res=res.substring(1,res.length());
-                    String[] items = res.split("\\},");
-                    for (int i=0; i<count; i++){
-                        jsonVK=new JSONObject(items[i]+"}");
-                        dbId[i]=jsonVK.getInt("id");
-                        dbName[i]=jsonVK.getString("title");
+                    JSONObject responceCountry = jsonResponse.getJSONObject("response");
+                    int count = responceCountry.getInt("count");
+                    JSONArray items = responceCountry.getJSONArray("items");
+                    dbId = new int[count+1];
+                    dbName = new String[count+1];
+                    dbId[0]=0;
+                    dbName[0]="(не указано)";
+                    for (int i=1; i<=count; i++){
+                        dbId[i]=(items.getJSONObject(i-1)).getInt("id");
+                        dbName[i]=(items.getJSONObject(i-1)).getString("title");
                     }
                     adapter = new ArrayAdapter<String>(register.this, android.R.layout.simple_spinner_item, dbName);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -475,6 +498,7 @@ public class register extends AppCompatActivity {
             @Override
             public void onError(VKError error) {
                 super.onError(error);
+                Log.d("Error", "onError " + error);
             }
 
             @Override
@@ -497,19 +521,16 @@ public class register extends AppCompatActivity {
                 Log.d("VkDemoApp", "onComplete " + response);
                 JSONObject jsonResponse=response.json;
                 try {
-                    String res = jsonResponse.getString("response");
-                    res="{"+res.substring(1,res.length())+"}";
-                    JSONObject jsonVK=new JSONObject(res);
-                    int count = jsonVK.getInt("count");
-                    dbId2=new int[count];
-                    dbName2=new String[count];
-                    res=jsonVK.getString("items");
-                    res=res.substring(1,res.length());
-                    String[] items = res.split("\\},");
-                    for (int i=0; i<count; i++){
-                        jsonVK=new JSONObject(items[i]+"}");
-                        dbId2[i]=jsonVK.getInt("id");
-                        dbName2[i]=jsonVK.getString("title");
+                    JSONObject responceCountry = jsonResponse.getJSONObject("response");
+                    int count = responceCountry.getInt("count");
+                    JSONArray items = responceCountry.getJSONArray("items");
+                    dbId2=new int[count+1];
+                    dbName2=new String[count+1];
+                    dbId2[0]=0;
+                    dbName2[0]="(не указано)";
+                    for (int i=1; i<=count; i++){
+                        dbId2[i]=(items.getJSONObject(i-1)).getInt("id");
+                        dbName2[i]=(items.getJSONObject(i-1)).getString("title");
                     }
                     adapter2 = new ArrayAdapter<String>(register.this, android.R.layout.simple_spinner_dropdown_item, dbName2);
                     adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

@@ -75,6 +75,7 @@
         <activity
             android:name=".main.profile_change"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".useful.debugging_log"

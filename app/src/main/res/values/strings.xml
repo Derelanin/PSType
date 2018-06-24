@@ -68,6 +68,8 @@
     <string name="ok_but">Подтвердить</string>
     <string name="country">Страна (необязательно)</string>
     <string name="city">Город (необязательно)</string>
+    <string name="country2">Страна</string>
+    <string name="city2">Город</string>
     <string name="att">Для завершения регистрации заполните данные</string>
 
     <!--Стаж вождения-->
@@ -98,7 +100,6 @@
 
     <!--url-->
     <string name="url_data">https://pstype.herokuapp.com/api/v1/data</string>
-    <string name="url_change">https://pstype.herokuapp.com/api/v1/data/change</string>
     <string name="url_signup">https://pstype.herokuapp.com/api/v1/signup</string>
     <string name="url_signin">https://pstype.herokuapp.com/api/v1/signin</string>
     <string name="url_vksignup">https://pstype.herokuapp.com/api/v1/vksignup</string>
@@ -108,5 +109,6 @@
     <string name="url_startPos">https://pstype.herokuapp.com/api/v1/map/startPos</string>
     <string name="url_obr">https://pstype.herokuapp.com/api/v1/map/getLastData</string>
     <string name="url_getDate">https://pstype.herokuapp.com/api/v1/data/getDate</string>
+    <string name="url_change">https://pstype.herokuapp.com/api/v1/data/change</string>
     <string name="url_getPoints">https://pstype.herokuapp.com/api/v1/data/getPoints</string>
 </resources>

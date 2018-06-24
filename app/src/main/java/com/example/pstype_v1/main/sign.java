@@ -348,7 +348,7 @@ public class sign extends AppCompatActivity {
                             age--;
                     }
                     if (age<14 || age>100) age=0;
-                    americanDate = bdata[0]+"-"+bdata[1]+"-"+bdata[2];
+                    americanDate = bdata[1]+"-"+bdata[0]+"-"+bdata[2];
                 }
 
                 final int Age = age;
@@ -365,6 +365,7 @@ public class sign extends AppCompatActivity {
 
                                 AlertDialog.Builder builder = new AlertDialog.Builder(sign.this);
                                 builder.setMessage("Для завершения регистрации необходимо дополнить информацию о себе")
+                                        .setCancelable(false)
                                         .setNegativeButton("ОК",
                                                 new DialogInterface.OnClickListener() {
                                                     public void onClick(DialogInterface dialog,

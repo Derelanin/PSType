@@ -39,7 +39,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class profile extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
 
-    String Age, Sex, dateAge, dateAgeD;
+    String Age, Sex, dateAge, dateAgeD, Country, City, Exp;
     private AppBarLayout mAppBarLayout;
     private Toolbar mToolbar;
     private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR  = 0.9f;
@@ -89,20 +89,17 @@ public class profile extends AppCompatActivity implements AppBarLayout.OnOffsetC
                         TextView country = (TextView)findViewById(R.id.textView28);
                         TextView city = (TextView)findViewById(R.id.textView30);
                         TextView exp = (TextView)findViewById(R.id.textView32);
-                        try {
-                            city.setText(jsonResponse.getString("city"));
-                        }
-                        catch (Exception e){
-                        }
-                        try {
-                            country.setText(jsonResponse.getString("country"));
-                        }
-                        catch (Exception e){
-                        }
-                        try {
+                        if (jsonResponse.has("experience")){
                             exp.setText(jsonResponse.getString("experience"));
+                            Exp = exp.getText().toString();
                         }
-                        catch (Exception e){
+                        if (jsonResponse.has("city")) {
+                            city.setText(jsonResponse.getString("city"));
+                            City = city.getText().toString();
+                        }
+                        if (jsonResponse.has("country")) {
+                            country.setText(jsonResponse.getString("country"));
+                            Country = country.getText().toString();
                         }
 
                         Age=jsonResponse.getString("age");
@@ -236,6 +233,9 @@ public class profile extends AppCompatActivity implements AppBarLayout.OnOffsetC
                 Intent intent = new Intent(this, profile_change.class);
                 intent.putExtra("age", dateAgeD);
                 intent.putExtra("sex", Sex);
+                if (Exp!=null) intent.putExtra("exp", Exp);
+                if (City!=null) intent.putExtra("city", City);
+                if (Country!=null) intent.putExtra("country", Country);
                 startActivity(intent);
                 return true;
             default:
