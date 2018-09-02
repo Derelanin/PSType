@@ -195,7 +195,7 @@ public class addSignup extends AppCompatActivity {
                 int socketTimeout = 40000;//30 seconds - change to what you want
                 RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
                 regReq.setRetryPolicy(policy);
-                regReq.setShouldCache(false);
+                queue.getCache().clear();
                 queue.add(regReq);
             }
         });

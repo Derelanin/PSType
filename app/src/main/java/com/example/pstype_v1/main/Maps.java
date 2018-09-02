@@ -80,8 +80,8 @@ public class Maps extends AppCompatActivity  implements OnMapReadyCallback {
     TimerTask taskSpeed;
     LatLng loc;
     CameraPosition cameraPosition;
-    static String speedMap = "0";
-    TextView speedView = (TextView)findViewById(R.id.textView35);
+    static String speedMap = "0 км/ч";
+    TextView speedView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +98,7 @@ public class Maps extends AppCompatActivity  implements OnMapReadyCallback {
         final FloatingActionButton start = (FloatingActionButton) findViewById(R.id.start);
         final FloatingActionButton stop = (FloatingActionButton) findViewById(R.id.stop);
         final ConstraintLayout howFast = (ConstraintLayout)findViewById(R.id.howFast);
+        speedView = (TextView)findViewById(R.id.textView35);
 
         sPref = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -116,7 +117,7 @@ public class Maps extends AppCompatActivity  implements OnMapReadyCallback {
 
         //Не знаю почему, но если его убрать, то всё к чёрту крашится
         SetTimer();
-        //SetSpeedTimer();
+        SetSpeedTimer();
 
         boolean showButton = sPref.getBoolean("MAP", false);
         if (showButton) {
@@ -504,7 +505,7 @@ public class Maps extends AppCompatActivity  implements OnMapReadyCallback {
     }
 
     public static void setSpeed(String speed){
-        speedMap=speed;
+        speedMap=Math.round(Double.parseDouble(speed))+" км/ч";
     }
 
     void addTrack()

@@ -32,7 +32,8 @@ public class Request extends StringRequest {
     }
 
     @Override
-    public Map<String, String> getParams() {
+    protected Map<String, String> getParams()
+            throws com.android.volley.AuthFailureError {
         return params;
-    }
+    };
 }
